@@ -3,35 +3,34 @@ package com.jd.meter.entity;
 import java.util.Date;
 
 public class DeviceData {
+	
 	private Long id;				//数据库ID
-	private Integer deviceId;		//设备ID	
+	private Long deviceId;			//设备ID	
 	private String deviceCode;		//设备编号： A-1,A-2,A-3...A-9,B-1,B-2 
 	//data
-	private String preReadData;	//最新预读数据
-	private String preReadStatus;	//最新预读状态；正常,预警,报警,失败
+	private String preReadData;		//最新预读数据
+	private Integer preReadStatus;	//最新预读状态(汉字):1正常,2预警,3报警,9失败
 	private Date preReadTime;		//最新预读时间
 	private Date preReadInsertTime;	//最新预读数据保存数据库时间
 	private String warningReason;	//报警原因
-	private Integer	dataType;		//数值类型：1预读，2重新识别，3人工修正 
-	private String route;			//路由
+	private Integer	dataType;		//数值类型：1预读，2重新识别，3人工修正 	
 	private String pictureUrl;		//图片路径
 	private String metaData;		//元数据，如果有，json格式
-	
-	
-	
-	
+	//private String route;			//路由
 	private Date createTime;		//
 	private Date updateTime;		//
+	
+	
 	public Long getId() {
 		return id;
 	}
 	public void setId(Long id) {
 		this.id = id;
 	}
-	public Integer getDeviceId() {
+	public Long getDeviceId() {
 		return deviceId;
 	}
-	public void setDeviceId(Integer deviceId) {
+	public void setDeviceId(Long deviceId) {
 		this.deviceId = deviceId;
 	}
 	public String getDeviceCode() {
@@ -39,13 +38,7 @@ public class DeviceData {
 	}
 	public void setDeviceCode(String deviceCode) {
 		this.deviceCode = deviceCode;
-	}
-	public String getPreReadStatus() {
-		return preReadStatus;
-	}
-	public void setPreReadStatus(String preReadStatus) {
-		this.preReadStatus = preReadStatus;
-	}
+	} 
 	public Date getPreReadTime() {
 		return preReadTime;
 	}
@@ -57,13 +50,7 @@ public class DeviceData {
 	}
 	public void setPreReadInsertTime(Date preReadInsertTime) {
 		this.preReadInsertTime = preReadInsertTime;
-	}
-	public String getRoute() {
-		return route;
-	}
-	public void setRoute(String route) {
-		this.route = route;
-	}
+	} 
 	public String getPictureUrl() {
 		return pictureUrl;
 	}
@@ -105,5 +92,11 @@ public class DeviceData {
 	}
 	public void setDataType(Integer dataType) {
 		this.dataType = dataType;
+	}
+	public Integer getPreReadStatus() {
+		return preReadStatus;
+	}
+	public void setPreReadStatus(Integer preReadStatus) {
+		this.preReadStatus = preReadStatus;
 	}
 }

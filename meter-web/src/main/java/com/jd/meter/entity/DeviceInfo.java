@@ -3,7 +3,7 @@ package com.jd.meter.entity;
 import java.util.Date;
 
 public class DeviceInfo {
-	private Integer id;				//数据库ID
+	private Long id;				//数据库ID
 	private String code;			//设备编号： A-1,A-2,A-3...A-9,B-1,B-2
 	private String path;			//路劲终端位置          1号主变A相， 1号主变B相， 1号主变C相， 2号主变A相...
 	private String type;			//类别(汉字):避雷针; SF6密度
@@ -14,7 +14,7 @@ public class DeviceInfo {
 	private String preReadData;		//最新预读数据
 	private Date preReadTime;		//最新预读时间
 	private Date preReadInsertTime;	//最新预读数据保存数据库时间
-	private String preReadStatus;	//最新预读状态；正常,预警,报警,失败
+	private Integer preReadStatus;	//最新预读状态(汉字):1正常,2预警,3报警,9失败
 	private String warningReason;	//报警原因
 	private Date createTime;		//
 	private Date updateTime;		//
@@ -22,10 +22,10 @@ public class DeviceInfo {
 	
 	
 	
-	public Integer getId() {
+	public Long getId() {
 		return id;
 	}
-	public void setId(Integer id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 	public String getCode() {
@@ -65,10 +65,10 @@ public class DeviceInfo {
 	public void setPreReadData(String preReadData) {
 		this.preReadData = preReadData;
 	}
-	public String getPreReadStatus() {
+	public Integer getPreReadStatus() {
 		return preReadStatus;
 	}
-	public void setPreReadStatus(String preReadStatus) {
+	public void setPreReadStatus(Integer preReadStatus) {
 		this.preReadStatus = preReadStatus;
 	}
 	public Date getPreReadTime() {
