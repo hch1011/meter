@@ -14,9 +14,9 @@
         <put-attribute name="commonJSPath" value="common" cascade="true"/>
     </definition>
 
-    <definition name="index" extends="template">
+    <definition name="home" extends="template">
         <put-attribute name="title" value="首页" cascade="true"/>
-        <put-attribute name="content" value="/WEB-INF/pages/index.jsp"/>
+        <put-attribute name="content" value="/WEB-INF/pages/home.jsp"/>
         <put-attribute name="cssPath" value="index"/>
         <put-attribute name="jsPath" value="index"/>
     </definition>
