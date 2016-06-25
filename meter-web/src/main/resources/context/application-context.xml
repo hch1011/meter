@@ -10,8 +10,39 @@
       http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
 
 
-  <!--<import resource="classpath:/context/distributor-dao-mysql.xml"/>-->
-  <!-- 该 BeanPostProcessor 将自动对标注 @Autowired 的 Bean 进行注入 -->
-  <!--<bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor"/>-->
+  	<!--<import resource="classpath:/context/distributor-dao-mysql.xml"/>-->
+  	<!-- 该 BeanPostProcessor 将自动对标注 @Autowired 的 Bean 进行注入 -->
+  	<!--<bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor"/>-->
+  
+  	<import resource="jpa-context.xml"/>
+
+	<context:component-scan base-package="com.jd.meter" />
+	<context:property-placeholder
+		location="
+		classpath:default.properties"
+		ignore-unresolvable="true" ignore-resource-not-found="true" />
+
+	<bean id="mapper" class="org.dozer.DozerBeanMapper">
+		<property name="mappingFiles">
+			<list>
+				<value>dozerBeanMapping.xml</value>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+		<property name="basenames">
+			<list>
+                <value>classpath:i18n/errorCode</value>
+			</list>
+		</property>
+		<property name="cacheSeconds" value="1" />
+		<property name="resourceLoader">
+			<bean class="org.springframework.core.io.support.PathMatchingResourcePatternResolver"/>
+		</property>
+        <property name="useCodeAsDefaultMessage" value="true"/>
+	</bean>
+	
+    <bean id="propertyMessage" class="com.jd.meter.exception.i18n.PropertyMessage" />
 
 </beans>
