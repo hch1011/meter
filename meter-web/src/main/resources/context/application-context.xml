@@ -18,8 +18,7 @@
 
 	<context:component-scan base-package="com.jd.meter" />
 	<context:property-placeholder
-		location="
-		classpath:default.properties"
+		location="classpath:default.properties"
 		ignore-unresolvable="true" ignore-resource-not-found="true" />
 
 	<bean id="mapper" class="org.dozer.DozerBeanMapper">

@@ -1,0 +1,39 @@
+CREATE TABLE `device_data` (
+  `id` bigint(20) NOT NULL COMMENT 'PK',
+  `device_id` bigint(20) DEFAULT NULL COMMENT '设备ID',
+  `device_code` varchar(64) DEFAULT NULL COMMENT '设备编号： A-1,A-2,A-3...A-9,B-1,B-2 ',
+  `pre_read_data` float DEFAULT NULL COMMENT '最新预读数据',
+  `pre_read_status` int(11) DEFAULT '1' COMMENT '最新预读状态(汉字):1正常,2预警,3报警,9失败',
+  `pre_read_time` datetime DEFAULT NULL COMMENT '最新预读时间',
+  `pre_read_insert_time` datetime DEFAULT NULL COMMENT '最新预读数据保存数据库时间',
+  `warning_reason` varchar(128) DEFAULT NULL COMMENT '报警原因',
+  `data_type` int(11) DEFAULT '1' COMMENT '数值类型:1预读,2重新识别,3人工修正 ',
+  `picture_url` varchar(512) DEFAULT NULL COMMENT '图片路径',
+  `meta_data` varchar(1024) DEFAULT NULL COMMENT '元数据，如果有，json格式',
+  `create_time` datetime DEFAULT NULL,
+  `update_time` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `device_info` (
+  `id` bigint(20) NOT NULL COMMENT 'PK',
+  `code` varchar(64) DEFAULT NULL COMMENT '设备编号： A-1,A-2,A-3...A-9,B-1,B-2',
+  `path` varchar(64) DEFAULT NULL COMMENT '路劲终端位置          1号主变A相， 1号主变B相， 1号主变C相， 2号主变A相...',
+  `type` varchar(64) DEFAULT NULL COMMENT '类别(汉字):避雷针; SF6密度',
+  `name` varchar(64) DEFAULT NULL COMMENT '名称:避雷针1，避雷针2，SF6密度计1，SF6密度计2',
+  `ip` varchar(32) DEFAULT NULL COMMENT '终端IP',
+  `pre_read_data` float DEFAULT NULL COMMENT '最新预读数据',
+  `pre_read_time` datetime DEFAULT NULL COMMENT '最新预读时间',
+  `pre_tead_insert_time` datetime DEFAULT NULL COMMENT '最新预读数据保存数据库时间',
+  `pre_read_status` int(11) DEFAULT NULL COMMENT '最新预读状态(汉字):1正常,2预警,3报警,9失败',
+  `warning_reason` varchar(128) DEFAULT NULL COMMENT '报警原因',
+  `create_time` datetime DEFAULT NULL,
+  `update_time` datetime DEFAULT NULL,
+  `description` varchar(128) DEFAULT NULL COMMENT '说明',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+
+
+

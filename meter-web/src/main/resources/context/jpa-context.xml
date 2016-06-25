@@ -22,7 +22,7 @@
         <!-- 驱动名称 -->  
         <property name="driverClassName" value="${meter.mysql.driverClassName:com.mysql.jdbc.Driver}" />  
         <!-- JDBC连接串 -->  
-        <property name="url" value="${meter.mysql.url:jdbc:mysql://172.16.233.242:3306}/hc?useUnicode=true&amp;characterEncoding=UTF-8&amp;zeroDateTimeBehavior=convertToNull&amp;transformedBitIsBoolean=true" />  
+        <property name="url" value="${meter.mysql.url:jdbc:mysql://121.41.62.194:3306}/hc?useUnicode=true&amp;characterEncoding=UTF-8&amp;zeroDateTimeBehavior=convertToNull&amp;transformedBitIsBoolean=true" />  
         <!-- 数据库用户名称 -->  
         <property name="username" value="${meter.mysql.username:admin}" />  
         <!-- 数据库密码 -->  
