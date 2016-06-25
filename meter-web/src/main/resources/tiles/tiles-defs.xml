@@ -1,0 +1,27 @@
+<!DOCTYPE tiles-definitions PUBLIC
+        "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN"
+        "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+<tiles-definitions>
+
+    <definition name="template" template="/WEB-INF/layout/share/template.jsp">
+        <put-attribute name="title" value="监控管理" cascade="true"/>
+        <put-attribute name="content" value=""/>
+        <put-attribute name="head" value="/WEB-INF/layout/share/head.jsp" cascade="true"/>
+        <put-attribute name="top" value="/WEB-INF/layout/share/top.jsp" cascade="true"/>
+        <put-attribute name="nav" value="/WEB-INF/layout/share/nav.jsp" cascade="true"/>
+        <put-attribute name="footer" value="/WEB-INF/layout/share/footer.jsp" cascade="true"/>
+        <put-attribute name="commonCSSPath" value="common" cascade="true"/>
+        <put-attribute name="commonJSPath" value="common" cascade="true"/>
+    </definition>
+
+    <definition name="index" extends="template">
+        <put-attribute name="title" value="首页" cascade="true"/>
+        <put-attribute name="content" value="/WEB-INF/pages/index.jsp"/>
+        <put-attribute name="cssPath" value="index"/>
+        <put-attribute name="jsPath" value="index"/>
+    </definition>
+    
+    <definition name="login" template="/WEB-INF/pages/login.jsp">  
+	</definition> 
+	
+</tiles-definitions>

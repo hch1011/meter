@@ -1,0 +1,1 @@
+document.write('<script src="resources/js/page/index.js"></script>')

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd
+         http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd">
+    
+    <!-- 添加注解驱动 -->       
+	<mvc:annotation-driven>  
+	    <mvc:argument-resolvers>  
+	        <!-- Spring Data中用于分页的注解方法参数解析器 -->
+	        <bean class="org.springframework.data.web.PageableHandlerMethodArgumentResolver" />
+	    </mvc:argument-resolvers>
+	</mvc:annotation-driven>
+	
+	<!-- 扫描包 --> 
+	<context:component-scan base-package="com.jd.meter.controller,com.jd.meter.service"/> 
+	 
+	<mvc:default-servlet-handler/>
+	<mvc:resources mapping="/resources/**" location="/resources/" />
+    <mvc:resources mapping="/images/**" location="/images/" />
+    <mvc:resources mapping="/js/**" location="/js/" /> 
+    <mvc:resources mapping="/css/**" location="/css/" />
+    
+    <!-- <bean id="viewResolver"  
+        class="org.springframework.web.servlet.view.InternalResourceViewResolver">  
+        <property name="prefix" value="/WEB-INF/pages/" />   
+        <property name="suffix" value=".jsp" />   
+    </bean> -->
+    
+    
+    <!-- 定义跳转的文件的前后缀 -->
+   	<bean id="tilesviewResolver" class="org.springframework.web.servlet.view.tiles3.TilesViewResolver" />
+	<bean id="tilesConfigurer" class="org.springframework.web.servlet.view.tiles3.TilesConfigurer">
+		<property name="definitions">
+			<list>
+				<value>classpath:tiles/tiles-defs.xml</value>
+			</list>
+		</property>
+	</bean>
+</beans>
