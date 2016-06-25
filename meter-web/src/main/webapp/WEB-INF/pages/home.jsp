@@ -62,27 +62,37 @@
 				 			<div class="tl-image"><img src="resources/images/light1.png"/></div>
 				 			<button class="btn btn-info" type="button">图像信息管理</button>
 				 		</div>
+				 		<table>
+				 			<tr>
+				 				<td>
+				 					<label>接地电流值(mA)：</label>
+				 				</td>
+				 				<td>
+				 					<input type="text" value="4.2"/>
+				 				</td>
+				 				<td>
+				 					<label>采集日期：</label>
+				 				</td>
+				 				<td>
+				 					<input type="text" value="2016.06.25"/>
+				 				</td>
+				 			</tr>
+				 			<tr>
+				 				<td>
+				 					<label>电流变化率(mA/6h)：</label>
+				 				</td>
+				 				<td>
+				 					<input type="text" value="2.1"/>
+				 				</td>
+				 				<td>
+				 					<label>采集时间：</label>
+				 				</td>
+				 				<td>
+				 					<input type="text" value="08:00:00"/>
+				 				</td>
+				 			</tr>
+				 		</table>
 				 		
-						<div class="detail">
-							<label>接地电流值(mA)：</label>
-							<input type="text" value="4.2"/>
-						</div>
-						<div class="detail">
-							<label>采集日期：</label>
-							<input type="text" value="2016.06.25"/>
-						</div>
-						<div class="detail">
-							<label>电流变化率(mA/6h)：</label>
-							<input type="text" value="2.1"/>
-						</div>
-						<div class="detail">
-							<label>采集时间：</label>
-							<input type="text" value="08:00:00"/>
-						</div>
-						<div class="detail">
-							<label>避雷动作次数：</label>
-							<input type="text" value="2" />
-						</div>
 					</div>
 					<div class="modal-footer">
 						<!-- <button type="button" class="btn btn-default" data-dismiss="modal">关闭

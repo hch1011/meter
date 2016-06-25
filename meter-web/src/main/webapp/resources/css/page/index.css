@@ -27,6 +27,11 @@
 .content-body .block img{
 	width:30px;
 }
+#myModalLabel{
+	font-weight: 700;
+	color: #286090;
+	margin-left: 5px;
+}
 #myModal .body-detail{
 	overflow: hidden;
 }
@@ -36,12 +41,18 @@
 	margin-bottom: 10px;
 	margin-top: 10px;
 }
-#myModal .detail label{
+#myModal table{
+	border-collapse: separate;
+	border-spacing: 8px;
+}
+#myModal label{
 	font-size: 18px;
 	font-weight: 500;
 }
-#myModal .detail input{
-	width: 100px
+#myModal input{
+	width: 100px;
+	font-size: 16px;
+	margin-bottom: 3px;
 }
 
 #myModal .tl{
@@ -50,12 +61,13 @@
 	letter-spacing: 5px;
 	margin-bottom: 20px;
 	cursor: pointer;
+	padding-left: 7px;
 }
 
 #myModal .tl-image{
 	display: inline-block;
 	vertical-align: middle;
-	margin-right: 160px;
+	margin-right: 117px;
 }
 
 #myModal .tl img{

@@ -30,11 +30,11 @@
 						          '</div>'+
 						       '</form>'
 				$('#myModal .modal-content').html(content)*/
-				$('#myModal').modal( 'show')/*.css({
+				$('#myModal').modal( 'show').css({
 		             "margin-top": function () {
-			             return ($(this).height() / 2);
+			             return ($(this).height() / 4);
 			           }
-				})*/
+				})
 			})
 		},
 		__initModal: function(){
