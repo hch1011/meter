@@ -1,4 +1,4 @@
-package com.jd.meter.model;
+package com.jd.meter.entity;
 
 import java.util.Date;
 
