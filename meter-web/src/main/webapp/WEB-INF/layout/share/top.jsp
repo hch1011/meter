@@ -8,31 +8,32 @@
 
 	<ul class="nav">
 		<li>
-			<a href="javascript:void(0)" class="selected" data-num="1"><img
+			<!-- class="selected" -->
+			<a href="index"  data-num="0"><img
 					src="resources/images/icon01.png" title="主页面" />
 				<h2>主页面</h2>
 			</a>
 		</li>
 		<li>
-		<a href="javascript:void(0)" data-num="2"><img
+		<a href="go" data-num="1"><img
 				src="resources/images/icon02.png" title="图像采集" />
 				<h2>图像采集</h2>
 			</a>
 		</li>
 		<li>
-			<a href="javascript:void(0)" data-num="3"><img
+			<a href="javascript:void(0)" data-num="2"><img
 				src="resources/images/icon03.png" title="数据查询" />
 			<h2>数据查询</h2>
 			</a>
 		</li>
 		<li>
-			<a href="javascript:void(0)" data-num="4"><img
+			<a href="javascript:void(0)" data-num="3"><img
 				src="resources/images/icon04.png" title="参数配置" />
 			<h2>参数配置</h2>
 			</a>
 		</li>
 		<li>
-			<a href="javascript:void(0)" data-num="5"><img
+			<a href="javascript:void(0)" data-num="4"><img
 				src="resources/images/icon05.png" title="诊断报告" />
 			<h2>诊断报告</h2>
 			</a>

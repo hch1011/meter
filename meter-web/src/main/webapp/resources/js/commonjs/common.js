@@ -18,13 +18,15 @@
 			var moduleNum =  JSON.parse(localStorage['moduleNum'] || null)
 			if(moduleNum != null){
 				$(".nav li a.selected").removeClass("selected")
-				$(".nav").children().eq(moduleNum).addClass("selected");
+				$(".nav").children().eq(moduleNum).find('a').addClass("selected");
 				delete localStorage['moduleNum ']
+			}else{
+				$(".nav").children().eq(0).find('a').addClass("selected");
 			}
 			
 			//顶部导航切换
 			$(".nav li a").click(function(){
-				var num = $(".nav li a").attr("data-num").val()
+				var num = $(this).attr("data-num")
 				localStorage['moduleNum'] = JSON.stringify(num)
 				$(".nav li a.selected").removeClass("selected")
 				//$(this).addClass("selected");
