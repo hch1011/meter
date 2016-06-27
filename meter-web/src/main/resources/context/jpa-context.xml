@@ -28,7 +28,7 @@
         <!-- 数据库密码 -->  
         <property name="password" value="${meter.mysql.password:admin}" />  
         <!-- 连接池最大使用连接数量 -->  
-        <property name="maxActive" value="${meter.mysql.pool.maxActive:30}" />  
+        <property name="maxActive" value="${meter.mysql.pool.maxActive:3}" />  
         <!-- 初始化大小 -->  
         <property name="initialSize" value="${meter.mysql.pool.initialSize:2}" />  
         <!-- 获取连接最大等待时间 -->  
@@ -54,7 +54,7 @@
 	<bean id="jpaTransactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
 		<property name="entityManagerFactory" ref="jpaEntityManagerFactory" />
 	</bean>
-
+ 
 	<tx:annotation-driven transaction-manager="jpaTransactionManager" />
 
 	<bean id="jpaEntityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">

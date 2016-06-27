@@ -23,6 +23,14 @@ public class IndexController {
 		return "home";
     }
 	
+	  @RequestMapping(value = "")
+	    public String index1(Model model){
+
+	        String result = "index";
+	        model.addAttribute(result, result);
+	        return result;
+	    }
+	  
     @RequestMapping(value = "/index")
     public String index(Model model){
 
