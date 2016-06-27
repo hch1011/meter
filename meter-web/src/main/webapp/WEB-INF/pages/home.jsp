@@ -9,19 +9,19 @@
 	 		<h2>SF6密度监测部分:</h2>
 	 		<div class="block" data-id="${id}">
 	 			密度计#1
-	 			<div class="block-image"><img src="resources/images/light1.png"/></div>
+	 			<div class="block-image"><img src="/meter/resources/images/light1.png"/></div>
 	 		</div>
 	 		<div class="block">
 	 			密度计#2
-	 			<div class="block-image"><img src="resources/images/light2.png"/></div>
+	 			<div class="block-image"><img src="/meter/resources/images/light2.png"/></div>
 	 		</div>
 	 		<div class="block">
 	 			密度计#3
-	 			<div class="block-image"><img src="resources/images/light3.png"/></div>
+	 			<div class="block-image"><img src="/meter/resources/images/light3.png"/></div>
 	 		</div>
 	 		<div class="block">
 	 			密度计#4
-	 			<div class="block-image"><img src="resources/images/light4.png"/></div>
+	 			<div class="block-image"><img src="/meter/resources/images/light4.png"/></div>
 	 		</div>
 	 		<div style="clear:both;"></div>
 	 	<%-- </c:if> --%>
@@ -31,23 +31,23 @@
 	 		<h2>氧化锌避雷器监测部分:</h2>
 	 		<div class="block">
 	 			避雷器#1
-	 			<div class="block-image"><img src="resources/images/light1.png"/></div>
+	 			<div class="block-image"><img src="/meter/resources/images/light1.png"/></div>
 	 			
 	 		</div>
 	 		<div class="block">
 	 			避雷器#2
-	 			<div class="block-image"><img src="resources/images/light2.png"/></div>
+	 			<div class="block-image"><img src="/meter/resources/images/light2.png"/></div>
 	 		</div>
 	 		<div class="block">
 	 			避雷器#3
-	 			<div class="block-image"><img src="resources/images/light3.png"/></div>
+	 			<div class="block-image"><img src="/meter/resources/images/light3.png"/></div>
 	 		</div>
 	 		<div class="block">
 	 			避雷器#4
-	 			<div class="block-image"><img src="resources/images/light4.png"/></div>
+	 			<div class="block-image"><img src="/meter/resources/images/light4.png"/></div>
 	 		</div>
 	 	<%-- </c:if> --%>
-	 	
+	 	 
 	 	<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 			<div class="modal-dialog">
 				<div class="modal-content">

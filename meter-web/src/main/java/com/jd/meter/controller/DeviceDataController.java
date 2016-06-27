@@ -32,5 +32,14 @@ public class DeviceDataController {
 			
 		return deviceData;
     }
+	
+	@RequestMapping(value = "/img/info", method = RequestMethod.GET)
+	public String imgInfo(
+			HttpServletRequest request,
+	    	HttpServletResponse response,
+	    	Long deviceId) {
+
+		return "imginfo";
+    }
 
 } 

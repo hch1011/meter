@@ -23,5 +23,5 @@
 
 <t:importAttribute name="commonCSSPath" />
 <c:if test='${not empty commonCSSPath}'>
-    <link rel="stylesheet" href="resources/css/merge/${commonCSSPath}.merge.css">
+    <link rel="stylesheet" href="/meter/resources/css/merge/${commonCSSPath}.merge.css">
 </c:if>

@@ -1,0 +1,28 @@
+.img-info-body{
+	position: absolute;
+	padding-left: 50px;
+	padding-top: 50px;
+} 
+.img-info-body .img-op{
+	position: relative;
+	left: 400px;
+	top: -200px;
+}
+.img-info-body .btn-b{
+	position: relative;
+	left: -114px;
+	top: 100px;
+}
+.img-info-body table{
+	border-collapse: separate;
+	border-spacing: 8px;
+}
+.img-info-body label{
+	font-size: 18px;
+	font-weight: 500;
+}
+.img-info-body input{
+	width: 100px;
+	font-size: 16px;
+	margin-bottom: 3px;
+}
