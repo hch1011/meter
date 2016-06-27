@@ -70,7 +70,7 @@
 			<groupId>com.mysema.querydsl</groupId>
 			<artifactId>querydsl-apt</artifactId>
 			<version>3.3.1</version>
-		</dependency>
+		</dependency> 
 		<dependency>
 			<groupId>com.mysema.querydsl</groupId>
 			<artifactId>querydsl-jpa</artifactId>
@@ -82,6 +82,13 @@
 			<version>4.12</version>
 			<scope>test</scope>
 		</dependency>
+		<!-- <dependency>
+		    <groupId>org.dom4j</groupId>
+		    <artifactId>dom4j-1.4</artifactId>
+		    <version>1.4</version>
+		    <type>jar</type>
+		    <scope>compile</scope>
+		</dependency> -->
 		<dependency>
 			<groupId>org.hamcrest</groupId>
 			<artifactId>hamcrest-all</artifactId>
@@ -101,7 +108,7 @@
 			<version>1.7.2</version>
 		</dependency>
 		<dependency>
-			<groupId>ch.qos.logback</groupId>
+			<groupId>ch.qos.logback</groupId> 
 			<artifactId>logback-classic</artifactId>
 			<version>1.0.9</version>
 		</dependency>
@@ -204,7 +211,7 @@
         	<artifactId>fastjson</artifactId>
 			<version>1.1.23</version>
       	</dependency>
-	</dependencies>
+	</dependencies> 
 	<build>
 		<finalName>meter</finalName>
 		<plugins>
@@ -235,7 +242,7 @@
 					</execution>
 				</executions>
 			</plugin>
-			 -->
+			 --> 
 		</plugins>
 	</build>
 </project>

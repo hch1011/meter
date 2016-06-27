@@ -1,6 +1,8 @@
 .content-body{
 	font-size:12px;
 	color: black;
+	padding-left: 20px;
+	overflow: hidden;
 }
 .content-body .block{
 	float: left;

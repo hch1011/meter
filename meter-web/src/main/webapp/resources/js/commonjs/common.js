@@ -15,10 +15,19 @@
         },
     		
 		__initNav: function () {
+			var moduleNum =  JSON.parse(localStorage['moduleNum'] || null)
+			if(moduleNum != null){
+				$(".nav li a.selected").removeClass("selected")
+				$(".nav").children().eq(moduleNum).addClass("selected");
+				delete localStorage['moduleNum ']
+			}
+			
 			//顶部导航切换
 			$(".nav li a").click(function(){
+				var num = $(".nav li a").attr("data-num").val()
+				localStorage['moduleNum'] = JSON.stringify(num)
 				$(".nav li a.selected").removeClass("selected")
-				$(this).addClass("selected");
+				//$(this).addClass("selected");
 			})
 		},
 		
