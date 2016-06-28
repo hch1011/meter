@@ -13,13 +13,13 @@
             self.__initMenuson()//初始化導航
             
         },
-    		
+        
 		__initNav: function () {
 			var moduleNum =  JSON.parse(localStorage['moduleNum'] || null)
 			if(moduleNum != null){
 				$(".nav li a.selected").removeClass("selected")
 				$(".nav").children().eq(moduleNum).find('a').addClass("selected");
-				delete localStorage['moduleNum ']
+				delete localStorage['moduleNum']
 			}else{
 				$(".nav").children().eq(0).find('a').addClass("selected");
 			}

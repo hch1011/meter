@@ -21,7 +21,7 @@
 			</a>
 		</li>
 		<li>
-			<a href="javascript:void(0)" data-num="2"><img
+			<a href="/meter/device/data/info" data-num="2"><img
 				src="/meter/resources/images/icon03.png" title="数据查询" />
 			<h2>数据查询</h2>
 			</a>

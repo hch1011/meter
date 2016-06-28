@@ -5,7 +5,7 @@
 <html>
     <head>
         <t:insertAttribute name="head"/> 
-        <link rel="stylesheet" href="/meter/resources/css/merge/<t:getAsString name="cssPath" />.merge.css">
+        <link rel="stylesheet" href="/meter/resources/css/merge/<t:getAsString name="cssPath" />.merge.css">   
     </head>
     <body>
         <div class="main">
