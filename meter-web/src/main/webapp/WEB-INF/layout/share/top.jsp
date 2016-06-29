@@ -27,7 +27,7 @@
 			</a>
 		</li>
 		<li>
-			<a href="javascript:void(0)" data-num="3"><img
+			<a href="/meter/device/data/param" data-num="3"><img
 				src="/meter/resources/images/icon04.png" title="参数配置" />
 			<h2>参数配置</h2>
 			</a>

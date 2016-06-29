@@ -7,3 +7,15 @@
 	padding-left: 16px;
 	padding-bottom: 15px;
 }
+.placeholder-container{
+	position: absolute;
+	left: 400px;
+}
+.placeholder-container span{
+	text-align: center;
+	font-size: 16px;
+	color: #FAC008;
+	position: absolute;
+	left: 300px;
+	top: 10px;
+}

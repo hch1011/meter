@@ -6,30 +6,30 @@
 
 	<div class="device-data-body">
 	 	<h3>查询操作</h3>
-	 	<form id="jdProductForm" class="form-horizontal col-xs-8" action="list" method="get" style="width:280px; margin-bottom:20px;"> 
+	 	<form id="" class="form-horizontal col-xs-8" action="list" method="get" style="width:280px; margin-bottom:20px;"> 
 	          
 	          <div class="form-group">
 	            <label class="col-sm-5 control-label">起始日期：</label>
 	         	<div class="col-sm-7">
-	         		<input class="form-control beginDate" type="text" name="beginDate" placeholder="请选择起始日期" value="">
+	         		<input class="form-control beginDate" type="text" name="beginDate" placeholder="2016-01-01" value="">
 	            </div>
 	          </div>
 	          <div class="form-group">
 	            <label class="col-sm-5 control-label">起始时间：</label>
 	         	<div class="col-sm-7">
-	         		<input class="form-control beginTime" type="text" name="beginTime" placeholder="请输入起始时间" value="">
+	         		<input class="form-control beginTime" type="text" name="beginTime" placeholder="08:00:00" value="">
 	            </div>
 	          </div>
 	          <div class="form-group">
 	            <label class="col-sm-5 control-label">终止日期：</label>
 	         	<div class="col-sm-7">
-	         		<input class="form-control endDate" type="text" name="endDate" placeholder="请选择终止日期" value="">
+	         		<input class="form-control endDate" type="text" name="endDate" placeholder="2016-12-30" value="">
 	            </div>
 	          </div>
 	          <div class="form-group">
 	            <label class="col-sm-5 control-label">终止时间：</label>
 	         	<div class="col-sm-7">
-	         		<input class="form-control endTime" type="text" name="endTime" placeholder="请输入终止时间" value="">
+	         		<input class="form-control endTime" type="text" name="endTime" placeholder="23:59:59" value="">
 	            </div>
 	          </div>
 	          
@@ -59,4 +59,11 @@
 	          
 	          
 			</form>
+			<div class="placeholder-container">
+				<span>电流历史曲线图</span>			
+				<div id="placeholder" style="width:700px;height:350px;"></div>
+			</div>
+			
 	</div>
+	
+	
