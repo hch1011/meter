@@ -14,9 +14,9 @@
 	          		<div class="form-group">
 		            	<label class="col-sm-6 control-label">电流报警阈值：</label>
 		         		<div class="col-sm-6">
-		         			<div class="del">-</div>
-	         				<input class="form-control beginDate" type="text" name="beginDate" placeholder="2016-01-01" value="">
-			            	<div class="plus">+</div>
+		         			<div class="del current-del">-</div>
+	         				<input class="form-control current-error" type="text" name="currentError" placeholder="4.2" value="">
+			            	<div class="plus current-plus">+</div>
 			            </div>
 			        </div>
 	          		</td>
@@ -24,9 +24,9 @@
 	          			<div class="form-group">
 				            <label class="col-sm-6 control-label">电流预警阈值：</label>
 				         	<div class="col-sm-6">
-				         		<div class="del">-</div>
-				         		<input class="form-control beginTime" type="text" name="beginTime" placeholder="08:00:00" value="">
-				            	<div class="plus">+</div>
+				         		<div class="del current-del">-</div>
+				         		<input class="form-control current-warn" type="text" name="currentWarn" placeholder="2.4" value="">
+				            	<div class="plus current-plus">+</div>
 				            </div>
 				        </div>
 	          		</td>
@@ -36,9 +36,9 @@
 	          			<div class="form-group">
 				            <label class="col-sm-6 control-label">电流变化频率报警阈值：</label>
 				         	<div class="col-sm-6">
-				         		<div class="del">-</div>
-				         		<input class="form-control endDate" type="text" name="endDate" placeholder="2016-12-30" value="">
-				            	<div class="plus">+</div>
+				         		<div class="del current-del">-</div>
+				         		<input class="form-control current-change-error" type="text" name="currentChangeError" placeholder="0.8" value="">
+				            	<div class="plus current-plus">+</div>
 				            </div>
 				          </div>
 	          		</td>
@@ -46,9 +46,9 @@
 	          			<div class="form-group">
 				            <label class="col-sm-6 control-label">电流变化频率预警阈值：</label>
 				         	<div class="col-sm-6">
-				         		<div class="del">-</div>
-				         		<input class="form-control endTime" type="text" name="endTime" placeholder="23:59:59" value="">
-					            <div class="plus">+</div>
+				         		<div class="del current-del">-</div>
+				         		<input class="form-control current-change-warn" type="text" name="currentChangeWarn" placeholder="0.4" value="">
+					            <div class="plus current-plus">+</div>
 				            </div>
 				          </div>
 	          		</td>
@@ -58,9 +58,9 @@
 	          			<div class="form-group">
 				            <label class="col-sm-6 control-label">动作次数报警阈值：</label>
 				         	<div class="col-sm-6">
-				         		<div class="del">-</div>
-				         		<input class="form-control endDate" type="text" name="endDate" placeholder="2016-12-30" value="">
-				            	<div class="plus">+</div>
+				         		<div class="del times-del">-</div>
+				         		<input class="form-control times-error" type="text" name="timesError" placeholder="5" value="">
+				            	<div class="plus times-plus">+</div>
 				            </div>
 				          </div>
 	          		</td>
@@ -68,9 +68,9 @@
 	          			<div class="form-group">
 				            <label class="col-sm-6 control-label">动作次数预警阈值：</label>
 				         	<div class="col-sm-6">
-				         		<div class="del">-</div>
-				         		<input class="form-control endTime" type="text" name="endTime" placeholder="23:59:59" value="">
-					            <div class="plus">+</div>
+				         		<div class="del times-del">-</div>
+				         		<input class="form-control times-warn" type="text" name="timesWarn" placeholder="3" value="">
+					            <div class="plus times-plus">+</div>
 				            </div>
 				          </div>
 	          		</td>
@@ -80,9 +80,9 @@
 	          			<div class="form-group">
 				            <label class="col-sm-6 control-label">每日巡检时间：</label>
 				         	<div class="col-sm-6">
-				            	<div class="del">-</div>
-				            	<input class="form-control endTime" type="text" name="endTime" placeholder="23:59:59" value="">
-				            	<div class="plus">+</div>
+				            	<div class="del time-del">-</div>
+				            	<input class="form-control time-day" type="text" name="timeDay" placeholder="08:00:00" value="">
+				            	<div class="plus time-plus">+</div>
 				            </div>
 	          			</div>
 	          		</td>

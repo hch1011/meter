@@ -47,3 +47,7 @@
 #param .plus:hover{
 	background: #337ab7;
 }
+
+#param input{
+	text-align: center;
+}
