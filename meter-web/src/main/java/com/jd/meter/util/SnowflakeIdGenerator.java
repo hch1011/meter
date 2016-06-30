@@ -10,10 +10,7 @@ import org.hibernate.id.IdentifierGenerator;
 import com.jd.meter.exception.MeterException;
 
 /**
- * ID生成器
- * 
- * @author botao.liao
- * 
+ * ID生成器,64位
  */
 public class SnowflakeIdGenerator implements IdentifierGenerator {
     private long workerId;

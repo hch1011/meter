@@ -6,14 +6,15 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
-import com.jd.meter.entity.DeviceData;
+import com.jd.meter.entity.DeviceInfo;
+import com.jd.meter.entity.DeviceType;
 
 @Repository
-public interface DeviceDataRepository extends CrudRepository<DeviceData, Long>, JpaSpecificationExecutor<DeviceData> {
+public interface DeviceTypeDao extends CrudRepository<DeviceType, Long>, JpaSpecificationExecutor<DeviceInfo> {
 
-	DeviceData findByDeviceId(Long deviceId);
+	//DeviceType findByCode(String code);
 	
     @Modifying
-    @Query("delete from DeviceData i where i.deviceId=?1")
-    void removeDeviceDataByDeviceId(Long deviceId);
+    @Query("delete from DeviceInfo i where i.code=?1")
+    void removeDeviceInfoByCode(String code);
 }

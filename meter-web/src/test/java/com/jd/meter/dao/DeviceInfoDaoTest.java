@@ -10,43 +10,45 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.alibaba.fastjson.JSON;
 
 import com.jd.meter.entity.DeviceData;
+import com.jd.meter.entity.DeviceInfo;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/context/application-context.xml"})
-public class DeviceDataDaoTest {
+public class DeviceInfoDaoTest {
     @Autowired
-    private DeviceDataDao deviceDataDao;
+    private DeviceInfoDao deviceInfoDao;
     
+    
+
     @Test
     public void testCrud() {
     	System.out.println("testCrud() start");
-    	DeviceData data = new DeviceData();
+    	//clean
+    	
+    	DeviceInfo data = new DeviceInfo();
     	data.setId(1L);
+    	data.setCode("code");
+    	data.setName("name");
     	data.setCreateTime(new Date());
-    	data.setDataType(1);
-    	data.setDeviceCode("deviceCode");
-    	data.setDeviceId(1L);
-    	data.setMetaData("metaData");
-    	data.setPictureUrl("pictureUrl");
+    	data.setUpdateTime(data.getCreateTime());
     	data.setSnapData(1.2F);
-    	//data.setSnapStatus(1);
     	data.setSnapTime(data.getCreateTime());
     	data.setWarningReason("warningReason");
     	
 
     	System.out.println(JSON.toJSONString(data));
-		deviceDataDao.save(data);
+    	deviceInfoDao.save(data);
     	System.out.println(JSON.toJSONString(data));
-    	DeviceData db = deviceDataDao.findOne(1L);
-    	System.out.println("db:"+JSON.toJSONString(db));
     	System.out.println("testCrud() end");
+
+    	//deviceInfoDao.delete(data);
     }
     
     @Test
     public void testGetAllDeviceData() {
-    	Iterable<DeviceData> iter = deviceDataDao.findAll();
+    	Iterable<DeviceInfo> iter = deviceInfoDao.findAll();
     	if(iter != null){
-    		for (DeviceData data : iter) {
+    		for (DeviceInfo data : iter) {
             	System.out.println(JSON.toJSONString(data, true));
             }
     	}

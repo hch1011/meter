@@ -9,7 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import com.jd.meter.dao.DeviceDataRepository;
+import com.jd.meter.dao.DeviceDataDao;
 import com.jd.meter.entity.DeviceData;
 
 /**
@@ -20,7 +20,7 @@ import com.jd.meter.entity.DeviceData;
 public class DeviceDataController {
 	
 	@Autowired
-    private DeviceDataRepository deviceDataDao;
+    private DeviceDataDao deviceDataDao;
 
 	@RequestMapping(value = "/", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
 	@ResponseBody
