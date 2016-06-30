@@ -20,21 +20,22 @@ public class IndexController {
 	
 	@RequestMapping(value = "/go")
     public String go(HttpServletRequest request, HttpServletResponse Response, Model model){
-		return "index";
+		return "home";
     }
 	
-	  @RequestMapping(value = "")
-	    public String index1(Model model){
+	
+	@RequestMapping(value = "")
+	public String index1(Model model) {
 
-	        String result = "index";
-	        model.addAttribute(result, result);
-	        return result;
-	    }
+		String result = "index";
+		model.addAttribute(result, result);
+		return result;
+	}
 	  
     @RequestMapping(value = "/index")
     public String index(Model model){
 
-        String result = "index";
+        String result = "home";
         model.addAttribute(result, result);
         return result;
     }

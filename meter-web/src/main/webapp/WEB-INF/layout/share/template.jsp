@@ -5,7 +5,7 @@
 <html>
     <head>
         <t:insertAttribute name="head"/> 
-        <link rel="stylesheet" href="resources/css/merge/<t:getAsString name="cssPath" />.merge.css">
+        <link rel="stylesheet" href="/meter/resources/css/merge/<t:getAsString name="cssPath" />.merge.css">   
     </head>
     <body>
         <div class="main">
@@ -23,11 +23,11 @@
         <t:insertAttribute name="footer" />
         <t:importAttribute name="commonJSPath" />
         <c:if test='${not empty commonJSPath}'>
-            <script src="resources/js/merge/${commonJSPath}.merge.js"></script>
+            <script src="/meter/resources/js/merge/${commonJSPath}.merge.js"></script>
         </c:if>
         <t:importAttribute name="jsPath" />
         <c:if test='${not empty jsPath}'>
-            <script src="resources/js/merge/${jsPath}.merge.js"></script>
+            <script src="/meter/resources/js/merge/${jsPath}.merge.js"></script>
         </c:if>
         
     </body>

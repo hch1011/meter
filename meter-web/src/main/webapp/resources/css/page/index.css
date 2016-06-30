@@ -1,4 +1,81 @@
-.wel{
+.content-body{
 	font-size:12px;
-	color: red;
+	color: black;
+	padding-left: 20px;
+	overflow: hidden;
 }
+.content-body .block{
+	float: left;
+	font-size: 24px;
+	border: 2px solid;
+	margin-right: 30px;
+	padding: 10px;
+	letter-spacing: 5px;
+	margin-bottom: 40px;
+	cursor: pointer;
+	/* background: url(../../images/light1.png) no-repeat right;
+	background-size: 30px;
+	padding-right: 40px; */
+}
+
+.content-body h2{
+	padding-bottom: 20px;
+}
+
+.content-body .block .block-image{
+	display: inline-block;
+	vertical-align: middle;
+}
+.content-body .block img{
+	width:30px;
+}
+#myModalLabel{
+	font-weight: 700;
+	color: #286090;
+	margin-left: 5px;
+}
+#myModal .body-detail{
+	overflow: hidden;
+}
+#myModal .detail{
+	font-size: 18px;
+	float: left;
+	margin-bottom: 10px;
+	margin-top: 10px;
+}
+#myModal table{
+	border-collapse: separate;
+	border-spacing: 8px;
+}
+#myModal label{
+	font-size: 18px;
+	font-weight: 500;
+}
+#myModal input{
+	width: 100px;
+	font-size: 16px;
+	margin-bottom: 3px;
+}
+
+#myModal .tl{
+	font-size: 24px;
+	margin-right: 30px;
+	letter-spacing: 5px;
+	margin-bottom: 20px;
+	cursor: pointer;
+	padding-left: 7px;
+}
+
+#myModal .tl-image{
+	display: inline-block;
+	vertical-align: middle;
+	margin-right: 117px;
+}
+
+#myModal .tl img{
+	width:30px;
+}
+
+
+
+

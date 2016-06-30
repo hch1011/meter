@@ -16,7 +16,7 @@ h2{font-weight:normal;margin:0;padding:0;}
 .content-wrap{margin:0 auto; overflow:hidden;}
 .menu{float:left; padding-bottom:2000px;margin-bottom:-2000px;}
 .line{float:left; /* padding-bottom:2000px;margin-bottom:-2000px; */ width:1px; min-height:555px;}
-.content{float:left; padding-top: 5px;padding-left: 5px;padding-right: 5px;padding-bottom:2000px;margin-bottom:-2000px;}
+.content{float:left; padding-top: 20px;padding-left: 20px;padding-bottom:2000px;margin-bottom:-2000px;}
 
 /*nav.jsp*/
 .top{font-family: '微软雅黑';margin: 0 auto;min-width: 980px;height:88px;}
