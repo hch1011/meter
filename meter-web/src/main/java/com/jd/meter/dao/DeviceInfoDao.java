@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import com.jd.meter.entity.DeviceInfo;
 
 @Repository
-public interface DeviceInfoRepository extends CrudRepository<DeviceInfo, Long>, JpaSpecificationExecutor<DeviceInfo> {
+public interface DeviceInfoDao extends CrudRepository<DeviceInfo, Long>, JpaSpecificationExecutor<DeviceInfo> {
 
 	DeviceInfo findByCode(String code);
 	
