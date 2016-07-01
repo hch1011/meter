@@ -5,10 +5,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import com.jd.meter.dao.DeviceDataRepository;
+import com.jd.meter.dao.DeviceDataDao;
 import com.jd.meter.entity.DeviceData;
 
 /**
@@ -19,7 +20,7 @@ import com.jd.meter.entity.DeviceData;
 public class DeviceDataController {
 	
 	@Autowired
-    private DeviceDataRepository deviceDataDao;
+    private DeviceDataDao deviceDataDao;
 
 	@RequestMapping(value = "/", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
 	@ResponseBody
@@ -33,6 +34,15 @@ public class DeviceDataController {
 		return deviceData;
     }
 	
+	@RequestMapping(value = "/info", method = RequestMethod.GET)
+	public Object getDeviceData(
+			HttpServletRequest request,
+	    	HttpServletResponse response,
+	    	Model model) {
+			
+		return "devicedata";
+    }
+	
 	@RequestMapping(value = "/img/info", method = RequestMethod.GET)
 	public String imgInfo(
 			HttpServletRequest request,
@@ -40,6 +50,15 @@ public class DeviceDataController {
 	    	Long deviceId) {
 
 		return "imginfo";
+    }
+	
+	@RequestMapping(value = "/param", method = RequestMethod.GET)
+	public String param(
+			HttpServletRequest request,
+	    	HttpServletResponse response,
+	    	Long deviceId) {
+
+		return "param";
     }
 
 } 

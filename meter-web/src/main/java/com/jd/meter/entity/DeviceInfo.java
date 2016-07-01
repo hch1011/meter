@@ -5,56 +5,61 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.Table;
-
-import org.hibernate.annotations.Type;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 @Entity
 @Table(name = "device_info")
-public class DeviceInfo extends EntityId implements Serializable{
+public class DeviceInfo implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
-	
+    @Id
+    @Column(name = "id")
+	private Long Id;
+    
 	@Column(name = "code")
 	private String code;			//设备编号： A-1,A-2,A-3...A-9,B-1,B-2
 	
 	@Column(name = "path")
-	private String path;			//路劲终端位置          1号主变A相， 1号主变B相， 1号主变C相， 2号主变A相...
-	
+	private String path;			//路劲终端位置  	1号主变A相; 1号主变B相; 1号主变C相， 2号主变A相...
+
 	@Column(name = "type")
-	private String type;			//类别(汉字):避雷针; SF6密度
-	
+	private Integer type;			//类别
+
 	@Column(name = "name")
 	private String name;			//名称               :避雷针1，避雷针2，SF6密度计1，SF6密度计2
 	
 	@Column(name = "ip")
 	private String ip;				//终端IP
 
- 
-	@Column(name = "pre_read_data")
-	private Float preReadData;		//最新预读数据
+	@Column(name = "snap_data")
+	private Float snapData;		//最新预读数据
 	
-	@Column(name = "pre_read_time")
-	@Type(type = "org.joda.time.contrib.hibernate.PersistentDateTime")
-    private Date preReadTime;		//最新预读时间
+	@Column(name = "snap_status")
+	private Integer snapStatus;	//最新预读状态:0失败;1正常,2预警,3报警
 	
-	@Column(name = "pre_tead_insert_time")
-	@Type(type = "org.joda.time.contrib.hibernate.PersistentDateTime")
-    private Date preReadInsertTime;	//最新预读数据保存数据库时间
-	
-	@Column(name = "pre_read_status")
-	private Integer preReadStatus;	//最新预读状态；正常,预警,报警,失败
-	
+	@Column(name = "snap_time")
+	@Temporal(TemporalType.TIMESTAMP)
+    private Date snapTime;		//最新预读时间
+
 	@Column(name = "warning_reason")
 	private String warningReason;	//报警原因
 	
 	@Column(name = "create_time")
-	@Type(type = "org.joda.time.contrib.hibernate.PersistentDateTime")
+	@Temporal(TemporalType.TIMESTAMP)
     private Date createTime;		//
 	
 	@Column(name = "update_time")
-	@Type(type = "org.joda.time.contrib.hibernate.PersistentDateTime")
+	@Temporal(TemporalType.TIMESTAMP)
     private Date updateTime;		//
+
+	@Column(name = "monitor_page_flag")
+	private Integer monitorPageFlag;	//1出现在监控首页,其它不出现
+
+	@Column(name = "monitor_page_sort")
+	private Float monitorPageSort;	//出现在监控首页顺序,在同一类别内排序,默认按编号
 	
 	@Column(name = "description")
 	private String description;		//说明
@@ -75,11 +80,11 @@ public class DeviceInfo extends EntityId implements Serializable{
 		this.path = path;
 	}
 
-	public String getType() {
+	public Integer getType() {
 		return type;
 	}
 
-	public void setType(String type) {
+	public void setType(Integer type) {
 		this.type = type;
 	}
 
@@ -99,36 +104,28 @@ public class DeviceInfo extends EntityId implements Serializable{
 		this.ip = ip;
 	}
 
-	public Float getPreReadData() {
-		return preReadData;
+	public Float getSnapData() {
+		return snapData;
 	}
 
-	public void setPreReadData(Float preReadData) {
-		this.preReadData = preReadData;
+	public void setSnapData(Float snapData) {
+		this.snapData = snapData;
 	}
 
-	public Date getPreReadTime() {
-		return preReadTime;
+	public Integer getSnapStatus() {
+		return snapStatus;
 	}
 
-	public void setPreReadTime(Date preReadTime) {
-		this.preReadTime = preReadTime;
+	public void setSnapStatus(Integer snapStatus) {
+		this.snapStatus = snapStatus;
 	}
 
-	public Date getPreReadInsertTime() {
-		return preReadInsertTime;
+	public Date getSnapTime() {
+		return snapTime;
 	}
 
-	public void setPreReadInsertTime(Date preReadInsertTime) {
-		this.preReadInsertTime = preReadInsertTime;
-	}
-
-	public Integer getPreReadStatus() {
-		return preReadStatus;
-	}
-
-	public void setPreReadStatus(Integer preReadStatus) {
-		this.preReadStatus = preReadStatus;
+	public void setSnapTime(Date snapTime) {
+		this.snapTime = snapTime;
 	}
 
 	public String getWarningReason() {
@@ -155,6 +152,22 @@ public class DeviceInfo extends EntityId implements Serializable{
 		this.updateTime = updateTime;
 	}
 
+	public Integer getMonitorPageFlag() {
+		return monitorPageFlag;
+	}
+
+	public void setMonitorPageFlag(Integer monitorPageFlag) {
+		this.monitorPageFlag = monitorPageFlag;
+	}
+
+	public Float getMonitorPageSort() {
+		return monitorPageSort;
+	}
+
+	public void setMonitorPageSort(Float monitorPageSort) {
+		this.monitorPageSort = monitorPageSort;
+	}
+
 	public String getDescription() {
 		return description;
 	}
@@ -162,5 +175,12 @@ public class DeviceInfo extends EntityId implements Serializable{
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	
+
+	public Long getId() {
+		return Id;
+	}
+
+	public void setId(Long id) {
+		Id = id;
+	}
 }
