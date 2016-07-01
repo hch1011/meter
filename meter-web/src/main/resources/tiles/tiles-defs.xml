@@ -47,6 +47,14 @@
     </definition>
     
     
+    <definition name="errorreport" extends="template">
+        <put-attribute name="title" value="诊断信息" cascade="true"/>
+        <put-attribute name="nav" value="" cascade="true"/>
+        <put-attribute name="content" value="/WEB-INF/pages/errorreport.jsp"/>
+        <put-attribute name="cssPath" value="errorreport"/>
+        <put-attribute name="jsPath" value="errorreport"/>
+    </definition>
+    
     <definition name="login" template="/WEB-INF/pages/login.jsp">  
 	</definition> 
 	

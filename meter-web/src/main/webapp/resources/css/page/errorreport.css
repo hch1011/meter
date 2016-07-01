@@ -1,0 +1,36 @@
+.report-body{
+	width: 100%;
+	position: absolute;
+	left: 0px;
+	top: 88px;
+}
+.report-body table th{
+	font-size: 15px;
+}
+.report-body table td{
+	font-size: 14px;
+}
+.report-body .error{
+	background-color: #f2dede;
+}
+.report-body .report{
+	display: block;
+	width: 100%;
+	height: 40px;
+	text-align: center;
+	background: #dff0d8;
+	line-height: 40px;
+	font-size: 23px;
+	letter-spacing: 50px;
+	color: #3f8ede;
+	top: -20px;
+	position: relative;
+	border-top: 1px solid #ddd;
+}
+.report-body .report:hover{
+	
+	font-size: 24px;
+	color: #007FFF;
+}
+
+

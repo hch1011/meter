@@ -33,7 +33,7 @@
 			</a>
 		</li>
 		<li>
-			<a href="javascript:void(0)" data-num="4"><img
+			<a href="/meter/device/data/error/report" data-num="4"><img
 				src="/meter/resources/images/icon05.png" title="诊断报告" />
 			<h2>诊断报告</h2>
 			</a>
