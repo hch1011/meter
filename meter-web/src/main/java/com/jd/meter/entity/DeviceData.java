@@ -36,20 +36,23 @@ public class DeviceData  implements Serializable{
 	private Integer snapStatus;		//最新预读状态；正常,预警,报警,失败
 	
 	@Column(name = "snap_time")
-	//@Type(type = "org.joda.time.contrib.hibernate.PersistentDateTime")
 	@Temporal(TemporalType.TIMESTAMP)
     private Date snapTime;			//最新预读时间
+	
+	@Column(name = "change_rate")
+	private Float changeRate;		//变化率
+	
+	@Column(name = "frequency")
+	private Integer frequency;		//动作次数
 	
 	@Column(name = "data_type")
 	private Integer	dataType;		//数值类型：1预读，2重新识别，3人工修正 
 	
 	@Column(name = "create_time")
-	//@Type(type = "org.joda.time.contrib.hibernate.PersistentDateTime")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date createTime;
 
 	@Column(name = "update_time")
-	//@Type(type = "org.joda.time.contrib.hibernate.PersistentDateTime")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date updateTime;
 
@@ -167,5 +170,21 @@ public class DeviceData  implements Serializable{
 
 	public void setId(Long id) {
 		Id = id;
+	}
+
+	public Float getChangeRate() {
+		return changeRate;
+	}
+
+	public void setChangeRate(Float changeRate) {
+		this.changeRate = changeRate;
+	}
+
+	public Integer getFrequency() {
+		return frequency;
+	}
+
+	public void setFrequency(Integer frequency) {
+		this.frequency = frequency;
 	}
 }

@@ -45,6 +45,13 @@ public class DeviceInfo implements Serializable{
 	@Temporal(TemporalType.TIMESTAMP)
     private Date snapTime;			//最新预读时间
 
+
+	@Column(name = "change_rate")
+	private Float changeRate;		//变化率
+	
+	@Column(name = "frequency")
+	private Integer frequency;		//动作次数
+	
 	@Column(name = "warning_reason")
 	private String warningReason;	//报警原因
 	
@@ -183,5 +190,21 @@ public class DeviceInfo implements Serializable{
 
 	public void setId(Long id) {
 		Id = id;
+	}
+
+	public Float getChangeRate() {
+		return changeRate;
+	}
+
+	public void setChangeRate(Float changeRate) {
+		this.changeRate = changeRate;
+	}
+
+	public Integer getFrequency() {
+		return frequency;
+	}
+
+	public void setFrequency(Integer frequency) {
+		this.frequency = frequency;
 	}
 }

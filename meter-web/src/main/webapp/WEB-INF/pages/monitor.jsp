@@ -2,13 +2,17 @@
     pageEncoding="UTF-8"%>
     
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
     
 
 	<div class="content-body">
-	<c:forEach items="${list}" var="item">
+	<c:forEach items="${list}" var="type">
 		<h2>${item.typeName} 监测部分:</h2>
-		<c:forEach items="${item.deviceInfoList}" var="info">
-	 	<div class="block" data-id="${info.id}">
+		<c:forEach items="${type.deviceInfoList}" var="info">
+	 	<div class="block" data-id="${info.id}"
+	 		data-dataname="${type.dataName}" data-dataunit="${type.dataUnit}" data-snapdata="${info.snapData}"
+	 		data-rateunit="${type.changeRateUnit}" data-rate="${info.changeRate}" 
+	 		data-date="<fmt:formatDate value="${info.snapTime}" pattern="yyyy-MM-dd"/>" data-time="<fmt:formatDate value="${info.snapTime}" pattern="hh:mm:ss"/>">
 	 		${info.name}
 	 		<div class="block-image"><img src="/meter/resources/images/light${info.snapStatus}.png"/></div>
 	 	</div>
