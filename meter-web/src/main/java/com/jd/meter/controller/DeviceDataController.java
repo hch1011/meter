@@ -60,5 +60,14 @@ public class DeviceDataController {
 
 		return "param";
     }
+	
+	@RequestMapping(value = "/error/report", method = RequestMethod.GET)
+	public String errorInfo(
+			HttpServletRequest request,
+	    	HttpServletResponse response,
+	    	Long deviceId) {
+
+		return "errorreport";
+    }
 
 } 

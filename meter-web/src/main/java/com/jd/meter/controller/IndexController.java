@@ -61,7 +61,7 @@ public class IndexController {
 		return "home";
     }
 	
-	@RequestMapping(value = "/html/{path}")
+	@RequestMapping(value = "/{path}/html")
     public String common(
     		@PathVariable("path") String path
     		){
