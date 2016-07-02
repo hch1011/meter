@@ -2,6 +2,7 @@
 	font-size:12px;
 	color: black;
 	padding-left: 20px;
+	position: absolute;
 	overflow: hidden;
 }
 .content-body .block{
