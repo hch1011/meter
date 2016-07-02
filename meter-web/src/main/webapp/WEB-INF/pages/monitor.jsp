@@ -7,11 +7,13 @@
 
 	<div class="content-body">
 	<c:forEach items="${list}" var="type">
-		<h2>${item.typeName} 监测部分:</h2>
+		<h2>${type.typeName} 监测部分:</h2>
 		<c:forEach items="${type.deviceInfoList}" var="info">
-	 	<div class="block" data-id="${info.id}"
+	 	<div class="block" data-id="${info.id}" data-snapstatus="${info.snapStatus}"
 	 		data-dataname="${type.dataName}" data-dataunit="${type.dataUnit}" data-snapdata="${info.snapData}"
 	 		data-rateunit="${type.changeRateUnit}" data-rate="${info.changeRate}" 
+	 		data-frequency="${info.frequency}" data-typename="${type.typeName}"
+	 		data-infoname="${info.name}"
 	 		data-date="<fmt:formatDate value="${info.snapTime}" pattern="yyyy-MM-dd"/>" data-time="<fmt:formatDate value="${info.snapTime}" pattern="hh:mm:ss"/>">
 	 		${info.name}
 	 		<div class="block-image"><img src="/meter/resources/images/light${info.snapStatus}.png"/></div>
@@ -30,37 +32,45 @@
 					</div>
 					<div class="modal-body body-detail">
 						<div class="tl" data-id="${id}">
-				 			密度计#1
+				 			<span class="info-name">密度计#1</span>
 				 			<div class="tl-image"><img src="resources/images/light1.png"/></div>
-				 			<button class="btn btn-info" type="button">图像信息管理</button>
+				 			<a href="/meter/device/data/img/info"><button class="btn btn-info" type="button">图像信息管理</button></a>
 				 		</div>
 				 		<table>
 				 			<tr>
 				 				<td>
-				 					<label>接地电流值(mA)：</label>
+				 					<label><span class="data-name">接地电流</span>值(<span class="data-unit">mA</span>)：</label>
 				 				</td>
-				 				<td>
+				 				<td class="snap-data">
 				 					<input type="text" value="4.2"/>
 				 				</td>
 				 				<td>
 				 					<label>采集日期：</label>
 				 				</td>
-				 				<td>
+				 				<td class="create-data">
 				 					<input type="text" value="2016.06.25"/>
 				 				</td>
 				 			</tr>
 				 			<tr>
 				 				<td>
-				 					<label>电流变化率(mA/6h)：</label>
+				 					<label><span class="data-name">电流</span>变化率(<span class="change-rate-unit">mA/6h</span>)：</label>
 				 				</td>
-				 				<td>
+				 				<td class="change-rate">
 				 					<input type="text" value="2.1"/>
 				 				</td>
 				 				<td>
 				 					<label>采集时间：</label>
 				 				</td>
-				 				<td>
+				 				<td class="create-time">
 				 					<input type="text" value="08:00:00"/>
+				 				</td>
+				 			</tr>
+				 			<tr>
+				 				<td>
+				 					<label><span class="type-name">避雷器</span>动作次数：</label>
+				 				</td>
+				 				<td class="frequency">
+				 					<input type="text" value="2.1"/>
 				 				</td>
 				 			</tr>
 				 		</table>

@@ -21,6 +21,7 @@
 
 .content-body h2{
 	padding-bottom: 20px;
+	color:#007FFF;
 }
 
 .content-body .block .block-image{
@@ -70,13 +71,24 @@
 #myModal .tl-image{
 	display: inline-block;
 	vertical-align: middle;
-	margin-right: 117px;
+	margin-right: 90px;
 }
 
 #myModal .tl img{
 	width:30px;
 }
 
-
+#myModal .body-detail .info-name{
+	display: inline-block;
+	font-size: 22px;
+}
+#myModal .body-detail .data-name,
+#myModal .body-detail .data-unit,
+#myModal .body-detail .change-rate,
+#myModal .body-detail .change-rate-unit,
+#myModal .body-detail .type-name{
+	display: inline-block;
+	font-size: 18px;
+}
 
 
