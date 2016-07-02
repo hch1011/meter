@@ -41,7 +41,20 @@ public class DeviceInfoDaoTest {
     	System.out.println(JSON.toJSONString(data));
     	System.out.println("testCrud() end");
 
-    	//deviceInfoDao.delete(data);
+    	deviceInfoDao.delete(data);
+    }
+    
+    
+    @Test
+    public void findMonitorInfo() {
+    	System.out.println("findMonitorInfo() start");
+    	Iterable<DeviceInfo> iter = deviceInfoDao.findMonitorInfo();
+    	if(iter != null){
+    		for (DeviceInfo data : iter) {
+            	System.out.println(JSON.toJSONString(data, true));
+            }
+    	}
+    	System.out.println("findMonitorInfo() end");
     }
     
     @Test

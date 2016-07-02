@@ -1,15 +1,23 @@
 package com.jd.meter.entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity
-@Table(name = "device_info")
+@Table(name = "device_type")
 public class DeviceType implements Serializable{
 	private static final long serialVersionUID = 1L;
+
+	@Transient
+	List<DeviceInfo> deviceInfoList;
+	
 	@Id
 	@Column(name = "type")
 	private Long type;						//类型编号,人工维护
@@ -56,6 +64,15 @@ public class DeviceType implements Serializable{
 	
 	@Column(name = "snap_times")
     private String snapTimes;				//最新预读时间列表
+
+	@Column(name = "monitor_page_flag")
+	private Integer monitorPageFlag;			//是否需要出现在监控首页
+	@Column(name = "monitor_page_sort")
+	private Float monitorPageSort;			//出现在监控首页顺序,在同一类别内排序,默认按编号
+	
+	@Column(name = "description")
+	private String description;				//说明
+	
 
 	public Long getType() {
 		return type;
@@ -175,5 +192,44 @@ public class DeviceType implements Serializable{
 
 	public void setSnapTimes(String snapTimes) {
 		this.snapTimes = snapTimes;
+	}
+
+	public Float getMonitorPageSort() {
+		return monitorPageSort;
+	}
+
+	public void setMonitorPageSort(Float monitorPageSort) {
+		this.monitorPageSort = monitorPageSort;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public List<DeviceInfo> getDeviceInfoList() {
+		return deviceInfoList;
+	}
+
+	public void setDeviceInfoList(List<DeviceInfo> deviceInfoList) {
+		this.deviceInfoList = deviceInfoList;
+	}
+	
+	public void addDeviceInfo(DeviceInfo deviceInfo) {
+		if(this.deviceInfoList == null){
+			this.deviceInfoList = new ArrayList<DeviceInfo>();
+		}
+		this.deviceInfoList.add(deviceInfo);
+	}
+
+	public Integer getMonitorPageFlag() {
+		return monitorPageFlag;
+	}
+
+	public void setMonitorPageFlag(Integer monitorPageFlag) {
+		this.monitorPageFlag = monitorPageFlag;
 	}
 }

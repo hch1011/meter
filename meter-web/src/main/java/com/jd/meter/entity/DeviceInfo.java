@@ -13,8 +13,9 @@ import javax.persistence.TemporalType;
 @Entity
 @Table(name = "device_info")
 public class DeviceInfo implements Serializable{
-	
 	private static final long serialVersionUID = 1L;
+	
+	
     @Id
     @Column(name = "id")
 	private Long Id;
@@ -26,7 +27,7 @@ public class DeviceInfo implements Serializable{
 	private String path;			//路劲终端位置  	1号主变A相; 1号主变B相; 1号主变C相， 2号主变A相...
 
 	@Column(name = "type")
-	private Integer type;			//类别
+	private Long type;				//类别
 
 	@Column(name = "name")
 	private String name;			//名称               :避雷针1，避雷针2，SF6密度计1，SF6密度计2
@@ -35,28 +36,28 @@ public class DeviceInfo implements Serializable{
 	private String ip;				//终端IP
 
 	@Column(name = "snap_data")
-	private Float snapData;		//最新预读数据
+	private Float snapData;			//最新预读数据
 	
 	@Column(name = "snap_status")
-	private Integer snapStatus;	//最新预读状态:0失败;1正常,2预警,3报警
+	private Integer snapStatus;		//最新预读状态:0失败;1正常,2预警,3报警
 	
 	@Column(name = "snap_time")
 	@Temporal(TemporalType.TIMESTAMP)
-    private Date snapTime;		//最新预读时间
+    private Date snapTime;			//最新预读时间
 
 	@Column(name = "warning_reason")
 	private String warningReason;	//报警原因
 	
 	@Column(name = "create_time")
 	@Temporal(TemporalType.TIMESTAMP)
-    private Date createTime;		//
+    private Date createTime;		//创建时间
 	
 	@Column(name = "update_time")
 	@Temporal(TemporalType.TIMESTAMP)
-    private Date updateTime;		//
+    private Date updateTime;		//更新时间
 
 	@Column(name = "monitor_page_flag")
-	private Integer monitorPageFlag;	//1出现在监控首页,其它不出现
+	private Integer monitorPageFlag;//1出现在监控首页,其它不出现
 
 	@Column(name = "monitor_page_sort")
 	private Float monitorPageSort;	//出现在监控首页顺序,在同一类别内排序,默认按编号
@@ -80,11 +81,11 @@ public class DeviceInfo implements Serializable{
 		this.path = path;
 	}
 
-	public Integer getType() {
+	public Long getType() {
 		return type;
 	}
 
-	public void setType(Integer type) {
+	public void setType(Long type) {
 		this.type = type;
 	}
 

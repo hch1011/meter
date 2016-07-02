@@ -1,5 +1,7 @@
 package com.jd.meter.dao;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -11,7 +13,10 @@ import com.jd.meter.entity.DeviceInfo;
 @Repository
 public interface DeviceInfoDao extends CrudRepository<DeviceInfo, Long>, JpaSpecificationExecutor<DeviceInfo> {
 
-	DeviceInfo findByCode(String code);
+	 @Modifying
+	//@Query("select i from DeviceInfo i inner join DeviceType t on t.type = i.type where t.monitorPageFlag = 1 and i.monitorPageFlag = 1 order by i.type, i.monitorPageSort")
+	@Query("select i from DeviceInfo i , DeviceType t where t.type = i.type and t.monitorPageFlag = 1 and i.monitorPageFlag = 1 order by i.type, i.monitorPageSort")
+	List<DeviceInfo> findMonitorInfo();
 	
     @Modifying
     @Query("delete from DeviceInfo i where i.code=?1")

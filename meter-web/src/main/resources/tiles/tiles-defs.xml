@@ -14,13 +14,22 @@
         <put-attribute name="commonJSPath" value="common" cascade="true"/>
     </definition>
 
-    <definition name="home" extends="template">
+    <definition name="monitor" extends="template">
         <put-attribute name="title" value="首页" cascade="true"/>
         <put-attribute name="nav" value="" cascade="true"/>
-        <put-attribute name="content" value="/WEB-INF/pages/home.jsp"/>
-        <put-attribute name="cssPath" value="index"/>
-        <put-attribute name="jsPath" value="index"/>
+        <put-attribute name="content" value="/WEB-INF/pages/monitor.jsp"/>
+        <put-attribute name="cssPath" value="monitor"/>
+        <put-attribute name="jsPath" value="monitor"/>
     </definition>
+    
+   <definition name="*_html" extends="template">
+        <put-attribute name="title" value="首页" cascade="true"/>
+        <put-attribute name="nav" value="" cascade="true"/>
+        <put-attribute name="content" value="/WEB-INF/pages/{1}_html.jsp"/>
+        <put-attribute name="cssPath" value="{1}"/>
+        <put-attribute name="jsPath" value="{1}"/>
+    </definition>
+    
 
     <definition name="index" extends="template">
         <put-attribute name="title" value="首页" cascade="true"/>
