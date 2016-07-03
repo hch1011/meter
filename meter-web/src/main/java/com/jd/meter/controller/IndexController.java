@@ -26,7 +26,13 @@ public class IndexController {
 	DeviceService deviceService;
 	
 	@RequestMapping(value = {"", "/index"})
-	public String index1(Model model) {
+	public String index(HttpServletRequest request, Model model) {
+		//setBasePath
+		System.out.println(request.getContextPath());
+		if(request.getSession().getServletContext().getAttribute("bastPath") == null){
+			request.getSession().getServletContext().setAttribute("bastPath", request.getContextPath());
+		}
+		
 		return monitorPage(model);
 	}
 	

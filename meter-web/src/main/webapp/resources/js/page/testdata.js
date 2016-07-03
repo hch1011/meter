@@ -18,6 +18,32 @@
         __initEvent: function () {
 			$('#select_deviceType').change(function(e){
 				var type = $(this).children('option:selected').val(); 
+
+	            var urlPath = visitor.basePath + '/test/data?type'
+	            $.ajax({
+	                url: urlPath,
+	                type: 'get',
+	                dataType: 'json',
+	                success: function(res){
+	                    var appsEl = $('#list-2 .panel-body')
+	                    var appList = res.items
+	                    var html_list = ''
+	                    $.each(appList, function(index, value){
+	                        var appName = value.name
+	                        var appId = value.id
+	                        html_list =
+	                        '<a id="'+appId+'" href="#" class="list-group-item" data-id="'+appId+'">'+appName+
+	                        '</a>'
+	                        appsEl.append(html_list)
+	                    })
+	                    $('#list-2 .panel-title').html('选择应用')
+	                    self.bindAppAuth()
+	                },
+	                error: function(errorcode){
+	                    throw new Error(errorcode.status)
+	                }
+	            })
+	            
   
 			})
 			$('#param .current-plus').click(function(e){
