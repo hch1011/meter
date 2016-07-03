@@ -13,6 +13,8 @@ import com.jd.meter.exception.MeterException;
  * ID生成器,64位
  */
 public class SnowflakeIdGenerator implements IdentifierGenerator {
+	private static SnowflakeIdGenerator instance;
+	
     private long workerId;
     private final static long twepoch = 1361753741828L;
     private long sequence = 0L;
@@ -98,5 +100,13 @@ public class SnowflakeIdGenerator implements IdentifierGenerator {
 				e.printStackTrace();
 			}
         }
+    }
+    
+    public static SnowflakeIdGenerator getInstance(){
+    	if(instance == null){
+    		instance = new SnowflakeIdGenerator();
+    	} 
+    	
+    	return instance;
     }
 }

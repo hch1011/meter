@@ -15,10 +15,9 @@ import javax.persistence.TemporalType;
 public class DeviceInfo implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
-	
     @Id
     @Column(name = "id")
-	private Long Id;
+	private Long id;
     
 	@Column(name = "code")
 	private String code;			//设备编号： A-1,A-2,A-3...A-9,B-1,B-2
@@ -27,7 +26,7 @@ public class DeviceInfo implements Serializable{
 	private String path;			//路劲终端位置  	1号主变A相; 1号主变B相; 1号主变C相， 2号主变A相...
 
 	@Column(name = "type")
-	private Long type;				//类别
+	private Long type;				//类别:避雷针,SF6密度计
 
 	@Column(name = "name")
 	private String name;			//名称               :避雷针1，避雷针2，SF6密度计1，SF6密度计2
@@ -35,6 +34,9 @@ public class DeviceInfo implements Serializable{
 	@Column(name = "ip")
 	private String ip;				//终端IP
 
+	@Column(name = "snap_data_id")
+	private Long snapDataId;		//最新预读数据ID
+	
 	@Column(name = "snap_data")
 	private Float snapData;			//最新预读数据
 	
@@ -185,11 +187,11 @@ public class DeviceInfo implements Serializable{
 	}
 
 	public Long getId() {
-		return Id;
+		return id;
 	}
 
 	public void setId(Long id) {
-		Id = id;
+		this.id = id;
 	}
 
 	public Float getChangeRate() {
@@ -206,5 +208,13 @@ public class DeviceInfo implements Serializable{
 
 	public void setFrequency(Integer frequency) {
 		this.frequency = frequency;
+	}
+
+	public Long getSnapDataId() {
+		return snapDataId;
+	}
+
+	public void setSnapDataId(Long snapDataId) {
+		this.snapDataId = snapDataId;
 	}
 }

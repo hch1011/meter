@@ -33,7 +33,7 @@ public class DeviceData  implements Serializable{
 	private Float snapData;			//最新预读数据
 	
 	@Column(name = "snap_status")
-	private Integer snapStatus;		//最新预读状态；正常,预警,报警,失败
+	private Integer snapStatus;		//最新预读状态；0正常,1预警,报警,失败
 	
 	@Column(name = "snap_time")
 	@Temporal(TemporalType.TIMESTAMP)
@@ -146,6 +146,14 @@ public class DeviceData  implements Serializable{
 
 	public void setWarningReason(String warningReason) {
 		this.warningReason = warningReason;
+	}
+	//追加报警 (预警)原因
+	public void appendWarningReason(String warningReason) {
+		if(this.warningReason == null){
+			this.warningReason = warningReason;
+		}else{
+			this.warningReason = this.warningReason + ";" + warningReason;
+		}
 	}
 
 	public String getMetaData() {

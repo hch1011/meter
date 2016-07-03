@@ -51,4 +51,26 @@ public class ObjectUtil {
     	}
     	return str;
     }
+    
+    /**
+     * 检查对象不为空
+     * @param info
+     * @param exceptionIfNull
+     * @param exceptionMsg
+     * @return
+     */
+    public static boolean checkNotNull(Object obj, boolean exceptionIfNull, String exceptionMsg){
+    	if(obj != null){
+    		return true;
+    	}
+    	
+    	if(exceptionIfNull){
+    		if(exceptionMsg != null){
+    			throw new MeterException(exceptionMsg);
+    		}else{
+    			throw new MeterException("数据不存在");
+    		}
+    	}
+    	return false;
+    }
 }

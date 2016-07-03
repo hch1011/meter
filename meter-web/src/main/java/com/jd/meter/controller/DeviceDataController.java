@@ -9,32 +9,36 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import com.jd.meter.dao.DeviceDataDao;
 import com.jd.meter.entity.DeviceData;
+import com.jd.meter.service.DeviceService;
 
 /**
  * Created by Darker on 2016/5/6.
  */
 @Controller
-@RequestMapping(value = "/device/data")
 public class DeviceDataController {
 	
 	@Autowired
-    private DeviceDataDao deviceDataDao;
+    private DeviceService  deviceService;
 
-	@RequestMapping(value = "/", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
+	/**
+	 * 提交数据
+	 * @param request
+	 * @param response
+	 * @param deviceData
+	 * @return
+	 */
+	@RequestMapping(value = "/device/data", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
 	@ResponseBody
-	public Object preOrder(
+	public Object postDeviceData(
 			HttpServletRequest request,
 	    	HttpServletResponse response,
 	    	DeviceData deviceData) {
-
-		deviceDataDao.save(deviceData);
-			
+		deviceService.submitData(deviceData);
 		return deviceData;
     }
-	
-	@RequestMapping(value = "/info", method = RequestMethod.GET)
+
+	@RequestMapping(value = "/device/data/info", method = RequestMethod.GET)
 	public Object getDeviceData(
 			HttpServletRequest request,
 	    	HttpServletResponse response,
@@ -42,8 +46,8 @@ public class DeviceDataController {
 			
 		return "devicedata";
     }
-	
-	@RequestMapping(value = "/img/info", method = RequestMethod.GET)
+	 
+	@RequestMapping(value = "/device/data/img/info", method = RequestMethod.GET)
 	public String imgInfo(
 			HttpServletRequest request,
 	    	HttpServletResponse response,
@@ -52,7 +56,7 @@ public class DeviceDataController {
 		return "imginfo";
     }
 	
-	@RequestMapping(value = "/param", method = RequestMethod.GET)
+	@RequestMapping(value = "/device/data/param", method = RequestMethod.GET)
 	public String param(
 			HttpServletRequest request,
 	    	HttpServletResponse response,
@@ -61,7 +65,7 @@ public class DeviceDataController {
 		return "param";
     }
 	
-	@RequestMapping(value = "/error/report", method = RequestMethod.GET)
+	@RequestMapping(value = "/device/data/error/report", method = RequestMethod.GET)
 	public String errorInfo(
 			HttpServletRequest request,
 	    	HttpServletResponse response,

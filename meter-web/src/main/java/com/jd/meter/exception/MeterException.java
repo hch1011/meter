@@ -1,7 +1,6 @@
 package com.jd.meter.exception;
 
-public class MeterException extends Exception {
-
+public class MeterException extends RuntimeException{
     private static final long serialVersionUID = 1L;
 
     public MeterException() {

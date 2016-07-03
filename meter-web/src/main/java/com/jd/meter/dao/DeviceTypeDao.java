@@ -15,6 +15,8 @@ import com.jd.meter.entity.DeviceType;
 public interface DeviceTypeDao extends CrudRepository<DeviceType, Long>, JpaSpecificationExecutor<DeviceInfo> {
 	 
 	List<DeviceType> findByMonitorPageFlagOrderByMonitorPageSort(int monitorPageFlag);
+	
+	List<DeviceType> findAll();
 	 
     @Modifying
     @Query("delete from DeviceInfo i where i.code=?1")

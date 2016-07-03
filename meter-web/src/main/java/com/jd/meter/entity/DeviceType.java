@@ -10,6 +10,8 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.jd.meter.util.Constant;
+
 @Entity
 @Table(name = "device_type")
 public class DeviceType implements Serializable{
@@ -36,7 +38,7 @@ public class DeviceType implements Serializable{
 	private Float dataForAlarm;				//报警阈值(mA)
 	
 	@Column(name = "data_warning_strategy")
-	private String dataWarningStrategy;		//报警策略<,<=,>,>=
+	private String dataWarningStrategy;		//四种报警/预警策略(<,<=,>,>=);其他符号表示不做判断,做正常处理
 	
 	@Column(name = "data_unit")
 	private String dataUnit;				//单位
@@ -54,19 +56,19 @@ public class DeviceType implements Serializable{
 	private String changeRateUnit;			//单位
 
 	@Column(name = "frequency_for_warning")
-	private Float frequencyForWarning;		//动作次数预警阈值
+	private Integer frequencyForWarning;		//动作次数预警阈值
 
 	@Column(name= "frequency_for_alarm")
-	private Float frequencyForAlarm;		//动作次数报警阈值
+	private Integer frequencyForAlarm;		//动作次数报警阈值
 	
 	@Column(name = "frequency_warning_strategy")
-	private String frequencyWarningStrategy;//报警策略<,<=,>,>=
+	private String frequencyWarningStrategy;//报警策略，四种策略（<,<=,>,>=） ；其他符号表示不做判断
 	
 	@Column(name = "snap_times")
     private String snapTimes;				//最新预读时间列表
 
 	@Column(name = "monitor_page_flag")
-	private Integer monitorPageFlag;			//是否需要出现在监控首页
+	private Integer monitorPageFlag;		//是否需要出现在监控首页
 	@Column(name = "monitor_page_sort")
 	private Float monitorPageSort;			//出现在监控首页顺序,在同一类别内排序,默认按编号
 	
@@ -162,19 +164,19 @@ public class DeviceType implements Serializable{
 		this.changeRateUnit = changeRateUnit;
 	}
 
-	public Float getFrequencyForWarning() {
+	public Integer getFrequencyForWarning() {
 		return frequencyForWarning;
 	}
 
-	public void setFrequencyForWarning(Float frequencyForWarning) {
+	public void setFrequencyForWarning(Integer frequencyForWarning) {
 		this.frequencyForWarning = frequencyForWarning;
 	}
 
-	public Float getFrequencyForAlarm() {
+	public Integer getFrequencyForAlarm() {
 		return frequencyForAlarm;
 	}
 
-	public void setFrequencyForAlarm(Float frequencyForAlarm) {
+	public void setFrequencyForAlarm(Integer frequencyForAlarm) {
 		this.frequencyForAlarm = frequencyForAlarm;
 	}
 
@@ -231,5 +233,118 @@ public class DeviceType implements Serializable{
 
 	public void setMonitorPageFlag(Integer monitorPageFlag) {
 		this.monitorPageFlag = monitorPageFlag;
+	}
+	
+	/**
+	 * 检查数据状态,返回状态
+	 * 如果有报警，状态为报警
+	 * 
+	 * 
+	 * @return
+	 */
+	public Integer resetDataWarningStatus(DeviceData data){
+		if(data == null){
+			return null;
+		}
+		if(data.getSnapData() == null){
+			data.setSnapStatus(Constant.status_invalid);
+			return data.getSnapStatus();
+		}
+		
+		data.setSnapStatus(null);
+		
+		//*********报警判断
+		// 数据报警
+		if(checkMatch(data.getSnapData(), dataForAlarm, dataWarningStrategy)){
+			data.setSnapStatus(Constant.status_alarm);
+			data.appendWarningReason(dataName + dataWarningStrategy + "报警值" + dataForAlarm.floatValue());
+			//return data.getSnapStatus();
+		}
+		 
+		// 变化率报警
+		if(checkMatch(data.getChangeRate(), changeRateForAlarm, changeRateWarningStrategy)){
+			data.setSnapStatus(Constant.status_alarm);
+			data.appendWarningReason(dataName + dataWarningStrategy + "报警值" + dataForAlarm.floatValue());
+			//return data.getSnapStatus();
+		}
+		// 动作次数报警
+		if(checkMatch(data.getFrequency(), frequencyForAlarm, frequencyWarningStrategy)){
+			data.setSnapStatus(Constant.status_alarm);
+			data.appendWarningReason(dataName + dataWarningStrategy + "报警值" + dataForAlarm.floatValue());
+			//return data.getSnapStatus();
+		}
+		
+		//*********预警判断
+		// 数据预警
+		if(checkMatch(data.getSnapData(), dataForWarning, dataWarningStrategy)){
+			if(data.getSnapData() == null){
+				data.setSnapStatus(Constant.status_warning);
+			}
+			data.appendWarningReason(dataName + dataWarningStrategy + "预警值" + dataForAlarm.floatValue());
+			//return data.getSnapStatus();
+		}
+		// 变化率报警
+		if(checkMatch(data.getChangeRate(), changeRateForAlarm, changeRateWarningStrategy)){
+			if(data.getSnapData() == null){
+				data.setSnapStatus(Constant.status_warning);
+			}
+			data.appendWarningReason(dataName + dataWarningStrategy + "预警值" + dataForAlarm.floatValue());
+			//return data.getSnapStatus();
+		}
+		// 动作次数报警
+		if(checkMatch(data.getFrequency(), frequencyForAlarm, frequencyWarningStrategy)){
+			if(data.getSnapData() == null){
+				data.setSnapStatus(Constant.status_warning);
+			}
+			data.appendWarningReason(dataName + dataWarningStrategy + "预警值" + dataForAlarm.floatValue());
+			//return data.getSnapStatus();
+		}
+		
+		if(data.getSnapStatus() == null){
+			data.setSnapStatus(Constant.status_ok);
+		}
+		return 1;
+	}
+	
+	/**
+	 * 判断data1，dat2是否匹配指定符号
+	 * 如果匹配，返回true,
+	 * @param data1
+	 * @param data2
+	 * @param symbol	符号： >,<,>=,<=
+	 * @return
+	 */
+	private boolean checkMatch(Float data1, Float data2, String symbol){
+		if(data1 == null || data2 == null){
+			return false;
+		}
+		
+		if(">".equals(symbol)){
+			return data1.floatValue() > data2.floatValue();
+		}else if("<".equals(symbol)){
+			return data1.floatValue() < data2.floatValue();
+		}else if(">=".equals(symbol)){
+			return data1.floatValue() >= data2.floatValue();
+		}else if("<=".equals(symbol)){
+			return data1.floatValue() <= data2.floatValue();
+		}
+		return false;
+	}
+	//如果匹配，返回true
+	private boolean checkMatch(Integer data1, Integer data2, String symbol){
+		if(data1 == null || data2 == null){
+			return false;
+		}
+		
+		if(">".equals(symbol)){
+			return data1.intValue() > data2.intValue();
+		}else if("<".equals(symbol)){
+			return data1.intValue() < data2.intValue();
+		}else if(">=".equals(symbol)){
+			return data1.intValue() >= data2.intValue();
+		}else if("<=".equals(symbol)){
+			return data1.intValue() <= data2.intValue();
+		}
+		return false;
 	}
 }
