@@ -28,7 +28,7 @@
 		</li>
 		<li>
 			<a href="/meter/device/data/param" data-num="3"><img
-				src="/meter/resources/images/icon04.png" title="参数配置" />
+				src="/meter/resources/images/icon06.png" title="参数配置" />
 			<h2>参数配置</h2>
 			</a>
 		</li>
@@ -37,7 +37,15 @@
 				src="/meter/resources/images/icon05.png" title="诊断报告" />
 			<h2>诊断报告</h2>
 			</a>
-			</li>
+		</li>
+		<li>
+			<a href="/meter/test/data" data-num="4">
+			<img src="/meter/resources/images/icon04.png" title="测试数据" />
+			<h2>测试数据</h2>
+			</a>
+		</li>
+		
+		
 		<!-- <li>
 			<a href=""><img
 				src="resources/images/icon06.png" title="系统设置" />
@@ -45,7 +53,7 @@
 			</a>
 		</li> -->
 	</ul>
-
+	<!-- 
 	<div class="topright">
 		<ul>
 			<li><span><img src="/meter/resources/images/help.png" title="帮助"
@@ -58,4 +66,5 @@
 			<span>admin</span> <i>消息</i> <b>5</b>
 		</div>
 	</div>
+	 -->
 </div>

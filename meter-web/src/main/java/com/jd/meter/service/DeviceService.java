@@ -81,13 +81,17 @@ public class DeviceService {
 		ObjectUtil.checkNotNull(deviceType, true, "设备类型不存在，type="+deviceInfo.getType());
 		
 		//TODO 变化率计算
-		deviceInfo.setChangeRate(deviceData.getSnapData() - deviceInfo.getSnapData());
+		if(deviceInfo.getChangeRate() == null){
+			deviceInfo.setChangeRate(deviceData.getSnapData() - deviceInfo.getSnapData());
+		}
+		
 		
 		//设置报警信息
 		deviceType.resetDataWarningStatus(deviceData);
 	
 		//save Devicedata
 		deviceData.setId(SnowflakeIdGenerator.getInstance().nextId());
+		deviceData.setDeviceCode(deviceInfo.getCode());
 		deviceDataDao.save(deviceData);
 		
 		//update DeviceInfo
