@@ -264,13 +264,13 @@ public class DeviceType implements Serializable{
 		// 变化率报警
 		if(checkMatch(data.getChangeRate(), changeRateForAlarm, changeRateWarningStrategy)){
 			data.setSnapStatus(Constant.status_alarm);
-			data.appendWarningReason(dataName + dataWarningStrategy + "报警值" + dataForAlarm.floatValue());
+			data.appendWarningReason(dataName + "变化率" + dataWarningStrategy + "报警值" + changeRateForAlarm.floatValue());
 			//return data.getSnapStatus();
 		}
 		// 动作次数报警
 		if(checkMatch(data.getFrequency(), frequencyForAlarm, frequencyWarningStrategy)){
 			data.setSnapStatus(Constant.status_alarm);
-			data.appendWarningReason(dataName + dataWarningStrategy + "报警值" + dataForAlarm.floatValue());
+			data.appendWarningReason(dataName + "动作次数" + dataWarningStrategy + "报警值" + frequencyForAlarm.floatValue());
 			//return data.getSnapStatus();
 		}
 		
@@ -280,23 +280,23 @@ public class DeviceType implements Serializable{
 			if(data.getSnapData() == null){
 				data.setSnapStatus(Constant.status_warning);
 			}
-			data.appendWarningReason(dataName + dataWarningStrategy + "预警值" + dataForAlarm.floatValue());
+			data.appendWarningReason(dataName + dataWarningStrategy + "预警值" + dataForWarning.floatValue());
 			//return data.getSnapStatus();
 		}
 		// 变化率报警
-		if(checkMatch(data.getChangeRate(), changeRateForAlarm, changeRateWarningStrategy)){
+		if(checkMatch(data.getChangeRate(), changeRateForWarning, changeRateWarningStrategy)){
 			if(data.getSnapData() == null){
 				data.setSnapStatus(Constant.status_warning);
 			}
-			data.appendWarningReason(dataName + dataWarningStrategy + "预警值" + dataForAlarm.floatValue());
+			data.appendWarningReason(dataName + "变化率" + dataWarningStrategy + "预警值" + changeRateForWarning.floatValue());
 			//return data.getSnapStatus();
 		}
 		// 动作次数报警
-		if(checkMatch(data.getFrequency(), frequencyForAlarm, frequencyWarningStrategy)){
+		if(checkMatch(data.getFrequency(), frequencyForWarning, frequencyWarningStrategy)){
 			if(data.getSnapData() == null){
 				data.setSnapStatus(Constant.status_warning);
 			}
-			data.appendWarningReason(dataName + dataWarningStrategy + "预警值" + dataForAlarm.floatValue());
+			data.appendWarningReason(dataName + "动作次数" + dataWarningStrategy + "预警值" + frequencyForWarning.floatValue());
 			//return data.getSnapStatus();
 		}
 		
