@@ -5,7 +5,8 @@
 
 <meta charset="utf-8"/>
 <%
-
+	String basePath = request.getContextPath();
+	application.setAttribute("basePath", basePath);
 %>
 <script type="text/javascript">
 	window.visitor.basePath = '${basePath}';

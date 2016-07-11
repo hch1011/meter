@@ -5,7 +5,10 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.poi.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,8 +17,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import org.springframework.web.bind.annotation.RequestParam;
+
+import com.alibaba.druid.sql.ast.expr.SQLCaseExpr.Item;
+import com.jd.meter.dao.DeviceTypeDao;
 import com.jd.meter.entity.DeviceData;
 import com.jd.meter.entity.DeviceInfo;
+import com.jd.meter.entity.DeviceType;
 import com.jd.meter.service.DeviceService;
 
 /**
@@ -23,7 +30,9 @@ import com.jd.meter.service.DeviceService;
  */
 @Controller
 public class DeviceDataController extends BaseController{
-	
+
+	@Autowired
+	DeviceTypeDao deviceTypeDao;
 	@Autowired
     private DeviceService  deviceService;
 
@@ -62,14 +71,71 @@ public class DeviceDataController extends BaseController{
 		return "imginfo";
     }
 	
+	//参数设置	
 	@RequestMapping(value = "/device/data/param", method = RequestMethod.GET)
-	public String param(
+	public String paramPage(
 			HttpServletRequest request,
 	    	HttpServletResponse response,
-	    	Long deviceId) {
+	    	@RequestParam(required=false) Long type,
+	    	Model model
+	    	) {
+		List<DeviceType> list = deviceTypeDao.findAll();
+		model.addAttribute("deviceTypeList", list);
+
+		if(type != null){
+			for(DeviceType item : list){
+				if(type.equals(item.getType())){
+					model.addAttribute("currentDeviceType", item);
+				}
+			}
+		}else{
+			model.addAttribute("currentDeviceType", list.get(0));
+		}
 
 		return "param";
     }
+	
+	//参数设置	
+	@RequestMapping(value = "/device/data/param", method = RequestMethod.POST)
+	public String paramUpdate(
+			HttpServletRequest request,
+	    	HttpServletResponse response,
+	    	@RequestParam(required=false) Long type,
+	    	DeviceType deviceType,
+	    	Model model
+	    	) {
+		DeviceType deviceTypeDB = deviceTypeDao.findOne(deviceType.getType());
+		//
+		if(deviceType.getDataForWarning() != null){
+			deviceTypeDB.setDataForWarning(deviceType.getDataForWarning());
+		}
+		if(deviceType.getDataForAlarm() != null){
+			deviceTypeDB.setDataForAlarm(deviceType.getDataForAlarm());
+		}
+		//
+		if(deviceType.getChangeRateForWarning()  != null){
+			deviceTypeDB.setChangeRateForWarning(deviceType.getChangeRateForWarning());
+		}		
+		if(deviceType.getChangeRateForAlarm() != null){
+			deviceTypeDB.setChangeRateForAlarm(deviceType.getChangeRateForAlarm());
+		}
+		
+		if(deviceType.getFrequencyForWarning()  != null){
+			deviceTypeDB.setFrequencyForWarning(deviceType.getFrequencyForWarning());
+		}
+		if(deviceType.getFrequencyForAlarm()  != null){
+			deviceTypeDB.setFrequencyForAlarm(deviceType.getFrequencyForAlarm());
+		}
+		
+		if(StringUtils.isNotBlank(deviceType.getSnapTimes())){
+			deviceTypeDB.setSnapTimes(deviceType.getSnapTimes());
+		}
+		
+		deviceTypeDao.save(deviceTypeDB);
+
+		return paramPage( request, response, deviceType.getType(), model );
+    }
+	
 	
 	@RequestMapping(value = "/device/data/error/report", method = RequestMethod.GET)
 	public String errorInfo(

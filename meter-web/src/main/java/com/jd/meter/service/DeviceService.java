@@ -61,7 +61,7 @@ public class DeviceService {
 	}
  
 	/**
-	 * 提交数据，并
+	 * 提交数据，
 	 * @param deviceData
 	 */
 	public void submitData(DeviceData deviceData) {
