@@ -6,19 +6,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.poi.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import org.springframework.web.bind.annotation.RequestParam;
-
-import com.alibaba.druid.sql.ast.expr.SQLCaseExpr.Item;
 import com.jd.meter.dao.DeviceTypeDao;
 import com.jd.meter.entity.DeviceData;
 import com.jd.meter.entity.DeviceInfo;
@@ -141,8 +136,27 @@ public class DeviceDataController extends BaseController{
 	public String errorInfo(
 			HttpServletRequest request,
 	    	HttpServletResponse response,
-	    	Long deviceId) {
-
+	    	@RequestParam(required=false)  Integer[] status,
+	    	Model model
+	    	) {
+		if(status == null || status.length == 0){
+			status = new Integer[]{0,2,3};
+		}
+		List<DeviceInfo> list = deviceService.queryDeviceInfoBySnapStatus(status);
+		model.addAttribute("list", list);
 		return "errorreport";
-    } 
+    }
+	
+	@RequestMapping(value = "/device/data/error/reportExcel", method = RequestMethod.GET)
+	public void errorExcel(
+			HttpServletRequest request,
+	    	HttpServletResponse response,
+	    	@RequestParam(required=false)  Integer[] status
+ 	    	) {
+		if(status == null || status.length == 0){
+			status = new Integer[]{0,2,3};
+		}
+		
+		
+     } 
 } 

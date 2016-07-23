@@ -23,7 +23,7 @@ public class BaseController {
 	}
 	
 	Map<String, Object> fail(){
-		return fail("");
+		return fail("系统错误");
 	}
 	
 	Map<String, Object> fail(String msg){

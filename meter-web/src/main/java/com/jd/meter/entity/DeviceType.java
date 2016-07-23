@@ -274,6 +274,10 @@ public class DeviceType implements Serializable{
 			//return data.getSnapStatus();
 		}
 		
+		if(data.getSnapStatus() != null){
+			return data.getSnapStatus();
+		}
+		
 		//*********预警判断
 		// 数据预警
 		if(checkMatch(data.getSnapData(), dataForWarning, dataWarningStrategy)){

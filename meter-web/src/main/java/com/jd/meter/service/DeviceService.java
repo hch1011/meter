@@ -27,6 +27,22 @@ public class DeviceService {
 	DeviceDataDao deviceDataDao;
 	
 	List<DeviceInfo> allDeviceInfoList; 
+	Map<Long,DeviceType> deviceTypeCache = new HashMap<Long, DeviceType>();
+	
+	
+	public DeviceType  queryDeviceTypeByType(Long type) {
+		DeviceType obj = deviceTypeCache.get(type);
+		if(obj != null){
+			return obj;
+		}
+		
+		obj = deviceTypeDao.findOne(type);
+		if(obj != null){
+			deviceTypeCache.put(type, obj);
+		}
+		 
+		return obj;
+	}
 	
 	public List<DeviceInfo>  queryDeviceInfoByType(Long type) {
 		List<DeviceInfo>  list = deviceInfoDao.findByType(type);
@@ -103,6 +119,15 @@ public class DeviceService {
 		deviceInfo.setWarningReason(deviceData.getWarningReason());
 		deviceInfo.setSnapDataId(deviceData.getId());
 		deviceInfoDao.save(deviceInfo);
+	}
+
+	public List<DeviceInfo> queryDeviceInfoBySnapStatus(Integer[] snapStatus) {
+		List<DeviceInfo> list = deviceInfoDao.findBySnapStatusIn(snapStatus);
+		for (DeviceInfo deviceInfo : list) {
+			deviceInfo.setDeviceType(this.queryDeviceTypeByType(deviceInfo.getType()));
+		}
+		
+		return list;
 	}
 
 }
