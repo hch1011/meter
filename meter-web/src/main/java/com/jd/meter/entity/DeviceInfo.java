@@ -9,11 +9,15 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name = "device_info")
 public class DeviceInfo implements Serializable{
 	private static final long serialVersionUID = 1L;
+	
+	@Transient
+	private DeviceType deviceType;
 	
     @Id
     @Column(name = "id")
@@ -216,5 +220,46 @@ public class DeviceInfo implements Serializable{
 
 	public void setSnapDataId(Long snapDataId) {
 		this.snapDataId = snapDataId;
+	}
+
+	public DeviceType getDeviceType() {
+		return deviceType;
+	}
+
+	public void setDeviceType(DeviceType deviceType) {
+		this.deviceType = deviceType;
+	}
+
+	public String getSnapStatusEn() {
+		//0失败;1正常,2预警,3报警
+		if(snapStatus == null || snapStatus == 0){
+			return "fail";
+		}
+		if(snapStatus == 1){
+			return "success";
+		}
+		if(snapStatus == 2){
+			return "warning";
+		}
+		if(snapStatus == 3){
+			return "alarm";
+		}
+		return "unowStatus:"+snapStatus;
+	}
+	public String getSnapStatusCn() {
+		//0失败;1正常,2预警,3报警
+		if(snapStatus == null || snapStatus == 0){
+			return "失败";
+		}
+		if(snapStatus == 1){
+			return "正常";
+		}
+		if(snapStatus == 2){
+			return "预警";
+		}
+		if(snapStatus == 3){
+			return "报警";
+		}
+		return "位置状态:"+snapStatus;
 	}
 }

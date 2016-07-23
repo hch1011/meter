@@ -20,8 +20,16 @@ public interface DeviceInfoDao extends CrudRepository<DeviceInfo, Long>, JpaSpec
 	List<DeviceInfo> findByType(Long type);
 	
 	List<DeviceInfo> findAll(); 
+
+    /**
+     * 根据状态查询所有数据
+     * @param snapStatus
+     * @return
+     */
+	List<DeviceInfo> findBySnapStatusIn(Integer[] snapStatus);
 	
     @Modifying
     @Query("delete from DeviceInfo i where i.code=?1")
     void removeDeviceInfoByCode(String code);
+
 }

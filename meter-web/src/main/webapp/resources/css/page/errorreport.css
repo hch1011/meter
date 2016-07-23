@@ -10,8 +10,14 @@
 .report-body table td{
 	font-size: 14px;
 }
-.report-body .error{
-	background-color: #f2dede;
+.report-body .status_0{
+	color: #c0c0c0;
+}
+.report-body .status_2{
+	color: #ffff00;
+}
+.report-body .status_3{
+	color: #f00;
 }
 .report-body .report{
 	display: block;
