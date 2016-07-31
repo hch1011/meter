@@ -1,11 +1,16 @@
 package com.jd.meter.controller;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.poi.hssf.util.HSSFColor;
+import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,6 +24,8 @@ import com.jd.meter.entity.DeviceData;
 import com.jd.meter.entity.DeviceInfo;
 import com.jd.meter.entity.DeviceType;
 import com.jd.meter.service.DeviceService;
+import com.jd.meter.util.ExcelTemplate;
+import com.jd.meter.util.TimeUtils;
 
 /**
  * Created by Darker on 2016/5/6.
@@ -148,15 +155,38 @@ public class DeviceDataController extends BaseController{
     }
 	
 	@RequestMapping(value = "/device/data/error/reportExcel", method = RequestMethod.GET)
-	public void errorExcel(
+	public String reportExcel(
 			HttpServletRequest request,
-	    	HttpServletResponse response,
-	    	@RequestParam(required=false)  Integer[] status
- 	    	) {
-		if(status == null || status.length == 0){
-			status = new Integer[]{0,2,3};
+	    	HttpServletResponse response
+	    	) throws IOException {
+		response.setHeader("Content-Disposition", "attachment; filename=\"report_" + 
+	    	TimeUtils.getDateString(new Date(),"yyyyMMddHHmmss") + ".xlsx\"");
+		
+		OutputStream out = response.getOutputStream();
+
+		ExcelTemplate template = new ExcelTemplate();
+		template.readTemplateByClasspath("/excelTemplate/exportingTemplate.xlsx");
+		 
+		List<DeviceInfo> list = deviceService.queryDeviceInfoBySnapStatus(new Integer[]{0,2,3});
+		
+ 		int orderNum = 1;			//订单序号
+		for (DeviceInfo item :  list) {
+			template.createNewRow();
+			template.createCell(orderNum++);//序号
+			template.createCell(item.getType());// 类别
+			template.createCell(item.getName());// 名称
+			template.createCell(item.getPath());// 商位置
+			template.createCell(item.getCode());// 编号
+			template.createCell(TimeUtils.getDateString(item.getSnapTime()));//时间
+			template.createCell(item.getSnapStatusCn());// 状态
+			template.setCellStyle(null, "status_"+item.getSnapStatus()+"_Style");
+			template.createCell(item.getWarningReason());// 故障类型
+			template.setCellStyle(null, "status_"+item.getSnapStatus()+"_Style");
+			
+			template.createCell(" ");// 结束空白符
 		}
-		
-		
-     } 
+		template.wirteToStream(out);
+	    out.flush();
+		return null;
+    } 
 } 

@@ -37,5 +37,5 @@
                 </tr> -->
               </tbody>
         </table>
-        <a class="report" href="#">生成报表</a>
+        <a class="report" href="${basePath}/device/data/error/reportExcel">生成报表</a>
 	</div>

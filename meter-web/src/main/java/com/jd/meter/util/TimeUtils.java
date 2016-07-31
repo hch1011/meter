@@ -6,7 +6,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
-public class TimeUtils {
+public class TimeUtils { 
 	
     // 一天毫秒数
     public static final long timeLengthOfDay = 24*3600*1000;

@@ -78,6 +78,10 @@ public class ExcelTemplate {
 	 */
 	private Row curRow;
 	/**
+	 * 当前行对象
+	 */
+	private Cell curCell;
+	/**
 	 * 最后一行的数据
 	 */
 	private int lastRowIndex;
@@ -85,9 +89,8 @@ public class ExcelTemplate {
 	/**
 	 * 默认样式
 	 */
-	private CellStyle defaultStyle;
-
-	private CellStyle warningStyle;
+	private CellStyle defaultStyle; 
+	private Map<String,CellStyle> namedStyleMap = new HashMap<String,CellStyle>();
 	
 	
 	/**
@@ -187,51 +190,51 @@ public class ExcelTemplate {
 	 * @param value
 	 */
 	public Cell createCell(String value) {
-		Cell c = curRow.createCell(curColIndex);
-		setCellStyle(c);
-		c.setCellValue(value);
+		curCell = curRow.createCell(curColIndex);
+		setCellStyle(curCell);
+		curCell.setCellValue(value);
 		curColIndex++;
-		return c;
+		return curCell;
 	}
 	public Cell createCell(int value) {
-		Cell c = curRow.createCell(curColIndex);
-		setCellStyle(c);
-		c.setCellValue((int)value);
+		curCell = curRow.createCell(curColIndex);
+		setCellStyle(curCell);
+		curCell.setCellValue((int)value);
 		curColIndex++;
-		return c;
+		return curCell;
 	}
 	public Cell createCell(Date value) {
-		Cell c = curRow.createCell(curColIndex);
-		setCellStyle(c);
-		c.setCellValue(value);
+		curCell = curRow.createCell(curColIndex);
+		setCellStyle(curCell);
+		curCell.setCellValue(value);
 		curColIndex++;
-		return c;
+		return curCell;
 	}
 	public Cell createCell(double value) {
-		Cell c = curRow.createCell(curColIndex);
-		setCellStyle(c);
-		c.setCellValue(value);
+		curCell = curRow.createCell(curColIndex);
+		setCellStyle(curCell);
+		curCell.setCellValue(value);
 		curColIndex++;
-		return c;
+		return curCell;
 	}
 	public Cell createCell(boolean value) {
-		Cell c = curRow.createCell(curColIndex);
-		setCellStyle(c);
-		c.setCellValue(value);
+		curCell = curRow.createCell(curColIndex);
+		setCellStyle(curCell);
+		curCell.setCellValue(value);
 		curColIndex++;
-		return c;
+		return curCell;
 	}
 
 	public Cell createCell(URL url, String value) {
 		Hyperlink link = wb.getCreationHelper().createHyperlink(HSSFHyperlink.LINK_URL);
 		link.setAddress(url.toString());
 		
-		Cell c = curRow.createCell(curColIndex);
-		c.setHyperlink(link);
-		setCellStyle(c);
-		c.setCellValue(value);
+		curCell = curRow.createCell(curColIndex);
+		curCell.setHyperlink(link);
+		setCellStyle(curCell);
+		curCell.setCellValue(value);
 		curColIndex++;
-		return c;
+		return curCell;
 	}
 	
 	public Cell setLinkUrl(Cell cell, String url) {
@@ -243,11 +246,11 @@ public class ExcelTemplate {
 	}
 	
 	public Cell createCell(Calendar value) {
-		Cell c = curRow.createCell(curColIndex);
-		setCellStyle(c);
-		c.setCellValue(value);
+		curCell = curRow.createCell(curColIndex);
+		setCellStyle(curCell);
+		curCell.setCellValue(value);
 		curColIndex++;
-		return c;
+		return curCell;
 	}
 	
 //
@@ -270,6 +273,21 @@ public class ExcelTemplate {
 		}
 		return c;
 	}
+	
+	/**
+	 * 给指定单元格或当前单元格设置命名样式
+	 * @param cell: null时表示当前单元格
+	 * @param styleName
+	 * @return
+	 */
+	public Cell setCellStyle(Cell cell, String styleName) {
+		if( cell == null){
+			cell = curCell;
+		}
+		curCell.setCellStyle(namedStyleMap.get(styleName));
+		return cell;
+	}
+	
 
 	/**
 	 * 创建新行，在使用时只要添加完一行，需要调用该方法创建
@@ -401,17 +419,15 @@ public class ExcelTemplate {
 			for(Cell c:row) {
 				if(c.getCellType()!=Cell.CELL_TYPE_STRING) continue;
 				String str = c.getStringCellValue().trim();
-				if(str.equals(DEFAULT_STYLE)) {
-					defaultStyle = c.getCellStyle();
-				}
-				if(str.equals(WARNING_STYLE)) {
-					warningStyle = c.getCellStyle();
+				if(str.endsWith("Style")) {
+					namedStyleMap.put(str, c.getCellStyle());
 				}
 				if(str.equals(STYLE)) {
 					styles.put(c.getColumnIndex(), c.getCellStyle());
 				}
 			}
 		}
+		this.defaultStyle = namedStyleMap.get("defaultStyle");
 	}
 	
 	
@@ -462,7 +478,8 @@ public class ExcelTemplate {
 		Font fount =  wb.createFont();
 		return fount;
 	}
-	public CellStyle getWarningStyle() {
-		return warningStyle;
+	public CellStyle getNamedStyle(String name) {
+		return namedStyleMap.get(name);
 	}
+	
 }
