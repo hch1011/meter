@@ -170,10 +170,17 @@ public class DeviceDataController extends BaseController{
 		List<DeviceInfo> list = deviceService.queryDeviceInfoBySnapStatus(new Integer[]{0,2,3});
 		
  		int orderNum = 1;			//订单序号
+ 		DeviceType type;
 		for (DeviceInfo item :  list) {
 			template.createNewRow();
 			template.createCell(orderNum++);//序号
-			template.createCell(item.getType());// 类别
+			 type = deviceService.queryDeviceTypeByType(item.getType(),true);
+			 if(type!=null){
+				 template.createCell(type.getTypeName());// 类别
+			 }else{
+				 template.createCell(item.getType());// 类别
+			 }
+			
 			template.createCell(item.getName());// 名称
 			template.createCell(item.getPath());// 商位置
 			template.createCell(item.getCode());// 编号
@@ -184,6 +191,7 @@ public class DeviceDataController extends BaseController{
 			template.setCellStyle(null, "status_"+item.getSnapStatus()+"_Style");
 			
 			template.createCell(" ");// 结束空白符
+			template.setCellStyle(null, "end_cell_Style");
 		}
 		template.wirteToStream(out);
 	    out.flush();

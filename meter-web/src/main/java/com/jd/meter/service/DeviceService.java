@@ -30,11 +30,15 @@ public class DeviceService {
 	Map<Long,DeviceType> deviceTypeCache = new HashMap<Long, DeviceType>();
 	
 	
-	public DeviceType  queryDeviceTypeByType(Long type) {
-		DeviceType obj = deviceTypeCache.get(type);
-		if(obj != null){
-			return obj;
+	public DeviceType  queryDeviceTypeByType(Long type, boolean fromCache) {
+		DeviceType obj;
+		if(fromCache){
+			obj = deviceTypeCache.get(type);
+			if(obj != null){
+				return obj;
+			}
 		}
+		
 		
 		obj = deviceTypeDao.findOne(type);
 		if(obj != null){
@@ -124,7 +128,7 @@ public class DeviceService {
 	public List<DeviceInfo> queryDeviceInfoBySnapStatus(Integer[] snapStatus) {
 		List<DeviceInfo> list = deviceInfoDao.findBySnapStatusIn(snapStatus);
 		for (DeviceInfo deviceInfo : list) {
-			deviceInfo.setDeviceType(this.queryDeviceTypeByType(deviceInfo.getType()));
+			deviceInfo.setDeviceType(this.queryDeviceTypeByType(deviceInfo.getType(), true));
 		}
 		
 		return list;
