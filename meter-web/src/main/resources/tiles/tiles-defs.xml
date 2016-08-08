@@ -80,7 +80,7 @@
         <put-attribute name="title" value="诊断信息" cascade="true"/>
         <put-attribute name="nav" value="" cascade="true"/>
         <put-attribute name="content" value="/WEB-INF/pages/test_data.jsp"/>
-        <put-attribute name="cssPath" value="test_data"/>
-        <put-attribute name="jsPath" value="test_data"/>
+        <put-attribute name="cssPath" value="testdata"/>
+        <put-attribute name="jsPath" value="testdata"/>
     </definition> 	
 </tiles-definitions>
