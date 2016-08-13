@@ -5,6 +5,7 @@
     
 
 	<div class="img-info-body">
+		<input class="device_id" type="hidden" value="${deviceId}" />
 	 	<div class="img">
 	 		<img src="/meter/resources/images/imginfo.png" />
 	 	</div>
@@ -18,13 +19,13 @@
  					<label>接地电流值(mA)：</label>
  				</td>
  				<td>
- 					<input type="text" value="4.2"/>
+ 					<input class="i-a" type="text" value="4.2"/>
  				</td>
  				<td>
  					<label>采集日期：</label>
  				</td>
  				<td>
- 					<input type="text" value="2016.06.25"/>
+ 					<input class="i-b" type="text" value="2016.06.25"/>
  				</td>
  			</tr>
  			<tr>
@@ -32,13 +33,13 @@
  					<label>电流变化率(mA/6h)：</label>
  				</td>
  				<td>
- 					<input type="text" value="2.1"/>
+ 					<input class="i-c" type="text" value="2.1"/>
  				</td>
  				<td>
  					<label>采集时间：</label>
  				</td>
  				<td>
- 					<input type="text" value="08:00:00"/>
+ 					<input class="i-d" type="text" value="08:00:00"/>
  				</td>
  			</tr>
  		</table>

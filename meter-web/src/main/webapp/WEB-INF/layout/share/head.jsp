@@ -9,7 +9,7 @@
 	application.setAttribute("basePath", basePath);
 %>
 <script type="text/javascript">
-	window.visitor.basePath = '${basePath}';
+	window.basePath = '${basePath}';
 </script>
 <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
 <c:set var="title_in_tiles"><t:getAsString name="title"/></c:set>

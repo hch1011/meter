@@ -2,8 +2,8 @@
 <configuration scan="true" scanPeriod="120 seconds" debug="true">
 	<property name="PROJECT_NAME" value="meter" />
     <property name="PAAS_LOG_DIR" value="/data/logs/meter" />
-    <property name="log.root.level" value="info" />
-    <property name="log.sql.level" value="info" />
+    <property name="log.root.level" value="debug" />
+    <property name="log.sql.level" value="debug" />
      
     
 	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">

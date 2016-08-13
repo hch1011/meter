@@ -19,7 +19,7 @@
 			$('#select_deviceType').change(function(e){
 				var type = $(this).children('option:selected').val(); 
 
-	            var urlPath = visitor.basePath + '/test/data?type'
+	            var urlPath = window.basePath + '/test/data?type'
 	            $.ajax({
 	                url: urlPath,
 	                type: 'get',

@@ -28,7 +28,7 @@ public class IndexController {
 	@RequestMapping(value = {"", "/index"})
 	public String index(HttpServletRequest request, Model model) {
 		//setBasePath
-		System.out.println(request.getContextPath());
+		//System.out.println(request.getContextPath());
 		if(request.getSession().getServletContext().getAttribute("bastPath") == null){
 			request.getSession().getServletContext().setAttribute("bastPath", request.getContextPath());
 		}
@@ -43,6 +43,7 @@ public class IndexController {
     public String monitorPage(Model model){
     	List<DeviceType> list = deviceService.queryDataForMonitorPage();
         model.addAttribute("list", list);
+		model.addAttribute("type", 1);//前端主页面选中
         return "monitor";
     }
      

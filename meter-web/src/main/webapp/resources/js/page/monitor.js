@@ -25,7 +25,10 @@
 				e.stopPropagation()
 				var infoId = $(this).attr('data-id')
 				$('#myModal .body-detail .tl').attr('data-id',infoId)
-				
+
+				var url = $(this).find('a').attr('data-id') + "?deviceId=" + infoId;
+				$(this).find('a').attr('href', url);
+
 				var infoName = $(this).attr("data-infoname")
 				$('#myModal .body-detail .tl .info-name').html(infoName)
 				
@@ -58,16 +61,25 @@
 				
 				var dataFrequency = $(this).attr('data-frequency') 
 				$(".body-detail .frequency input").val(dataFrequency)
-				
+
+				var type = $(this).attr('data-type')
+				if(type != null && type != 2) {
+					$(".body-detail .hid").hide();
+				}
+
 				$('#myModal').modal( 'show').css({
 		             "margin-top": function () {
 			             return ($(this).height() / 4);
 			           }
 				})
+
+				$('#myModal .btn-close').click(function(){
+					self.__initModal();
+				})
 			})
 		},
 		__initModal: function(){
-			
+			$(".body-detail .hid").show();
 		}
         
 		

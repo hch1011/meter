@@ -1,9 +1,6 @@
 package com.jd.meter.service;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -125,6 +122,40 @@ public class DeviceService {
 		deviceInfoDao.save(deviceInfo);
 	}
 
+	public List<Map<Integer,List<DeviceInfo>>> queryDeviceInfo() {
+		List<Map<Integer,List<DeviceInfo>>> resultList = new ArrayList<Map<Integer,List<DeviceInfo>>>();
+		List<DeviceInfo> deviceInfoList = deviceInfoDao.findAllDeviceInfo();
+		Integer inputNum = 0;
+		Map<Integer,List<DeviceInfo>> map = null;
+		List<DeviceInfo> list = null;
+		for(DeviceInfo deviceInfo : deviceInfoList) {
+
+			if(deviceInfo.getInputNum() != null && !deviceInfo.getInputNum().equals(inputNum)) {
+				//进线不同
+				map = new HashMap<Integer,List<DeviceInfo>>();
+				list = new ArrayList<DeviceInfo>();
+				inputNum = deviceInfo.getInputNum();
+				list.add(deviceInfo);
+				map.put(inputNum, list);
+				resultList.add(map);
+			} else {//进线相同
+				if(map.get(deviceInfo.getInputNum()) != null) {
+					map.get(deviceInfo.getInputNum()).add(deviceInfo);
+				} else {
+					list = new ArrayList<DeviceInfo>();
+					list.add(deviceInfo);
+					map.put(deviceInfo.getInputNum(), list);
+				}
+			}
+		}
+		return resultList;
+	}
+
+	public DeviceInfo queryDeviceInfoById(Long deviceId) {
+		return deviceInfoDao.findOne(deviceId);
+	}
+
+
 	public List<DeviceInfo> queryDeviceInfoBySnapStatus(Integer[] snapStatus) {
 		List<DeviceInfo> list = deviceInfoDao.findBySnapStatusIn(snapStatus);
 		for (DeviceInfo deviceInfo : list) {
@@ -132,6 +163,10 @@ public class DeviceService {
 		}
 		
 		return list;
+	}
+
+	public DeviceData queryDeviceDataByDeviceId(Long deviceId) {
+		return deviceDataDao.findByDeviceId(deviceId);
 	}
 
 }

@@ -3,7 +3,9 @@ package com.jd.meter.controller;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -11,6 +13,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.xssf.usermodel.XSSFFont;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -32,6 +36,10 @@ import com.jd.meter.util.TimeUtils;
  */
 @Controller
 public class DeviceDataController extends BaseController{
+
+	Logger logger = LoggerFactory.getLogger(this.getClass());
+	public final static String defaultDateFormat = "yyyy-MM-dd";
+	public final static String defaultTimeFormat = "HH:mm:ss";
 
 	@Autowired
 	DeviceTypeDao deviceTypeDao;
@@ -60,7 +68,8 @@ public class DeviceDataController extends BaseController{
 			HttpServletRequest request,
 	    	HttpServletResponse response,
 	    	Model model) {
-			
+
+		model.addAttribute("type", 3);//前端数据查询选中
 		return "devicedata";
     }
 	 
@@ -68,11 +77,42 @@ public class DeviceDataController extends BaseController{
 	public String imgInfo(
 			HttpServletRequest request,
 	    	HttpServletResponse response,
-	    	Long deviceId) {
+			Model model,
+	    	@RequestParam(value="deviceId", required = false)Long deviceId) {
 
+		try{
+			if(deviceId != null) {
+				model.addAttribute("deviceInfo", deviceService.queryDeviceInfoById(deviceId));
+			}
+			List<Map<Integer,List<DeviceInfo>>> resultList = deviceService.queryDeviceInfo();
+			model.addAttribute("deviceInfoList", resultList);
+			model.addAttribute("deviceId", deviceId);
+			model.addAttribute("type", 2);//前端图像采集选中
+		}catch (Exception e) {
+			logger.info("获取图像采集信息出错", e);
+		}
 		return "imginfo";
     }
-	
+
+	@RequestMapping(value = "/device/data/img/info/one", method = RequestMethod.GET, consumes = "application/json", produces = "application/json")
+	@ResponseBody
+	public Object getImgInfoById(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(value="deviceId", required = true)Long deviceId) {
+		DeviceInfo deviceInfo = deviceService.queryDeviceInfoById(deviceId);
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("deviceInfo", deviceInfo);
+		Date snapTime = deviceInfo.getSnapTime();
+		String date = TimeUtils.getDateString(snapTime, defaultDateFormat);
+		String time = TimeUtils.getDateString(snapTime, defaultTimeFormat);
+		map.put("date", date);
+		map.put("time", time);
+		DeviceData  deviceData = deviceService.queryDeviceDataByDeviceId(deviceId);
+		map.put("deviceData", deviceData);
+		return map;
+	}
+
 	//参数设置	
 	@RequestMapping(value = "/device/data/param", method = RequestMethod.GET)
 	public String paramPage(
@@ -93,7 +133,7 @@ public class DeviceDataController extends BaseController{
 		}else{
 			model.addAttribute("currentDeviceType", list.get(0));
 		}
-
+		model.addAttribute("type", 4);//前端参数配置选中
 		return "param";
     }
 	
@@ -151,6 +191,7 @@ public class DeviceDataController extends BaseController{
 		}
 		List<DeviceInfo> list = deviceService.queryDeviceInfoBySnapStatus(status);
 		model.addAttribute("list", list);
+		model.addAttribute("type", 5);//前端错误报告选中
 		return "errorreport";
     }
 	

@@ -43,7 +43,7 @@ public class TestController {
 			List<DeviceInfo> deviceInfoList = deviceInfoDao.findAll();
 			model.addAttribute("deviceInfoList", deviceInfoList);
 		}
-		
+		model.addAttribute("type", 6);//前端测试数据选中
 		return "test/data";
 	}
 	

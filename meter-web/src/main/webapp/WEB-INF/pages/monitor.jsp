@@ -13,7 +13,7 @@
 	 		data-dataname="${type.dataName}" data-dataunit="${type.dataUnit}" data-snapdata="${info.snapData}"
 	 		data-rateunit="${type.changeRateUnit}" data-rate="${info.changeRate}" 
 	 		data-frequency="${info.frequency}" data-typename="${type.typeName}"
-	 		data-infoname="${info.name}"
+	 		data-infoname="${info.name}" data-type="${type.type}"
 	 		data-date="<fmt:formatDate value="${info.snapTime}" pattern="yyyy-MM-dd"/>" data-time="<fmt:formatDate value="${info.snapTime}" pattern="hh:mm:ss"/>">
 	 		${info.name}
 	 		<div class="block-image"><img src="/meter/resources/images/light${info.snapStatus}.png"/></div>
@@ -22,11 +22,11 @@
 		<div style="clear:both;"></div>		
 	</c:forEach>
 	 
-	 	<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	 	<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static">
 			<div class="modal-dialog">
 				<div class="modal-content">
 					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal"
+						<button type="button" class="close btn-close" data-dismiss="modal"
 							aria-hidden="true">&times;</button>
 						<h4 class="modal-title" id="myModalLabel">详细监测信息</h4>
 					</div>
@@ -65,7 +65,7 @@
 				 					<input type="text" value="08:00:00"/>
 				 				</td>
 				 			</tr>
-				 			<tr>
+				 			<tr class="hid">
 				 				<td>
 				 					<label><span class="type-name">避雷器</span>动作次数：</label>
 				 				</td>
@@ -79,7 +79,7 @@
 					<div class="modal-footer">
 						<!-- <button type="button" class="btn btn-default" data-dismiss="modal">关闭
 						</button> -->
-						<button type="button" class="btn btn-primary" data-dismiss="modal">关闭</button>
+						<button type="button" class="btn btn-primary btn-close" data-dismiss="modal">关闭</button>
 					</div>
 				</div>
 			</div>

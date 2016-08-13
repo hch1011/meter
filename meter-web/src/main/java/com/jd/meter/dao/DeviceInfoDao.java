@@ -18,7 +18,10 @@ public interface DeviceInfoDao extends CrudRepository<DeviceInfo, Long>, JpaSpec
 	List<DeviceInfo> findMonitorInfo();
 	
 	List<DeviceInfo> findByType(Long type);
-	
+
+	@Query("select i from DeviceInfo i order by i.inputNum")
+	List<DeviceInfo> findAllDeviceInfo();
+
 	List<DeviceInfo> findAll(); 
 
     /**
