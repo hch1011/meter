@@ -21,8 +21,9 @@ public class SendMsg {
     @Autowired
     CommunicateNettyClient communicateNettyClient;
 
-    public void send(Object msg) {
+    public Boolean send(Object msg) {
         final String sendMsg = (String)msg;
+        Boolean result = true;
         try {
             ByteBuf buf = Unpooled.copiedBuffer(sendMsg.getBytes());
             Channel channel = communicateNettyClient.getChannel();
@@ -34,7 +35,9 @@ public class SendMsg {
                 }
             });
         } catch (Exception e) {
+            result = false;
             logger.warn("消息发送失败[" + sendMsg + "]");
         }
+        return result;
     }
 }

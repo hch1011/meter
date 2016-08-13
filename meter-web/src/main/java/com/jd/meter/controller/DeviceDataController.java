@@ -10,6 +10,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.jd.meter.service.ImageCutService;
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.xssf.usermodel.XSSFFont;
@@ -45,6 +46,8 @@ public class DeviceDataController extends BaseController{
 	DeviceTypeDao deviceTypeDao;
 	@Autowired
     private DeviceService  deviceService;
+	@Autowired
+	private ImageCutService imageCutService;
 
 	/**
 	 * 提交数据
@@ -237,5 +240,51 @@ public class DeviceDataController extends BaseController{
 		template.wirteToStream(out);
 	    out.flush();
 		return null;
-    } 
+    }
+
+	@RequestMapping(value = "/device/data/img/recognition", method = RequestMethod.GET, consumes = "application/json", produces = "application/json")
+	@ResponseBody
+	public Object imgRecognition(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(value="imagePath", required = true)String imagePath,
+			@RequestParam(value="x", required = true)int x,
+			@RequestParam(value="y", required = true)int y,
+			@RequestParam(value="w", required = true)int w,
+			@RequestParam(value="h", required = true)int h
+	) {
+		Map<String, Object> map = new HashMap<>();
+		try{
+			imageCutService.imageRecognition(imagePath, x, y, w, h);
+			map.put("success", true);
+		} catch (IOException e) {
+			logger.error("image recognition failed");
+			map.put("success", false);
+		} catch (Exception e) {
+			logger.error("image recognition failed");
+			map.put("success", false);
+		}
+
+		return map;
+	}
+
+	@RequestMapping(value = "/device/data/img/recollect", method = RequestMethod.GET, consumes = "application/json", produces = "application/json")
+	@ResponseBody
+	public Object imgRecollect(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(value="deviceId", required = true)Long deviceId
+	) {
+		Map<String, Object> map = new HashMap<>();
+		try{
+			deviceService.imageRecollect(deviceId);
+			map.put("success", true);
+		}  catch (Exception e) {
+			logger.error("image recognition failed");
+			map.put("success", false);
+		}
+
+		return map;
+	}
+
 } 

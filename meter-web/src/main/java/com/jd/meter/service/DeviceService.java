@@ -2,6 +2,7 @@ package com.jd.meter.service;
 
 import java.util.*;
 
+import com.jd.meter.communication.SendMsg;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +23,8 @@ public class DeviceService {
 	DeviceInfoDao deviceInfoDao;
 	@Autowired
 	DeviceDataDao deviceDataDao;
+	@Autowired
+	SendMsg sendMsg;
 	
 	List<DeviceInfo> allDeviceInfoList; 
 	Map<Long,DeviceType> deviceTypeCache = new HashMap<Long, DeviceType>();
@@ -167,6 +170,11 @@ public class DeviceService {
 
 	public DeviceData queryDeviceDataByDeviceId(Long deviceId) {
 		return deviceDataDao.findByDeviceId(deviceId);
+	}
+
+	public Boolean imageRecollect(Long deviceId) {
+		String message = "" + deviceId;
+		return sendMsg.send(message);
 	}
 
 }
