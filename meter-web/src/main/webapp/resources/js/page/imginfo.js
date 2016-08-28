@@ -81,10 +81,10 @@
                     $('.img-info-body .i-d').val(res.time)
                     if(res.deviceData == null || res.deviceData.pictureUrl == null || res.deviceData.pictureUrl == "") {
                         alert("无对应数据")
+                    } else {
+                        var imgUrl = window.basePath + res.deviceData.pictureUrl
+                        $('.img-info-body img').attr("src", imgUrl);
                     }
-                    var imgUrl = window.basePath + res.deviceData.pictureUrl
-                    $('.img-info-body img').attr("src", imgUrl);
-
                 },
                 error: function(errorcode){
                     throw new Error(errorcode.status)
