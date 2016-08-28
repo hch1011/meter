@@ -21,7 +21,9 @@
             var self = this
             $('.leftmenu li').click(function(e){
                 e.preventDefault();
-                self.__jcrop_api.destroy()
+                if(self.__jcrop_api != null || self.__jcrop_api!= undefined) {
+                    self.__jcrop_api.destroy()
+                }
                 var liDom = $(this);
                 var liDeviceId = liDom.find('a').attr("data-deviceId");
                 self.__getImgInfo(liDeviceId);
