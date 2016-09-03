@@ -21,7 +21,7 @@ public class PackageType {
 	
 	//实体数据
 	public int data_source_pic = 100;	// 摄像头上来的图像数据
-	public int data_db_json = 200;			// 数据库数据，java对象json
+	public int data_db_json = 200;		// 数据库数据，java对象json
 	public int data_db_pic = 201;		// 本地存储的图片文件
 			
 }
