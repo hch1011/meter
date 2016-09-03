@@ -10,7 +10,7 @@ import io.netty.channel.ChannelHandlerContext;
 /**
  * 业务处理类
  */
-public abstract class PackageBasicHandler {
+public abstract class AbstractPackageProcessor {
 	@Autowired
 	MetterDispatcherHander metterDispatcherHander;
 	

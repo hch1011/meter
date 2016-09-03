@@ -45,16 +45,4 @@
 	</bean>
 	
     <bean id="propertyMessage" class="com.jd.meter.exception.i18n.PropertyMessage" />
-
-	<bean id="communicateNettyClient" class="com.jd.meter.communication.CommunicateNettyClient" >
-		<constructor-arg index="0">
-			<value>${port:8899}</value>
-		</constructor-arg>
-		<constructor-arg index="1">
-			<value>${host:localhost}</value>
-		</constructor-arg>
-		<constructor-arg index="2">
-			<value>${thread.num:20}</value>
-		</constructor-arg>
-	</bean>
 </beans>

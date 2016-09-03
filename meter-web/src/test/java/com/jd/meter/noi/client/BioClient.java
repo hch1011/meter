@@ -7,7 +7,7 @@ import java.io.OutputStream;
 import java.net.Socket;
 
 import com.alibaba.druid.support.json.JSONUtils;
-import com.jd.meter.sync.pkg.PackagePing;
+import com.jd.meter.sync.pkg.PingPackage;
 
 import ch.qos.logback.core.encoder.ByteArrayUtil;
 
@@ -17,11 +17,11 @@ public class BioClient {
  		Socket socket = new Socket("192.168.1.108", 9101);
  		OutputStream out = socket.getOutputStream();
  		InputStream in = socket.getInputStream();
- 		PackagePing ping = new PackagePing();
+ 		PingPackage ping = new PingPackage();
  		//out.write("abc".getBytes());
  		
  		//System.out.println(ByteArrayUtil.toHexString(ping.buildByteArray()));
- 		byte[] pkg = ping.buildByteArray();
+ 		byte[] pkg = ping.toByteArray();
 		System.out.println("write:"+ByteArrayUtil.toHexString(pkg));
  		out.write(pkg);
  		System.out.println("writed");
@@ -43,8 +43,7 @@ public class BioClient {
 			o.close();
 		} catch (IOException e) { 
 			e.printStackTrace();
-		} 
-		
+		}
 	}
 }
 

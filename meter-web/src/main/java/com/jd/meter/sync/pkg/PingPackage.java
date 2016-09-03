@@ -5,8 +5,8 @@ package com.jd.meter.sync.pkg;
  * @author hc
  *
  */
-public class PackagePing extends  PackageBasic{
-	public PackagePing(){
+public class PingPackage extends  PackageBasic{
+	public PingPackage(){
 		packageType = PackageType.ping;
 	}
 }

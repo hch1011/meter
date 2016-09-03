@@ -1,44 +1,59 @@
-package com.jd.meter.sync.pkg;
+package com.jd.meter.sync.server;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.jd.meter.sync.handler.MeterDecoder;
+import com.jd.meter.sync.handler.MeterEncoder;
 import com.jd.meter.sync.handler.MetterDispatcherHander;
 
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.buffer.Unpooled;
-import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.handler.codec.DelimiterBasedFrameDecoder;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 
-import javax.annotation.PostConstruct;
-
 
 @Service
-public class MetterServer {
-
+public class MeterServer {
+	private static Logger LOGGER = LoggerFactory.getLogger(MeterServer.class);
     @Autowired
     MetterDispatcherHander metterDispatcherHander;
 
-	private String serverIp = "*";
+	//private String serverIp = "*";
 	private boolean running = false;
-	@Value("${metter.server.port:9101}")
-    private Integer port = 9101;
+	@Value("${meter.centerServer.syncdata.port:9101}")
+	public int port = 9101;
 	
- 
+	 EventLoopGroup bossGroup;
+	 EventLoopGroup workerGroup;
+	 
     @PostConstruct
-    public void run() throws Exception {
-        EventLoopGroup bossGroup = new NioEventLoopGroup(); // (1)
-        EventLoopGroup workerGroup = new NioEventLoopGroup();
+    public void initAndStart() throws Exception{
+    	start();
+    }
+ 
+    
+    public void start() throws Exception {
+    	if(running){
+    		return;
+    	}
+    	running = true;
+    	LOGGER.info("metterServer starting...");
+        bossGroup = new NioEventLoopGroup(); // (1)
+        workerGroup = new NioEventLoopGroup(); 
         try {
+
             ServerBootstrap b = new ServerBootstrap(); // (2)
             b.group(bossGroup, workerGroup)
                     .channel(NioServerSocketChannel.class) // (3)
@@ -49,42 +64,46 @@ public class MetterServer {
                         @Override
                         public void initChannel(SocketChannel ch) throws Exception {
                             ch.pipeline()
-                                    .addLast(new MeterDecoder())
-                                    .addLast(new MeterEncoder());
-                            ch.pipeline().addLast(metterDispatcherHander);
+                             .addLast(new MeterDecoder())
+                             .addLast(new MeterEncoder())
+                             .addLast(metterDispatcherHander);
                         }
                     });
- 
-            ChannelFuture f = b.bind(port).sync();
- 
+            b.bind(port).sync();
+            //ChannelFuture f = b.bind(ServerConfig.instence.centerServerPort).sync(); 
             //f.channel().closeFuture().sync();
-        } finally {
-            workerGroup.shutdownGracefully();
-            bossGroup.shutdownGracefully();
-        }
+		} catch (Exception e) {
+			shutDown();
+			throw e;
+		}
+        LOGGER.info("metterServer started");
+    }
+    
+    @PreDestroy
+    public void shutDown(){
+    	LOGGER.info("metterServer shutDown()");
+        workerGroup.shutdownGracefully();
+        bossGroup.shutdownGracefully();
     }
 
     public static void main(String[] args) throws Exception {
-    	MetterServer server = new MetterServer();
+    	MeterServer server = new MeterServer();
         if (args.length > 0) {
         	int port = Integer.parseInt(args[0]);
         	if(port > 1024){
         		server.setPort(port);
         	}
         }
-        new MetterServer().run();
+        new MeterServer().start();
     }
 
-    public void initAndStart(){
-    	
-    }
     
-    
-	public int getPort() {
+	public Integer getPort() {
 		return port;
 	}
 
-	public void setPort(int port) {
+	public void setPort(Integer port) {
 		this.port = port;
 	}
+    
 }

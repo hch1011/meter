@@ -8,7 +8,7 @@ import io.netty.channel.ChannelHandlerContext;
 /**
  * 业务处理类
  */
-public class PackageBasicHandlerPang extends PackageBasicHandler {
+public class PangPackageProcessor extends AbstractPackageProcessor {
 
 	@Override
 	public int matchPackageType() {
@@ -18,7 +18,7 @@ public class PackageBasicHandlerPang extends PackageBasicHandler {
 	@Override
 	public void process(ChannelHandlerContext ctx, PackageBasic msg) {
 		//todo
-		ctx.channel().write(new PackageBasicHandlerPang());
+		ctx.channel().write(new PangPackageProcessor());
 	}
   
 

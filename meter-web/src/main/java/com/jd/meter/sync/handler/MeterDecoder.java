@@ -1,4 +1,4 @@
-package com.jd.meter.sync.pkg;
+package com.jd.meter.sync.handler;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
@@ -6,13 +6,16 @@ import io.netty.handler.codec.ByteToMessageDecoder;
 
 import java.util.List;
 
+import com.jd.meter.sync.pkg.PackageBasic;
+import com.jd.meter.sync.pkg.PackageType;
+
 /**
  * Created by hujintao on 2016/9/3.
  */
 public class MeterDecoder extends ByteToMessageDecoder {
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
-        if (in.readableBytes() < PackageBasic.minPackageLength) {  //这个HEAD_LENGTH是我们用于表示头长度的字节数。  由于上面我们传的是一个int类型的值，所以这里HEAD_LENGTH的值为4.
+        if (in.readableBytes() < PackageBasic.HEADER_LENGTH) {  //这个HEAD_LENGTH是我们用于表示头长度的字节数。  由于上面我们传的是一个int类型的值，所以这里HEAD_LENGTH的值为4.
             return;
         }
         in.markReaderIndex();                  //我们标记一下当前的readIndex的位置

@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 /**
  * Created by hujintao on 2016/8/6.
  */
-@Component
+//@Component
 public class SendMsg {
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -21,7 +21,7 @@ public class SendMsg {
     @Autowired
     CommunicateNettyClient communicateNettyClient;
 
-    public Boolean send(Object msg) {
+    public Boolean sends(Object msg) {
         final String sendMsg = (String)msg;
         Boolean result = true;
         try {

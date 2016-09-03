@@ -65,6 +65,11 @@ public class DeviceData  implements Serializable{
 	@Column(name = "meta_data")
 	private String metaData;		//元数据，如果有，json格式
 	
+	@Column(name = "sync_success_time")
+	private Date syncSuccessTime;	//同步成功时间，服务端时间使用client带过去的时间
+	 
+	@Transient
+	private int sincCount;		//同步次数
 	@Transient
 	private String test1;		//元数据，如果有，json格式
 
@@ -195,4 +200,24 @@ public class DeviceData  implements Serializable{
 	public void setFrequency(Integer frequency) {
 		this.frequency = frequency;
 	}
+
+	public Date getSyncSuccessTime() {
+		return syncSuccessTime;
+	}
+
+	public void setSyncSuccessTime(Date syncSuccessTime) {
+		this.syncSuccessTime = syncSuccessTime;
+	}
+
+	public int getSincCount() {
+		return sincCount;
+	}
+
+	public void setSincCount(int sincCount) {
+		this.sincCount = sincCount;
+	}
+	public void incSincCount() {
+		sincCount++;
+	}
+	
 }

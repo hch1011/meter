@@ -11,9 +11,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.jd.meter.service.ImageCutService;
+import com.jd.meter.sync.SyncTriggerService;
+
 import org.apache.commons.lang.StringUtils;
-import org.apache.poi.hssf.util.HSSFColor;
-import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +48,8 @@ public class DeviceDataController extends BaseController{
     private DeviceService  deviceService;
 	@Autowired
 	private ImageCutService imageCutService;
+	@Autowired
+	SyncTriggerService syncTriggerService;
 
 	/**
 	 * 提交数据
@@ -63,6 +65,7 @@ public class DeviceDataController extends BaseController{
 	    	HttpServletResponse response,
 	    	DeviceData deviceData) {
 		deviceService.submitData(deviceData);
+		
 		return deviceData;
     }
 
@@ -111,7 +114,7 @@ public class DeviceDataController extends BaseController{
 		String time = TimeUtils.getDateString(snapTime, defaultTimeFormat);
 		map.put("date", date);
 		map.put("time", time);
-		DeviceData  deviceData = deviceService.queryDeviceDataByDeviceId(deviceId);
+		DeviceData deviceData = deviceService.queryDeviceDataById(deviceInfo.getSnapDataId());
 		map.put("deviceData", deviceData);
 		return map;
 	}
@@ -268,23 +271,22 @@ public class DeviceDataController extends BaseController{
 		return map;
 	}
 
-	@RequestMapping(value = "/device/data/img/recollect", method = RequestMethod.GET, consumes = "application/json", produces = "application/json")
-	@ResponseBody
-	public Object imgRecollect(
-			HttpServletRequest request,
-			HttpServletResponse response,
-			@RequestParam(value="deviceId", required = true)Long deviceId
-	) {
-		Map<String, Object> map = new HashMap<>();
-		try{
-			deviceService.imageRecollect(deviceId);
-			map.put("success", true);
-		}  catch (Exception e) {
-			logger.error("image recognition failed");
-			map.put("success", false);
-		}
-
-		return map;
-	}
-
+//	@RequestMapping(value = "/device/data/img/recollect", method = RequestMethod.GET, consumes = "application/json", produces = "application/json")
+//	@ResponseBody
+//	public Object imgRecollect(
+//			HttpServletRequest request,
+//			HttpServletResponse response,
+//			@RequestParam(value="deviceId", required = true)Long deviceId
+//	) {
+//		Map<String, Object> map = new HashMap<>();
+//		try{
+//			deviceService.imageRecollect(deviceId);
+//			map.put("success", true);
+//		}  catch (Exception e) {
+//			logger.error("image recognition failed");
+//			map.put("success", false);
+//		}
+//
+//		return map;
+//	}
 } 

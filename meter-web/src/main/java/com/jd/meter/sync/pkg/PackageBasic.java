@@ -4,20 +4,23 @@ import java.nio.ByteBuffer;
 
 /**
  * 数据包类型
+ * 1byte分隔符|4byte长度|4byte类型|1byte保留|body
+ * 
  * @author hc
  *
  */
 public class PackageBasic {
-	public static int maxPackageLength = 1024*1024;  	// 数据包最大长度，用于验证length合法性；1M
-	public static int minPackageLength = 10;  		 	// 数据包最小长度，用于验证length合法性；header
-	public static byte delimiter = (byte)0xff;			// 分隔符
+	public static byte DELIMITER = (byte)0xff;		// 分隔符
+	public static int MAX_LENGTH = 1024*1024;  		// 数据包最大长度，用于验证length合法性；1M
+	public static int HEADER_LENGTH = 10;  		 	// 数据包最小长度，用于验证length合法性；header
+	
  	// Header 
-	public int length = 0;				// 4 + 4 + 4 + data.length
-	public int packageType = 0;		// 数据包类型
+	protected int length = 0;							// data.length
+	protected int packageType = 0;					// 数据包类型
+	
 	// body
-	public byte[] body;					// 数据内容
-
-	private byte[] pkg;   				//网络写的数据
+	private byte[] body;							// 数据内容
+	private byte[] pkgData;   						// 整个数据包，用于网络的byte[]:header+body
 
 	public void setLength(int length) {
 		this.length = length;
@@ -28,7 +31,10 @@ public class PackageBasic {
 	}
 
 	public void setBody(byte[] body) {
-		this.body = body;
+		if(body != null && body.length > 0){
+			this.body = body;
+			this.length = body.length;
+		}
 	}
 
 	public int getLength() {
@@ -52,23 +58,24 @@ public class PackageBasic {
 	}
 	
 	
-	public byte[] buildByteArray(){ 
-		if(pkg == null){
-			ByteBuffer out = ByteBuffer.allocate(resetLength()+minPackageLength);
-			out.put(PackageBasic.delimiter);
-	        out.putInt(this.resetLength());
-	        out.putInt(this.getPackageType());
+	public byte[] toByteArray(){ 
+		if(pkgData == null){
+			resetLength();
+			ByteBuffer out = ByteBuffer.allocate(length + HEADER_LENGTH);
+			out.put(PackageBasic.DELIMITER);
+	        out.putInt(length);
+	        out.putInt(packageType);
 	        out.put((byte)0);
 	        if(body != null) {
-	            out.put(this.getBody());
+	            out.put(body);
 	        }
-	        pkg = out.array();
+	        pkgData = out.array();
 		}
-		return pkg;
+		return pkgData;
 	}
 	
 	public static void main(String[] args) {
-		PackageBasic pang = new PackagePang();
-		System.out.println(pang.buildByteArray());
+		PackageBasic pang = new PangPackage();
+		System.out.println(pang.toByteArray());
 	}
 }

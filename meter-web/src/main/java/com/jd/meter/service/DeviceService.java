@@ -2,7 +2,8 @@ package com.jd.meter.service;
 
 import java.util.*;
 
-import com.jd.meter.communication.SendMsg;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,11 +13,14 @@ import com.jd.meter.dao.DeviceTypeDao;
 import com.jd.meter.entity.DeviceData;
 import com.jd.meter.entity.DeviceInfo;
 import com.jd.meter.entity.DeviceType;
+import com.jd.meter.sync.SyncTriggerService;
 import com.jd.meter.util.ObjectUtil;
 import com.jd.meter.util.SnowflakeIdGenerator;
 
 @Service("deviceService")
 public class DeviceService {
+	private static Logger LOGGER = LoggerFactory.getLogger(DeviceService.class);
+	
 	@Autowired
 	DeviceTypeDao deviceTypeDao;
 	@Autowired
@@ -24,7 +28,7 @@ public class DeviceService {
 	@Autowired
 	DeviceDataDao deviceDataDao;
 	@Autowired
-	SendMsg sendMsg;
+	SyncTriggerService syncTriggerService; 
 	
 	List<DeviceInfo> allDeviceInfoList; 
 	Map<Long,DeviceType> deviceTypeCache = new HashMap<Long, DeviceType>();
@@ -90,6 +94,7 @@ public class DeviceService {
 			deviceData.setCreateTime(new Date());
 		}
 		deviceData.setUpdateTime(deviceData.getCreateTime());
+		
 		if(deviceData.getSnapData() == null){
 			deviceData.setSnapData(0f);
 		}
@@ -105,12 +110,13 @@ public class DeviceService {
 			deviceInfo.setChangeRate(deviceData.getSnapData() - deviceInfo.getSnapData());
 		}
 		
-		
 		//设置报警信息
 		deviceType.resetDataWarningStatus(deviceData);
 	
 		//save Devicedata
-		deviceData.setId(SnowflakeIdGenerator.getInstance().nextId());
+		if(deviceData.getId() == null){
+			deviceData.setId(SnowflakeIdGenerator.getInstance().nextId());
+		}
 		deviceData.setDeviceCode(deviceInfo.getCode());
 		deviceDataDao.save(deviceData);
 		
@@ -123,6 +129,34 @@ public class DeviceService {
 		deviceInfo.setWarningReason(deviceData.getWarningReason());
 		deviceInfo.setSnapDataId(deviceData.getId());
 		deviceInfoDao.save(deviceInfo);
+
+		if(deviceData.getSyncSuccessTime() == null){
+			syncTriggerService.sendDataSync(deviceData);
+		}
+	}
+	/**
+	 * 接受到同步过来的数据
+	 * @param deviceData
+	 */
+	public void receiveSyncDeviceData(DeviceData deviceData) {
+		LOGGER.info("receiveSyncDeviceData");
+		DeviceData deviceDataDB = deviceDataDao.findOne(deviceData.getId());
+		if(deviceDataDB != null){
+			return;
+		}
+		deviceDataDao.save(deviceData);
+		
+		DeviceInfo deviceInfo = deviceInfoDao.findOne(deviceData.getDeviceId());
+		if(deviceInfo != null && deviceInfo.getSnapTime().before(deviceData.getSnapTime())){
+	 		deviceInfo.setChangeRate(deviceData.getChangeRate());
+			deviceInfo.setFrequency(deviceData.getFrequency());
+			deviceInfo.setSnapData(deviceData.getSnapData());
+			deviceInfo.setSnapStatus(deviceData.getSnapStatus());
+			deviceInfo.setSnapTime(deviceData.getSnapTime());
+			deviceInfo.setWarningReason(deviceData.getWarningReason());
+			deviceInfo.setSnapDataId(deviceData.getId());
+			deviceInfoDao.save(deviceInfo);
+		}
 	}
 
 	public List<Map<Integer,List<DeviceInfo>>> queryDeviceInfo() {
@@ -154,6 +188,9 @@ public class DeviceService {
 		return resultList;
 	}
 
+	public void updateDeviceDataForSyncSuccess(DeviceData deviceData) {
+		deviceDataDao.save(deviceData);
+	}
 	public DeviceInfo queryDeviceInfoById(Long deviceId) {
 		return deviceInfoDao.findOne(deviceId);
 	}
@@ -167,14 +204,25 @@ public class DeviceService {
 		
 		return list;
 	}
+	
 
-	public DeviceData queryDeviceDataByDeviceId(Long deviceId) {
-		return deviceDataDao.findByDeviceId(deviceId);
+	/**
+	 * 获取待同步的数据
+	 * @param length
+	 * @return
+	 */
+	public List<DeviceData> queryWaitingSync(int length) {
+		List<DeviceData> list = deviceDataDao.findWaitingSync(length);
+		return list;
+	}
+ 	
+	public DeviceData queryDeviceDataById(Long deviceId) {
+		return deviceDataDao.findOne(deviceId);
 	}
 
-	public Boolean imageRecollect(Long deviceId) {
-		String message = "" + deviceId;
-		return sendMsg.send(message);
-	}
+//	public Boolean imageRecollect(Long deviceId) {
+//		String message = "" + deviceId;
+//		return sendMsg.send(message);
+//	}
 
 }

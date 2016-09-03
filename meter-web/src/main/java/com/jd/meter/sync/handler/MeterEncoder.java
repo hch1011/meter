@@ -1,4 +1,6 @@
-package com.jd.meter.sync.pkg;
+package com.jd.meter.sync.handler;
+
+import com.jd.meter.sync.pkg.PackageBasic;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
@@ -11,11 +13,11 @@ public class MeterEncoder extends MessageToByteEncoder<PackageBasic> {
     @Override
     protected void encode(ChannelHandlerContext ctx, PackageBasic msg, ByteBuf out) throws Exception {
         //ByteBuf buf = Unpooled.copiedBuffer(msg.getBytes());
-        out.writeByte(PackageBasic.delimiter);
+        out.writeByte(PackageBasic.DELIMITER);
         out.writeInt(msg.resetLength());
         out.writeInt(msg.getPackageType());
         out.writeByte(0);
-        if(msg.getBody() != null && msg.getBody().length > 0) {
+        if(msg.getLength() > 0) {
             out.writeBytes(msg.getBody());
         }
     }

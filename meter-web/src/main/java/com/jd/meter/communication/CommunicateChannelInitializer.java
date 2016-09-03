@@ -1,7 +1,5 @@
 package com.jd.meter.communication;
 
-import com.jd.meter.sync.pkg.MeterDecoder;
-import com.jd.meter.sync.pkg.MeterEncoder;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
@@ -11,6 +9,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import com.jd.meter.sync.handler.MeterDecoder;
+import com.jd.meter.sync.handler.MeterEncoder;
 
 /**
  * Created by hujintao on 2016/8/5.
