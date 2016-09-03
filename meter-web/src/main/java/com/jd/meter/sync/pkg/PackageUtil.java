@@ -4,7 +4,7 @@ package com.jd.meter.sync.pkg;
  * @author hc
  *
  */
-public class PackageFactory {
+public class PackageUtil {
 	 
 			
 }
