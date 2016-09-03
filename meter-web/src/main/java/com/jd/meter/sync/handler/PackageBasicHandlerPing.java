@@ -1,16 +1,15 @@
 package com.jd.meter.sync.handler;
 
-import javax.annotation.PostConstruct;
-
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.jd.meter.sync.pkg.PackageBasic;
+import com.jd.meter.sync.pkg.PackagePang;
 import com.jd.meter.sync.pkg.PackageType;
-
 import io.netty.channel.ChannelHandlerContext;
+import org.springframework.stereotype.Component;
+
 /**
  * 业务处理类
  */
+@Component
 public class PackageBasicHandlerPing extends PackageBasicHandler {
 
 	@Override
@@ -20,7 +19,9 @@ public class PackageBasicHandlerPing extends PackageBasicHandler {
 
 	@Override
 	public void process(ChannelHandlerContext ctx, PackageBasic msg) {
-		ctx.channel().writeAndFlush("pang");
+		//...
+		PackagePang pang = new PackagePang();
+		ctx.channel().writeAndFlush(pang);
 	}
   
 

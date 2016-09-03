@@ -15,7 +15,7 @@ public class MeterEncoder extends MessageToByteEncoder<PackageBasic> {
         out.writeInt(msg.resetLength());
         out.writeInt(msg.getPackageType());
         out.writeByte(0);
-        if(msg.getBody().length > 0) {
+        if(msg.getBody() != null && msg.getBody().length > 0) {
             out.writeBytes(msg.getBody());
         }
     }

@@ -1,5 +1,7 @@
 package com.jd.meter.communication;
 
+import com.jd.meter.sync.pkg.PackageBasic;
+import com.jd.meter.sync.pkg.PackageType;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFuture;
@@ -12,7 +14,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Created by hujintao on 2016/8/5.
  */
-public class CommunicateNettyHandler extends SimpleChannelInboundHandler<String> {
+public class CommunicateNettyHandler extends SimpleChannelInboundHandler<PackageBasic> {
     Logger logger = LoggerFactory.getLogger(this.getClass());
     /**
      * 连接成功后向服务器发送数据
@@ -21,8 +23,12 @@ public class CommunicateNettyHandler extends SimpleChannelInboundHandler<String>
      */
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        String sendMsg = "Hello Server";
-        ctx.writeAndFlush(sendMsg);
+        PackageBasic packageBasic = new PackageBasic();
+        packageBasic.setBody("sjkfj".getBytes());
+        packageBasic.setLength(8);
+        packageBasic.setPackageType(PackageType.data_source_pic);
+
+        ctx.writeAndFlush(packageBasic);
         /*ByteBuf buf = Unpooled.copiedBuffer(sendMsg.getBytes());
 
         final ChannelFuture f = ctx.writeAndFlush(buf); // (3)
@@ -42,7 +48,7 @@ public class CommunicateNettyHandler extends SimpleChannelInboundHandler<String>
      * @throws Exception
      */
     @Override
-    public void channelRead0(ChannelHandlerContext ctx, String msg) throws Exception{
+    public void channelRead0(ChannelHandlerContext ctx, PackageBasic msg) throws Exception{
         logger.info("the received message is：" + msg);
 
     }
