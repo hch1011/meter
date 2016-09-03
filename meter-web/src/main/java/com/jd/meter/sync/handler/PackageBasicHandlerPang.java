@@ -17,7 +17,8 @@ public class PackageBasicHandlerPang extends PackageBasicHandler {
 
 	@Override
 	public void process(ChannelHandlerContext ctx, PackageBasic msg) {
-		
+		//todo
+		ctx.channel().write(new PackageBasicHandlerPang());
 	}
   
 

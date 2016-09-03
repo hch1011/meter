@@ -1,5 +1,6 @@
 package com.jd.meter.sync.pkg;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +22,9 @@ import io.netty.handler.logging.LoggingHandler;
 
 @Service
 public class MetterServer {
+
+    @Autowired
+    MetterDispatcherHander metterDispatcherHander;
 
 	private String serverIp = "*";
 	private boolean running = false;
@@ -45,7 +49,7 @@ public class MetterServer {
                             ch.pipeline().addLast(
                             		new DelimiterBasedFrameDecoder(PackageBasic.maxPackageLength, Unpooled.copyInt(PackageBasic.delimiter) )
                             		);
-                            ch.pipeline().addLast(new MetterDispatcherHander());
+                            ch.pipeline().addLast(metterDispatcherHander);
                         }
                     });
  

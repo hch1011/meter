@@ -39,4 +39,12 @@ public class PackageBasic {
 	public byte[] getBody() {
 		return body;
 	}
+	public int resetLength() {
+		if(body == null) {
+			length = 0;
+		} else {
+			length = body.length;
+		}
+		return length;
+	}
 }
