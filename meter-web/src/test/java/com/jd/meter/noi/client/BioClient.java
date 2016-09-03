@@ -22,11 +22,14 @@ public class BioClient {
  		
  		//System.out.println(ByteArrayUtil.toHexString(ping.buildByteArray()));
  		byte[] pkg = ping.buildByteArray();
+		System.out.println("write:"+ByteArrayUtil.toHexString(pkg));
  		out.write(pkg);
+ 		System.out.println("writed");
  		out.flush();
+ 		
  		byte[] b = new byte[1024];
 		in.read(b );
-		System.out.println(ByteArrayUtil.toHexString(b));
+		System.out.println("read:"+ByteArrayUtil.toHexString(b));
  		close(out);
  		close(in);
  		close(socket);
