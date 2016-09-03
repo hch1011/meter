@@ -1,5 +1,6 @@
 package com.jd.meter.sync.handler;
 
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,7 +17,5 @@ public class MetterDispatcherHander extends ChannelInboundHandlerAdapter {
 	public Map<Integer, PackageBasicHandler> packageBasicHandlerCache = new HashMap<Integer, PackageBasicHandler>();
 	public void register(PackageBasicHandler handler){
 		packageBasicHandlerCache.put(handler.matchPackageType(),handler);
-	}
-	
-   
+	} 
 }
