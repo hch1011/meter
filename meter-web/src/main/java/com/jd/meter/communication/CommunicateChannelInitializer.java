@@ -1,5 +1,7 @@
 package com.jd.meter.communication;
 
+import com.jd.meter.sync.pkg.MeterDecoder;
+import com.jd.meter.sync.pkg.MeterEncoder;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
@@ -35,8 +37,8 @@ public class CommunicateChannelInitializer extends ChannelInitializer<SocketChan
 
         ChannelPipeline pipeline = channel.pipeline();
 
-        pipeline.addLast("decode", new NettyDecoder());
-        pipeline.addLast("encode", new NettyEncoder());
+        pipeline.addLast("decode", new MeterDecoder());
+        pipeline.addLast("encode", new MeterEncoder());
 
         if(eventExecutors != null) {
             pipeline.addLast(eventExecutors, "handler", new CommunicateNettyHandler());

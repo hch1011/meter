@@ -19,6 +19,8 @@ import io.netty.handler.codec.DelimiterBasedFrameDecoder;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 
+import javax.annotation.PostConstruct;
+
 
 @Service
 public class MetterServer {
@@ -28,11 +30,11 @@ public class MetterServer {
 
 	private String serverIp = "*";
 	private boolean running = false;
-	@Value("$(metter.server.port:9101)")
-    private int port = 9101;
+	@Value("${metter.server.port:9101}")
+    private Integer port = 9101;
 	
  
-
+    @PostConstruct
     public void run() throws Exception {
         EventLoopGroup bossGroup = new NioEventLoopGroup(); // (1)
         EventLoopGroup workerGroup = new NioEventLoopGroup();
@@ -46,16 +48,16 @@ public class MetterServer {
                     .childHandler(new ChannelInitializer<SocketChannel>() { // (4)
                         @Override
                         public void initChannel(SocketChannel ch) throws Exception {
-                            ch.pipeline().addLast(
-                            		new DelimiterBasedFrameDecoder(PackageBasic.maxPackageLength, Unpooled.copyInt(PackageBasic.delimiter) )
-                            		);
+                            ch.pipeline()
+                                    .addLast(new MeterDecoder())
+                                    .addLast(new MeterEncoder());
                             ch.pipeline().addLast(metterDispatcherHander);
                         }
                     });
  
             ChannelFuture f = b.bind(port).sync();
  
-            f.channel().closeFuture().sync();
+            //f.channel().closeFuture().sync();
         } finally {
             workerGroup.shutdownGracefully();
             bossGroup.shutdownGracefully();

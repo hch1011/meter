@@ -18,7 +18,6 @@ public class MeterDecoder extends ByteToMessageDecoder {
         in.markReaderIndex();                  //我们标记一下当前的readIndex的位置
         byte delimit = in.readByte();
         int dataLength=0;
-        in.readShort();
 
         if(delimit == 0xf0){//采集
             //read from cam
@@ -52,7 +51,7 @@ public class MeterDecoder extends ByteToMessageDecoder {
             return;
         }
 
-        if (dataLength < 0) { // 我们读到的消息体长度为0，这是不应该出现的情况，这里出现这情况，关闭连接。
+        if (dataLength < 0) {
             ctx.close();
         }
 

@@ -70,7 +70,11 @@ public class CommunicateNettyClient implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        run();
+        //run();
     }
 
+    public static void main(String[] args) {
+        CommunicateNettyClient communicateNettyClient = new CommunicateNettyClient(9101, "192.168.1.108", "5");
+        communicateNettyClient.run();
+    }
 }
