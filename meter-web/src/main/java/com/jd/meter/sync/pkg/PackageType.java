@@ -19,9 +19,9 @@ public class PackageType {
 	public int concate_indirect_y = 15;	// 回答能直接与目标机器通讯
 	public int concate_indirect_n = 16;	// 回答能直接与目标机器通讯
 	
-	
-	public int data_db = 51;			// 数据库数据
-	public int data_pic = 52;			// 图片数据
-	
+	//实体数据
+	public int data_source_pic = 100;	// 摄像头上来的图像数据
+	public int data_db_json = 200;			// 数据库数据，java对象json
+	public int data_db_pic = 201;		// 本地存储的图片文件
 			
 }

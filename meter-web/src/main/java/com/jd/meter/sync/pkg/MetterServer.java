@@ -22,8 +22,11 @@ import io.netty.handler.logging.LoggingHandler;
 @Service
 public class MetterServer {
 
+	private String serverIp = "*";
+	private boolean running = false;
 	@Value("$(metter.server.port:9101)")
     private int port = 9101;
+	
  
 
     public void run() throws Exception {
