@@ -35,7 +35,7 @@ public class YsClientDeviceTest {
 	@Test
 	public void testWriteFileFromUrl() {
 		String url = YsClientDevice.capture(testDeviceSerial, "1");
-		String filePath = "c:\\meter\\"+TimeUtils.getDateTimeNumber()+".png";
+		String filePath = "c:\\meter_pic\\"+TimeUtils.getDateTimeNumber()+".png";
 		YsClientDevice.writeFileFromUrl(url, filePath);
 		System.out.println("url="+url);
 		System.out.println("testWriteFileFromUrl() end");
