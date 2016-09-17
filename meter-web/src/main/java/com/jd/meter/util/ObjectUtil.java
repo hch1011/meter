@@ -21,7 +21,7 @@ public class ObjectUtil {
             Thread.sleep(millis);
         } catch (InterruptedException e) {
             if(eatException){
-                throw new MeterException("sleep exception", e);
+                throw new MeterException("sleep exception",null, e);
             }
         }
     }
@@ -39,7 +39,7 @@ public class ObjectUtil {
                 obj.close();
             } catch (Exception e) {
                 if(eatException){
-                	throw new MeterException("close exception", e);
+                	throw new MeterException("close exception",null, e);
                 }
             }
         }

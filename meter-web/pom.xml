@@ -67,16 +67,16 @@
 			<version>2.4</version>
 		</dependency>
 		<dependency>
-		    <groupId>commons-lang</groupId>
-		    <artifactId>commons-lang</artifactId>
-		    <version>2.6</version>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+			<version>2.6</version>
 		</dependency>
 		<dependency>
-		    <groupId>commons-logging</groupId>
-		    <artifactId>commons-logging</artifactId>
-		    <version>1.1.1</version>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+			<version>1.1.1</version>
 		</dependency>
-		<dependency> 
+		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
 			<version>${jackson-databind.version}</version>
@@ -85,7 +85,7 @@
 			<groupId>com.mysema.querydsl</groupId>
 			<artifactId>querydsl-apt</artifactId>
 			<version>3.3.1</version>
-		</dependency> 
+		</dependency>
 		<dependency>
 			<groupId>com.mysema.querydsl</groupId>
 			<artifactId>querydsl-jpa</artifactId>
@@ -116,7 +116,7 @@
 			<version>1.7.2</version>
 		</dependency>
 		<dependency>
-			<groupId>ch.qos.logback</groupId> 
+			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
 			<version>1.0.9</version>
 		</dependency>
@@ -142,7 +142,7 @@
 			<artifactId>druid</artifactId>
 			<version>0.2.25</version>
 		</dependency>
-		<!-- servlet --> 
+		<!-- servlet -->
 		<dependency>
 			<groupId>javax.servlet.jsp</groupId>
 			<artifactId>jsp-api</artifactId>
@@ -172,16 +172,16 @@
 			<artifactId>mysql-connector-java</artifactId>
 			<version>${mysql.connector.version}</version>
 		</dependency>
-      <dependency>
-        <groupId>org.apache.tiles</groupId>
-        <artifactId>tiles-core</artifactId>
-        <version>3.0.3</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.tiles</groupId>
-        <artifactId>tiles-jsp</artifactId>
-        <version>3.0.3</version>
-      </dependency>
+		<dependency>
+			<groupId>org.apache.tiles</groupId>
+			<artifactId>tiles-core</artifactId>
+			<version>3.0.3</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.tiles</groupId>
+			<artifactId>tiles-jsp</artifactId>
+			<version>3.0.3</version>
+		</dependency>
 		<dependency>
 			<groupId>org.apache.poi</groupId>
 			<artifactId>poi</artifactId>
@@ -215,33 +215,43 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-        	<groupId>com.alibaba</groupId>
-        	<artifactId>fastjson</artifactId>
+			<groupId>com.alibaba</groupId>
+			<artifactId>fastjson</artifactId>
 			<version>1.1.23</version>
-      	</dependency> 
-         <dependency>
-             <groupId>org.springframework</groupId>
-             <artifactId>spring-websocket</artifactId>
-             <version>${spring.version}</version>
-         </dependency>
-		
-        <dependency>
-            <groupId>javax</groupId>
-            <artifactId>javaee-api</artifactId>
-            <version>7.0</version>
-        </dependency>
-        
-      	
-	    <dependency>
-	      <groupId>org.apache.poi</groupId>
-	      <artifactId>poi</artifactId>
-	      <version>3.11</version>
-	    </dependency>
-	    <dependency>
-	      <groupId>org.apache.poi</groupId>
-	      <artifactId>poi-ooxml</artifactId>
-	      <version>3.11</version>
-	    </dependency>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-websocket</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>javax</groupId>
+			<artifactId>javaee-api</artifactId>
+			<version>7.0</version>
+		</dependency>
+
+
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>4.3.3</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpcore</artifactId>
+			<version>4.3.3</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi</artifactId>
+			<version>3.11</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-ooxml</artifactId>
+			<version>3.11</version>
+		</dependency>
 
 		<!-- netty -->
 		<dependency>
@@ -250,7 +260,7 @@
 			<version>4.1.4.Final</version>
 		</dependency>
 
-	</dependencies> 
+	</dependencies>
 	<build>
 		<finalName>meter</finalName>
 		<plugins>
@@ -263,25 +273,11 @@
 					<target>1.7</target>
 				</configuration>
 			</plugin>
-			<!-- 
-			<plugin>
-				<groupId>com.mysema.maven</groupId>
-				<artifactId>maven-apt-plugin</artifactId>
-				<version>1.0.4</version>
-				<executions>
-					<execution>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>process</goal>
-						</goals>
-						<configuration>
-							<outputDirectory>target/generated-sources</outputDirectory>
-							<processor>com.mysema.query.apt.jpa.JPAAnnotationProcessor</processor>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			  -->
+			<!-- <plugin> <groupId>com.mysema.maven</groupId> <artifactId>maven-apt-plugin</artifactId> 
+				<version>1.0.4</version> <executions> <execution> <phase>generate-sources</phase> 
+				<goals> <goal>process</goal> </goals> <configuration> <outputDirectory>target/generated-sources</outputDirectory> 
+				<processor>com.mysema.query.apt.jpa.JPAAnnotationProcessor</processor> </configuration> 
+				</execution> </executions> </plugin> -->
 		</plugins>
 	</build>
 </project>
