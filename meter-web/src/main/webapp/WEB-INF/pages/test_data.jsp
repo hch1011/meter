@@ -6,7 +6,13 @@
     
 
 	<div class="content-body">
-	<h2>生产测试数据</h2>
+	<h2>生产测试数据
+	 <c:forEach items="${deviceList}" var="item">
+	 <a href="${basePath}/ys/capture?deviceSerial=${item.deviceSerial}" target="_blank">${item.deviceName}</a> 
+	 </c:forEach>
+	  </h2>
+	 
+
 	<!-- 
 	<div>
 		选择设备类型
@@ -64,4 +70,5 @@
 	  	</table>
 	   
 	  </form>
+	  
 	</div>

@@ -1,6 +1,5 @@
 package com.jd.meter.ys.sdk;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,7 +8,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.jd.meter.exception.MeterExceptionFactory;
 import com.jd.meter.util.SimpleHttpUtils;
 import com.jd.meter.util.SimpleHttpUtils.SimpleHttpResponse;
-import com.jd.meter.util.TimeUtils;
 
 /**
  * https://open.ys7.com/
@@ -92,17 +90,18 @@ public class YsClientBase {
 			throw MeterExceptionFactory.applicationException(apiName+"异常:"+YsErrorCodeEnum.getMsgByCode(obj.getIntValue("code")),"return code="+obj.getString("code"), null);
 		}
 		
-		return  obj.getJSONObject("data");
+		return  obj;
 	}
+	
 	public static Map<String, String> huildHeader(){
 		Map<String, String> header = new HashMap<String,String>();
 		header.put("content-type", "application/x-www-form-urlencoded");
 		return header;
 	}
+	
 	public static Map<String, String> huildParamsWithToken(){
 		Map<String, String> param = new HashMap<String,String>();
 		param.put("accessToken", getToken());
-		 
 		return param;
 	}
 	

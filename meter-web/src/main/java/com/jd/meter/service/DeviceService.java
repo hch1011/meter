@@ -5,6 +5,7 @@ import java.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.jd.meter.dao.DeviceDataDao;
@@ -20,7 +21,9 @@ import com.jd.meter.util.SnowflakeIdGenerator;
 @Service("deviceService")
 public class DeviceService {
 	private static Logger LOGGER = LoggerFactory.getLogger(DeviceService.class);
-	
+	 
+	@Value("${meter.centerServer.syncdata:false}")
+	public boolean syncdata = false;
 	@Autowired
 	DeviceTypeDao deviceTypeDao;
 	@Autowired
@@ -28,7 +31,7 @@ public class DeviceService {
 	@Autowired
 	DeviceDataDao deviceDataDao;
 	@Autowired
-	SyncTriggerService syncTriggerService; 
+	SyncTriggerService syncTriggerService;
 	
 	List<DeviceInfo> allDeviceInfoList; 
 	Map<Long,DeviceType> deviceTypeCache = new HashMap<Long, DeviceType>();
@@ -130,8 +133,10 @@ public class DeviceService {
 		deviceInfo.setSnapDataId(deviceData.getId());
 		deviceInfoDao.save(deviceInfo);
 
-		if(deviceData.getSyncSuccessTime() == null){
-			syncTriggerService.sendDataSync(deviceData);
+		if(syncdata){
+			if(deviceData.getSyncSuccessTime() == null){
+				syncTriggerService.sendDataSync(deviceData);
+			}
 		}
 	}
 	/**

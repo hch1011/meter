@@ -9,6 +9,7 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.jd.meter.entity.DeviceData;
@@ -30,6 +31,9 @@ public class SyncTriggerService {
 	private static Logger LOGGER = LoggerFactory.getLogger(SyncTriggerService.class);
 	@Autowired
 	private DeviceService deviceService;
+	@Value("${meter.centerServer.syncdata:false}")
+	public boolean syncdata = false;
+	
 	private BioClient client;
 
 	private BlockingQueue<DeviceData> queue = new LinkedBlockingQueue<DeviceData>(20);  

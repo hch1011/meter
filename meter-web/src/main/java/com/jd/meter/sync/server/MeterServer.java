@@ -24,7 +24,7 @@ import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 
 
-@Service
+//@Service
 public class MeterServer {
 	private static Logger LOGGER = LoggerFactory.getLogger(MeterServer.class);
     @Autowired
@@ -34,11 +34,15 @@ public class MeterServer {
 	private boolean running = false;
 	@Value("${meter.centerServer.syncdata.port:9101}")
 	public int port = 9101;
+	@Value("${meter.centerServer.syncdata:false}")
+	public boolean syncdata = false;
+	
+	
 	
 	 EventLoopGroup bossGroup;
 	 EventLoopGroup workerGroup;
 	 
-    @PostConstruct
+    //@PostConstruct
     public void initAndStart() throws Exception{
     	start();
     }
@@ -79,7 +83,7 @@ public class MeterServer {
         LOGGER.info("metterServer started");
     }
     
-    @PreDestroy
+    //@PreDestroy
     public void shutDown(){
     	LOGGER.info("metterServer shutDown()");
         workerGroup.shutdownGracefully();

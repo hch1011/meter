@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.jd.meter.util.SimpleHttpUtils;
 
@@ -50,6 +51,7 @@ public class YsClientDevice extends YsClientBase{
 		 params.put("deviceSerial", deviceSerial);
 		 params.put("channelNo", channelNo);
 		 JSONObject data = post(domainUrl+"/api/lapp/device/capture", params, "设备抓拍图片");
+		 data = data.getJSONObject("data");
 		 return data.getString("picUrl");
 	 }
 	 
@@ -65,6 +67,7 @@ public class YsClientDevice extends YsClientBase{
 		 params.put("uuid", uuid);
 		 params.put("size", String.valueOf(size));
 		 JSONObject data = post(domainUrl+"/api/lapp/device/uuid/picture", params, "设备抓拍图片");
+		 data = data.getJSONObject("data");
 		 return data.getString("picUrl");
 	 }
 	 
@@ -97,8 +100,8 @@ public class YsClientDevice extends YsClientBase{
 		 params.put("pageStart", "0");
 		 params.put("pageSize", "100");
 		 JSONObject data = post(domainUrl+"/api/lapp/device/list", params, "获取设备列表");
-		 
-		 List<DeviceInfo> list = JSON.parseArray(data.toJSONString(), DeviceInfo.class);
+		 JSONArray array = data.getJSONArray("data");
+		 List<DeviceInfo> list = JSON.parseArray(array.toJSONString(), DeviceInfo.class);
 		 return list;
 	 }
 	 
@@ -111,6 +114,7 @@ public class YsClientDevice extends YsClientBase{
 		 Map<String, String> params = YsClientBase.huildParamsWithToken();
 		 params.put("deviceSerial", deviceSerial); 
 		 JSONObject data = post(domainUrl+"/api/lapp/device/info", params, "获取设备版本信息");
+		 data = data.getJSONObject("data");
 		 return JSON.parseObject(data.toJSONString(), DeviceInfo.class);
 	 }
 	 
@@ -123,9 +127,8 @@ public class YsClientDevice extends YsClientBase{
 		 Map<String, String> params = YsClientBase.huildParamsWithToken();
 		 params.put("pageStart", "0");
 		 params.put("pageSize", "100");
-		 JSONObject data = post(domainUrl+"/api/lapp/camera/list", params, "获取设备列表");
-		 
-		 List<DeviceInfo> list = JSON.parseArray(data.toJSONString(), DeviceInfo.class);
+		 JSONObject data = post(domainUrl+"/api/lapp/camera/list", params, "获取设备列表");		  
+		 List<DeviceInfo> list = JSON.parseArray(data.getJSONArray("data").toJSONString(), DeviceInfo.class);
 		 return list;
 	 }
 }

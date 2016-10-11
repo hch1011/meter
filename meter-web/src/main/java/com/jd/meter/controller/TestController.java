@@ -1,5 +1,7 @@
 package com.jd.meter.controller;
 
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
+
 import java.util.Date;
 import java.util.List;
 
@@ -19,6 +21,7 @@ import com.jd.meter.entity.DeviceData;
 import com.jd.meter.entity.DeviceInfo;
 import com.jd.meter.service.DeviceService;
 import com.jd.meter.sync.SyncTriggerService;
+import com.jd.meter.ys.sdk.YsClientDevice;
  
 @Controller
 public class TestController extends BaseController{
@@ -48,6 +51,9 @@ public class TestController extends BaseController{
 			model.addAttribute("deviceInfoList", deviceInfoList);
 		}
 		model.addAttribute("type", 6);//前端测试数据选中
+		
+		List<com.jd.meter.ys.sdk.DeviceInfo> deviceList = YsClientDevice.deviceList();
+		model.addAttribute("deviceList", deviceList);//前端测试数据选中
 		return "test/data";
 	}
 	
@@ -86,5 +92,13 @@ public class TestController extends BaseController{
 			) {
  		syncTriggerService.scanDatabase();
 		return success();
+	}
+	
+	@RequestMapping(value = "/ys/capture", method=RequestMethod.GET)
+	public Object capture(
+ 			@RequestParam(name="deviceSerial", required = false) String deviceSerial
+			) {
+		String url = YsClientDevice.capture(deviceSerial, "1");
+		return "redirect:"+url;
 	}
 } 
