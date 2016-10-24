@@ -21,7 +21,7 @@ public class DeviceData  implements Serializable{
 	
     @Id
     @Column(name = "id")
-	private Long Id;
+	private Long id;
 	
 	@Column(name = "device_id")
 	private Long deviceId;			//设备ID
@@ -178,11 +178,11 @@ public class DeviceData  implements Serializable{
 	}
 
 	public Long getId() {
-		return Id;
+		return id;
 	}
 
 	public void setId(Long id) {
-		Id = id;
+		this.id = id;
 	}
 
 	public Float getChangeRate() {

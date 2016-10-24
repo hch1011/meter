@@ -271,22 +271,49 @@ public class DeviceDataController extends BaseController{
 		return map;
 	}
 
-//	@RequestMapping(value = "/device/data/img/recollect", method = RequestMethod.GET, consumes = "application/json", produces = "application/json")
-//	@ResponseBody
-//	public Object imgRecollect(
-//			HttpServletRequest request,
-//			HttpServletResponse response,
-//			@RequestParam(value="deviceId", required = true)Long deviceId
-//	) {
-//		Map<String, Object> map = new HashMap<>();
-//		try{
-//			deviceService.imageRecollect(deviceId);
-//			map.put("success", true);
-//		}  catch (Exception e) {
-//			logger.error("image recognition failed");
-//			map.put("success", false);
-//		}
-//
-//		return map;
-//	}
+	/**
+	 * 摄像头绑定到设备
+	 * DeviceInfo.
+	 */
+	@RequestMapping(value = "/device/camera/bind", method = RequestMethod.POST)
+	@ResponseBody
+	public Object camereBind(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(value="deviceInfoId",required=true)  Long deviceInfoId,
+			@RequestParam(value="cameraSerial",required=true)  String cameraSerial,
+			@RequestParam(value="force",required=false, defaultValue="false") boolean force
+	) { 
+		try {
+			deviceService.bindCamera(deviceInfoId, cameraSerial,force);
+		} catch (Exception e) {
+			return fail(e.getMessage());
+		}
+
+		return success();
+	}
+	
+	/**
+	 * 更新图片切割范围
+	 * 参数,device
+	 * DeviceInfo.
+	 */
+	@RequestMapping(value = "/device/camera/range", method = RequestMethod.POST)
+	@ResponseBody
+	public Object camereReSetRange(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(value="deviceInfoId",required=true)  Long deviceInfoId,
+			@RequestParam(value="x",required=true)  Integer x,
+			@RequestParam(value="y",required=true)  Integer y,
+			@RequestParam(value="w",required=true)  Integer w,
+			@RequestParam(value="h",required=true)  Integer h
+	) { 
+		try {
+			deviceService.reSetCutRange(deviceInfoId,x,y,w,h);
+		} catch (Exception e) {
+			return fail(e.getMessage());
+		}
+		return success();
+	}
 } 

@@ -1,6 +1,7 @@
 package com.jd.meter.service;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.LoadingCache;
 import com.jd.meter.dao.DeviceDataDao;
 import com.jd.meter.dao.DeviceInfoDao;
 import com.jd.meter.dao.DeviceTypeDao;
@@ -36,6 +39,12 @@ public class DeviceService {
 	List<DeviceInfo> allDeviceInfoList; 
 	Map<Long,DeviceType> deviceTypeCache = new HashMap<Long, DeviceType>();
 	
+	
+	CacheBuilder<Object, Object> deviceInfoCache = 
+			 CacheBuilder.newBuilder()
+			 .expireAfterWrite(120, TimeUnit.SECONDS);
+
+
 	
 	public DeviceType  queryDeviceTypeByType(Long type, boolean fromCache) {
 		DeviceType obj;
@@ -223,6 +232,24 @@ public class DeviceService {
  	
 	public DeviceData queryDeviceDataById(Long deviceId) {
 		return deviceDataDao.findOne(deviceId);
+	}
+
+	public void bindCamera(Long deviceInfoId, String cameraSerial, boolean force) {
+		DeviceInfo deviceInfo = deviceInfoDao.findOne(deviceInfoId);
+		deviceInfo.setCameraSerial(cameraSerial);
+		deviceInfo.setUpdateTime(new Date());
+		deviceInfo.setBindTime(deviceInfo.getUpdateTime());
+		deviceInfoDao.save(deviceInfo);
+	}
+
+	public void reSetCutRange(Long deviceInfoId, Integer x, Integer y, Integer w, Integer h) {
+		DeviceInfo deviceInfo = deviceInfoDao.findOne(deviceInfoId);
+		deviceInfo.setX(x);
+		deviceInfo.setY(y);
+		deviceInfo.setW(w);
+		deviceInfo.setH(h);
+		deviceInfo.setUpdateTime(deviceInfo.getBindTime());
+		deviceInfoDao.save(deviceInfo);
 	}
 
 //	public Boolean imageRecollect(Long deviceId) {

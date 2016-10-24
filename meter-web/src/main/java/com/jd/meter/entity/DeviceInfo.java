@@ -18,6 +18,8 @@ public class DeviceInfo implements Serializable{
 	
 	@Transient
 	private DeviceType deviceType;
+	@Transient
+	private CameraInfo cameraInfo;
 	
     @Id
     @Column(name = "id")
@@ -80,6 +82,15 @@ public class DeviceInfo implements Serializable{
 	
 	@Column(name = "description")
 	private String description;		//说明
+	
+	
+	// 摄像头信息
+	private String cameraSerial; 	//摄像头序列号
+	private Integer x; 				//图片切片坐标 X轴起点
+	private Integer y; 				//图片切片坐标 Y轴起点
+	private Integer w; 				//图片切片宽度
+	private Integer h; 				//图片切片高度
+	private Date bindTime;			
 
 	public String getCode() {
 		return code;
@@ -239,6 +250,54 @@ public class DeviceInfo implements Serializable{
 
 	public void setDeviceType(DeviceType deviceType) {
 		this.deviceType = deviceType;
+	}
+
+	public String getCameraSerial() {
+		return cameraSerial;
+	}
+
+	public void setCameraSerial(String cameraSerial) {
+		this.cameraSerial = cameraSerial;
+	}
+
+	public Integer getX() {
+		return x;
+	}
+
+	public void setX(Integer x) {
+		this.x = x;
+	}
+
+	public Integer getY() {
+		return y;
+	}
+
+	public void setY(Integer y) {
+		this.y = y;
+	}
+
+	public Integer getW() {
+		return w;
+	}
+
+	public void setW(Integer w) {
+		this.w = w;
+	}
+
+	public Integer getH() {
+		return h;
+	}
+
+	public void setH(Integer h) {
+		this.h = h;
+	}
+
+	public Date getBindTime() {
+		return bindTime;
+	}
+
+	public void setBindTime(Date bindTime) {
+		this.bindTime = bindTime;
 	}
 
 	public String getSnapStatusEn() {

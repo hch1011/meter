@@ -1,27 +1,36 @@
 package com.jd.meter.util;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
-/**
- * cmd /c dir 是执行完dir命令后关闭命令窗口。
- * cmd /k dir 是执行完dir命令后不关闭命令窗口。 
- * cmd /c start dir 会打开一个新窗口后执行dir指令，原窗口会关闭。 
- * cmd /k start dir 会打开一个新窗口后执行dir指令，原窗口不会关闭。 
- * @author hc
- *
- */
+
 public class NativeWinExe {
 	/**
-	 * 需要执行的命令
-	 * @param cmdStr
+	 * 
+	 * @param exeFullname 需要执行的操作系统exe命令全路径名
+	 * @param args 参数列表
 	 */
-	 public static void exe(String cmdStr, String fileIn, String fileOut){
+	 public static void call(String exeFullname, String... args){
 		try {
-			Process p = Runtime.getRuntime().exec("cmd /c " + cmdStr);
+			exeFullname = exeFullname.replace("\\", "/");
+			int lastSplit = exeFullname.lastIndexOf("/");
+			String dir = exeFullname.substring(0, lastSplit);
+			
+			List<String> commands = new ArrayList<>();
+			commands.add(exeFullname);
+ 			for(String arg : args){
+ 				commands.add(arg);
+ 			} 
+			ProcessBuilder pb = new ProcessBuilder();
+			pb.directory(new File(dir));
+			pb.command(commands); 
+			Process p = pb.start();
 			InputStream f = p.getInputStream();
-			System.out.println(getString(f));
-		} catch (IOException e) {
+			System.out.println("result=" + getString(f));
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		 return;
@@ -29,8 +38,10 @@ public class NativeWinExe {
 	
 	public static void main(String[] args) {
 		System.out.println("main() start");
-		String cmdStr = "dir > D:\\data\\meter\\dir.log" ;
-		//exe(cmdStr);
+		String cmdStr = "C:\\data\\meter\\halcondot\\f32.exe " ;
+		String fileIn = "C:\\data\\meter\\image\\f000.JPG";
+		//String fileOut = "C:\\data\\meter\\image\\f000.txt";
+		call(cmdStr,  fileIn);
 		
 		System.out.println("main() end");
 	}

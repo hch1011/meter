@@ -1,7 +1,5 @@
 package com.jd.meter.controller;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
-
 import java.util.Date;
 import java.util.List;
 
@@ -17,11 +15,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.jd.meter.dao.DeviceInfoDao;
 import com.jd.meter.dao.DeviceTypeDao;
+import com.jd.meter.entity.CameraInfo;
 import com.jd.meter.entity.DeviceData;
 import com.jd.meter.entity.DeviceInfo;
 import com.jd.meter.service.DeviceService;
 import com.jd.meter.sync.SyncTriggerService;
-import com.jd.meter.ys.sdk.YsClientDevice;
+import com.jd.meter.ys.sdk.YsClientProxy;
  
 @Controller
 public class TestController extends BaseController{
@@ -34,6 +33,8 @@ public class TestController extends BaseController{
 	DeviceInfoDao deviceInfoDao;
 	@Autowired
 	SyncTriggerService syncTriggerService;
+	@Autowired
+	YsClientProxy ysClientProxy;
 	
 	
 	@RequestMapping(value = "/test/data", method=RequestMethod.GET)
@@ -41,8 +42,6 @@ public class TestController extends BaseController{
 			@RequestParam(name="type", required = false) Long type,
 			Model model
 			) {
-//		List<DeviceType> deviceTypeList = deviceTypeDao.findAll();
-//		model.addAttribute("deviceTypeList", deviceTypeList);
 		if(type != null){
 			List<DeviceInfo> deviceInfoList = deviceInfoDao.findByType(type);
 			model.addAttribute("deviceInfoList", deviceInfoList);
@@ -52,7 +51,7 @@ public class TestController extends BaseController{
 		}
 		model.addAttribute("type", 6);//前端测试数据选中
 		
-		List<com.jd.meter.ys.sdk.DeviceInfo> deviceList = YsClientDevice.deviceList();
+		List<CameraInfo> deviceList = ysClientProxy.deviceList(0,50);
 		model.addAttribute("deviceList", deviceList);//前端测试数据选中
 		return "test/data";
 	}
@@ -98,7 +97,7 @@ public class TestController extends BaseController{
 	public Object capture(
  			@RequestParam(name="deviceSerial", required = false) String deviceSerial
 			) {
-		String url = YsClientDevice.capture(deviceSerial, "1");
+		String url = ysClientProxy.capture(deviceSerial, "1");
 		return "redirect:"+url;
 	}
 } 
