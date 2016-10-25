@@ -27,8 +27,6 @@ public class IndexController {
 	
 	@RequestMapping(value = {"", "/index"})
 	public String index(HttpServletRequest request, Model model) {
-		//setBasePath
-		//System.out.println(request.getContextPath());
 		if(request.getSession().getServletContext().getAttribute("bastPath") == null){
 			request.getSession().getServletContext().setAttribute("bastPath", request.getContextPath());
 		}

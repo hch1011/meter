@@ -238,7 +238,7 @@ public class DeviceService {
 		DeviceInfo deviceInfo = deviceInfoDao.findOne(deviceInfoId);
 		deviceInfo.setCameraSerial(cameraSerial);
 		deviceInfo.setUpdateTime(new Date());
-		deviceInfo.setBindTime(deviceInfo.getUpdateTime());
+		deviceInfo.setCameraBindTime(deviceInfo.getUpdateTime());
 		deviceInfoDao.save(deviceInfo);
 	}
 
@@ -248,7 +248,7 @@ public class DeviceService {
 		deviceInfo.setY(y);
 		deviceInfo.setW(w);
 		deviceInfo.setH(h);
-		deviceInfo.setUpdateTime(deviceInfo.getBindTime());
+		deviceInfo.setUpdateTime(new Date());
 		deviceInfoDao.save(deviceInfo);
 	}
 

@@ -85,12 +85,19 @@ public class DeviceInfo implements Serializable{
 	
 	
 	// 摄像头信息
+	@Column(name = "camera_serial")
 	private String cameraSerial; 	//摄像头序列号
+	
+	@Column(name = "camera_bind_time")
+	private Date cameraBindTime;	
+	@Column(name = "x")
 	private Integer x; 				//图片切片坐标 X轴起点
+	@Column(name = "y")
 	private Integer y; 				//图片切片坐标 Y轴起点
+	@Column(name = "w")
 	private Integer w; 				//图片切片宽度
-	private Integer h; 				//图片切片高度
-	private Date bindTime;			
+	@Column(name = "h")
+	private Integer h; 				//图片切片高度		
 
 	public String getCode() {
 		return code;
@@ -291,13 +298,21 @@ public class DeviceInfo implements Serializable{
 	public void setH(Integer h) {
 		this.h = h;
 	}
-
-	public Date getBindTime() {
-		return bindTime;
+	
+	public CameraInfo getCameraInfo() {
+		return cameraInfo;
 	}
 
-	public void setBindTime(Date bindTime) {
-		this.bindTime = bindTime;
+	public void setCameraInfo(CameraInfo cameraInfo) {
+		this.cameraInfo = cameraInfo;
+	}
+
+	public Date getCameraBindTime() {
+		return cameraBindTime;
+	}
+
+	public void setCameraBindTime(Date cameraBindTime) {
+		this.cameraBindTime = cameraBindTime;
 	}
 
 	public String getSnapStatusEn() {

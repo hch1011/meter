@@ -72,6 +72,24 @@
         <put-attribute name="jsPath" value="errorreport"/>
     </definition>
     
+    
+    <definition name="camera/list" extends="template">
+        <put-attribute name="title" value="摄像头列表" cascade="true"/>
+        <put-attribute name="nav" value="" cascade="true"/>
+        <put-attribute name="content" value="/WEB-INF/pages/cameraList.jsp"/>
+        <put-attribute name="cssPath" value="cameraList"/>
+        <put-attribute name="jsPath" value="cameraList"/>
+    </definition>
+    
+    <definition name="camera/setting" extends="template">
+        <put-attribute name="title" value="摄像头列表" cascade="true"/>
+        <put-attribute name="nav" value="" cascade="true"/>
+        <put-attribute name="content" value="/WEB-INF/pages/cameraSetting.jsp"/>
+        <put-attribute name="cssPath" value="cameraSetting"/>
+        <put-attribute name="jsPath" value="cameraSetting"/>
+    </definition>
+    
+    
     <definition name="login" template="/WEB-INF/pages/login.jsp">  
 	</definition>
 	 

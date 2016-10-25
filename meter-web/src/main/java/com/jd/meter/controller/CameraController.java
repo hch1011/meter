@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -36,16 +37,29 @@ public class CameraController extends BaseController{
 	/**
 	 * 所有摄像头
 	 */
-	@RequestMapping(value = "/camera/list", method = RequestMethod.GET, consumes = "application/json", produces = "application/json")
-	@ResponseBody
-	public Object camereList(
+	@RequestMapping(value = "/camera/list", method = RequestMethod.GET)
+	public String camereList(
 			HttpServletRequest request,
 			HttpServletResponse response,
-			@PageableDefault(page=0, size=100) Pageable pageable
+			@PageableDefault(page=0, size=100) Pageable pageable,
+			Model model
 	) {
 		Page<CameraInfo> page = ysClientProxy.cameraList(pageable);
+		model.addAttribute("page", page);
+		return "camera/list";
+	}
 
-		return page;
+	/**
+	 * 所有摄像头
+	 */
+	@RequestMapping(value = "/camera/setting", method = RequestMethod.GET)
+	public String camereSetting(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@PageableDefault(page=0, size=100) Pageable pageable,
+			Model model
+	) {
+		return "camera/setting";
 	}
 
 } 

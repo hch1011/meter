@@ -40,8 +40,14 @@
 			</a>
 		</li>
 		<li>
-			<a href="/meter/test/data" data-num="6">
-			<img src="/meter/resources/images/icon04.png" title="测试数据" />
+			<a href="/meter/camera/list" data-num="6">
+			<img src="/meter/resources/images/icon06.png" title="摄像头管理" />
+			<h2>摄像头管理</h2>
+			</a>
+		</li>
+		<li>
+			<a href="/meter/test/data" data-num="7">
+			<img src="/meter/resources/images/icon01.png" title="测试数据" />
 			<h2>测试数据</h2>
 			</a>
 		</li>

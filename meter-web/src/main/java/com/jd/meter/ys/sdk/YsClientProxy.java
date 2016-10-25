@@ -6,6 +6,7 @@ import java.util.Map;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -19,6 +20,7 @@ import com.jd.meter.util.SimpleHttpUtils;
  * @author hc
  *
  */
+@Component("ysClientProxy")
 public class YsClientProxy extends YsClientBase{
 
 	 /**
@@ -133,10 +135,10 @@ public class YsClientProxy extends YsClientBase{
 		 Map<String, String> params = huildParamsWithToken();
 		 params.put("pageStart", String.valueOf(pageable.getOffset()));
 		 params.put("pageSize", String.valueOf(pageable.getPageSize()));
-		 JSONObject data = post(domainUrl+"/api/lapp/camera/list", params, "获取设备列表").getJSONObject("data");  
-		 List<CameraInfo> list = JSON.parseArray(data.getJSONArray("data").toJSONString(), CameraInfo.class);
-		 
-		 Page<CameraInfo> page = new PageImpl<CameraInfo>(list,pageable,100);
-		 return page;
+		 JSONObject body = post(domainUrl+"/api/lapp/camera/list", params, "获取设备列表");
+		 List<CameraInfo> list = JSON.parseArray(body.getJSONArray("data").toJSONString(), CameraInfo.class);
+		 //JSONArray data = body.getJSONArray("data");
+		 JSONObject page = body.getJSONObject("page");  //{"page":0,"size":50,"total":1}
+		 return new PageImpl<CameraInfo>(list,pageable,page.getInteger("total"));
 	 }
 }

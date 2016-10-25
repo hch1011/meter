@@ -18,7 +18,8 @@ import javax.persistence.Table;
 @Table(name = "camera_info")
 public class CameraInfo implements Serializable {
 	private static final long serialVersionUID = 1L;
-		
+	
+	DeviceInfo deviceInfo;
 
     @Id
     @Column(name = "device_serial")
@@ -111,5 +112,60 @@ public class CameraInfo implements Serializable {
 
 	public void setUpdateTime(Date updateTime) {
 		this.updateTime = updateTime;
+	}
+
+	public DeviceInfo getDeviceInfo() {
+		return deviceInfo;
+	}
+
+	public void setDeviceInfo(DeviceInfo deviceInfo) {
+		this.deviceInfo = deviceInfo;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+	
+	public String getStatusText() {
+		//摄像头在线状态：1-在线，2-不在线
+		if("1".equals(status)){
+			return "在线";
+		}
+		if("2".equals(status)){
+			return "不在线";
+		}
+		//数据库有，但在线查询不到
+		if("-1".equals(status)){
+			return "遗失";
+		}
+		return "未知状态:"+status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public String getDefence() {
+		return defence;
+	}
+
+	public void setDefence(String defence) {
+		this.defence = defence;
+	}
+
+	public String getIsEncrypt() {
+		return isEncrypt;
+	}
+
+	public void setIsEncrypt(String isEncrypt) {
+		this.isEncrypt = isEncrypt;
+	}
+
+	public String getVideoLevel() {
+		return videoLevel;
+	}
+
+	public void setVideoLevel(String videoLevel) {
+		this.videoLevel = videoLevel;
 	}
 }
