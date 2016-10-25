@@ -6,7 +6,7 @@
     
 
 	<div class="content-body">
-			<table width="500px">
+			<table border="500px">
 				<tr>
 					<td>摄像头序列号</td>
 					<td>摄像头名称</td>
