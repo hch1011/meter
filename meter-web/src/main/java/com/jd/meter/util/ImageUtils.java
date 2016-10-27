@@ -1,6 +1,8 @@
-package com.jd.meter.service;
+package com.jd.meter.util;
 
 import org.springframework.stereotype.Component;
+
+import com.jd.meter.exception.MeterExceptionFactory;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -15,7 +17,7 @@ import java.io.IOException;
  * Created by hujintao on 2016/8/13.
  */
 @Component
-public class ImageService {
+public class ImageUtils { 
     /**
      * 图片切割
      *
@@ -25,12 +27,12 @@ public class ImageService {
      * @param w         目标切片 宽度
      * @param h         目标切片 高度
      */
-    public void cutImage(String imagePath, int x, int y, int w, int h) throws IOException {
+    public static void cutImage(String sourceImagePath, String targetImagePath, int x, int y, int w, int h) throws IOException {
         try {
             Image img;
             ImageFilter cropFilter;
             // 读取源图像
-            BufferedImage bi = ImageIO.read(new File(imagePath));
+            BufferedImage bi = ImageIO.read(new File(sourceImagePath));
             int srcWidth = bi.getWidth();      // 源图宽度
             int srcHeight = bi.getHeight();    // 源图高度
 
@@ -50,14 +52,15 @@ public class ImageService {
                 g.drawImage(img, 0, 0, null); // 绘制缩小后的图
                 g.dispose();
                 // 输出为文件
-                ImageIO.write(tag, "png", new File(imagePath));
+                ImageIO.write(tag, "png", new File(targetImagePath));
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            throw MeterExceptionFactory.applicationException("裁剪图片出错", e);
         }
     }
 
-    public void imageRecognition(String imagePath, int x, int y, int w, int h) throws IOException {
+    @Deprecated
+    public static void imageRecognition(String imagePath, int x, int y, int w, int h) throws IOException {
         Image img;
         ImageFilter cropFilter;
         // 读取源图像

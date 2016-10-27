@@ -29,7 +29,7 @@ public class DeviceInfo implements Serializable{
 	private String code;			//设备编号： A-1,A-2,A-3...A-9,B-1,B-2
 
 	@Column(name = "input_num")
-	private Integer inputNum;			//进线编号
+	private Integer inputNum;		//进线编号
 	
 	@Column(name = "path")
 	private String path;			//路劲终端位置  	1号主变A相; 1号主变B相; 1号主变C相， 2号主变A相...
@@ -38,7 +38,7 @@ public class DeviceInfo implements Serializable{
 	private Long type;				//类别:避雷针,SF6密度计
 
 	@Column(name = "name")
-	private String name;			//名称               :避雷针1，避雷针2，SF6密度计1，SF6密度计2
+	private String name;			//名称  :避雷针1，避雷针2，SF6密度计1，SF6密度计2
 	
 	@Column(name = "ip")
 	private String ip;				//终端IP
@@ -97,7 +97,7 @@ public class DeviceInfo implements Serializable{
 	@Column(name = "w")
 	private Integer w; 				//图片切片宽度
 	@Column(name = "h")
-	private Integer h; 				//图片切片高度		
+	private Integer h; 				//图片切片高度
 
 	public String getCode() {
 		return code;

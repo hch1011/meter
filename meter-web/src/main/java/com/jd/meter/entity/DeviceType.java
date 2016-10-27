@@ -56,7 +56,7 @@ public class DeviceType implements Serializable{
 	private String changeRateUnit;			//单位
 
 	@Column(name = "frequency_for_warning")
-	private Integer frequencyForWarning;		//动作次数预警阈值
+	private Integer frequencyForWarning;	//动作次数预警阈值
 
 	@Column(name= "frequency_for_alarm")
 	private Integer frequencyForAlarm;		//动作次数报警阈值
@@ -69,8 +69,13 @@ public class DeviceType implements Serializable{
 
 	@Column(name = "monitor_page_flag")
 	private Integer monitorPageFlag;		//是否需要出现在监控首页
+	
 	@Column(name = "monitor_page_sort")
 	private Float monitorPageSort;			//出现在监控首页顺序,在同一类别内排序,默认按编号
+	
+
+	@Column(name = "recognition_program_path")
+	private String recognitionProgramPath;	//识别程序完整路径
 	
 	@Column(name = "description")
 	private String description;				//说明
@@ -235,6 +240,14 @@ public class DeviceType implements Serializable{
 		this.monitorPageFlag = monitorPageFlag;
 	}
 	
+	public String getRecognitionProgramPath() {
+		return recognitionProgramPath;
+	}
+
+	public void setRecognitionProgramPath(String recognitionProgramPath) {
+		this.recognitionProgramPath = recognitionProgramPath;
+	}
+
 	/**
 	 * 检查数据状态,返回状态
 	 * 如果有报警，状态为报警

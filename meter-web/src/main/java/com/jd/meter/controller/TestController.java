@@ -19,7 +19,6 @@ import com.jd.meter.entity.CameraInfo;
 import com.jd.meter.entity.DeviceData;
 import com.jd.meter.entity.DeviceInfo;
 import com.jd.meter.service.DeviceService;
-import com.jd.meter.sync.SyncTriggerService;
 import com.jd.meter.ys.sdk.YsClientProxy;
  
 @Controller
@@ -30,9 +29,7 @@ public class TestController extends BaseController{
 	@Autowired
 	DeviceTypeDao deviceTypeDao;
 	@Autowired
-	DeviceInfoDao deviceInfoDao;
-	@Autowired
-	SyncTriggerService syncTriggerService;
+	DeviceInfoDao deviceInfoDao;;
 	@Autowired
 	YsClientProxy ysClientProxy;
 	
@@ -69,28 +66,6 @@ public class TestController extends BaseController{
 		
 		deviceService.submitData(deviceData);
 		return testdataPage(null,model);
-	}
-	
-	@RequestMapping(value = "/sync", method=RequestMethod.POST)
-	@ResponseBody
-	public Object sync(
-			@RequestParam(name="id", required = false) Long id,
-			Model model
-			) {
-		DeviceData data = deviceService.queryDeviceDataById(id);
-		syncTriggerService.sendData(data);
-		 
-		return success(deviceService.queryDeviceDataById(id));
-	}
-	
-
-	@RequestMapping(value = "/sync/scan", method=RequestMethod.POST)
-	@ResponseBody
-	public Object syncScan(
- 			Model model
-			) {
- 		syncTriggerService.scanDatabase();
-		return success();
 	}
 	
 	@RequestMapping(value = "/ys/capture", method=RequestMethod.GET)

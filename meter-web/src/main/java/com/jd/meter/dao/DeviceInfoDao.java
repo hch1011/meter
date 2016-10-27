@@ -20,9 +20,11 @@ public interface DeviceInfoDao extends CrudRepository<DeviceInfo, Long>, JpaSpec
 	List<DeviceInfo> findByType(Long type);
 
 	@Query("select i from DeviceInfo i order by i.inputNum")
-	List<DeviceInfo> findAllDeviceInfo();
+	List<DeviceInfo> findAllDeviceInfoOrderByInputNum();
 
-	List<DeviceInfo> findAll(); 
+	List<DeviceInfo> findByCameraSerial(String deviceSerial);
+	
+	List<DeviceInfo> findAll();
 
     /**
      * 根据状态查询所有数据
@@ -34,5 +36,6 @@ public interface DeviceInfoDao extends CrudRepository<DeviceInfo, Long>, JpaSpec
     @Modifying
     @Query("delete from DeviceInfo i where i.code=?1")
     void removeDeviceInfoByCode(String code);
+
 
 }

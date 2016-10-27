@@ -11,12 +11,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.jd.meter.service.ImageCutService;
-import com.jd.meter.sync.SyncTriggerService;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,7 +37,7 @@ import com.jd.meter.util.TimeUtils;
  * Created by Darker on 2016/5/6.
  */
 @Controller
-public class DeviceDataController extends BaseController{
+public class DeviceController extends BaseController{
 
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 	public final static String defaultDateFormat = "yyyy-MM-dd";
@@ -48,8 +49,6 @@ public class DeviceDataController extends BaseController{
     private DeviceService  deviceService;
 	@Autowired
 	private ImageCutService imageCutService;
-	@Autowired
-	SyncTriggerService syncTriggerService;
 
 	/**
 	 * 提交数据
@@ -88,9 +87,9 @@ public class DeviceDataController extends BaseController{
 
 		try{
 			if(deviceId != null) {
-				model.addAttribute("deviceInfo", deviceService.queryDeviceInfoById(deviceId));
+				model.addAttribute("deviceInfo", deviceService.queryDeviceInfoById(deviceId, true));
 			}
-			List<Map<Integer,List<DeviceInfo>>> resultList = deviceService.queryDeviceInfo();
+			List<Map<Integer,List<DeviceInfo>>> resultList = deviceService.queryDeviceInfoGroupByInputNum();
 			model.addAttribute("deviceInfoList", resultList);
 			model.addAttribute("deviceId", deviceId);
 			model.addAttribute("type", 2);//前端图像采集选中
@@ -106,7 +105,7 @@ public class DeviceDataController extends BaseController{
 			HttpServletRequest request,
 			HttpServletResponse response,
 			@RequestParam(value="deviceId", required = true)Long deviceId) {
-		DeviceInfo deviceInfo = deviceService.queryDeviceInfoById(deviceId);
+		DeviceInfo deviceInfo = deviceService.queryDeviceInfoById(deviceId, true);
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("deviceInfo", deviceInfo);
 		Date snapTime = deviceInfo.getSnapTime();
@@ -271,49 +270,17 @@ public class DeviceDataController extends BaseController{
 		return map;
 	}
 
-	/**
-	 * 摄像头绑定到设备
-	 * DeviceInfo.
-	 */
-	@RequestMapping(value = "/device/camera/bind", method = RequestMethod.POST)
+
+	@RequestMapping(value = "/cc", method = RequestMethod.GET)
 	@ResponseBody
-	public Object camereBind(
+	public Object clearCacle(
 			HttpServletRequest request,
 			HttpServletResponse response,
-			@RequestParam(value="deviceInfoId",required=true)  Long deviceInfoId,
-			@RequestParam(value="cameraSerial",required=true)  String cameraSerial,
-			@RequestParam(value="force",required=false, defaultValue="false") boolean force
-	) { 
-		try {
-			deviceService.bindCamera(deviceInfoId, cameraSerial,force);
-		} catch (Exception e) {
-			return fail(e.getMessage());
-		}
-
+			@PageableDefault(page=0, size=100) Pageable pageable,
+			Model model
+	) {
+		deviceService.cleanAll();
 		return success();
 	}
 	
-	/**
-	 * 更新图片切割范围
-	 * 参数,device
-	 * DeviceInfo.
-	 */
-	@RequestMapping(value = "/device/camera/range", method = RequestMethod.POST)
-	@ResponseBody
-	public Object camereReSetRange(
-			HttpServletRequest request,
-			HttpServletResponse response,
-			@RequestParam(value="deviceInfoId",required=true)  Long deviceInfoId,
-			@RequestParam(value="x",required=true)  Integer x,
-			@RequestParam(value="y",required=true)  Integer y,
-			@RequestParam(value="w",required=true)  Integer w,
-			@RequestParam(value="h",required=true)  Integer h
-	) { 
-		try {
-			deviceService.reSetCutRange(deviceInfoId,x,y,w,h);
-		} catch (Exception e) {
-			return fail(e.getMessage());
-		}
-		return success();
-	}
 } 

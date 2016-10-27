@@ -6,16 +6,22 @@
     
 
 	<div class="content-body">
-			<table border="500px">
+			<table class="table table-bordered">
+				<thead>
+				<tr>
+					<td colspan="3" align="center">摄像头</td>
+					<td colspan="4" align="center">仪表设备</td>
+				</tr>
 				<tr>
 					<td>摄像头序列号</td>
 					<td>摄像头名称</td>
-					<td>在线状态</td>
-					<td>设备名称</td>
-					<td>设备类别</td>
-					<td>设备编号</td>
+					<td>状态</td>
+					<td>仪表名称</td>
+					<td>仪表类别</td>
+					<td>仪表编号</td>
 					<td></td>
 				</tr>
+				</thead>
 				<c:forEach items="${page.content}" var="item">
 				<tr>
 					<td>${item.deviceSerial}</td>
@@ -24,7 +30,7 @@
 					<td>${item.deviceInfo.name}</td>
 					<td>${item.deviceInfo.type}</td>
 					<td>${item.deviceInfo.code}</td>
-					<td><a href="${basePath}/camera/setting">详情</a></td>
+					<td><a href="${basePath}/camera/setting?cameraSerial=${item.deviceSerial}" target="_blank">详情</a></td>
 				</tr>
 				</c:forEach>
 			</table>  

@@ -1,50 +1,51 @@
 package com.jd.meter.service;
 
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.LoadingCache;
+import com.google.common.collect.Maps;
 import com.jd.meter.dao.DeviceDataDao;
 import com.jd.meter.dao.DeviceInfoDao;
 import com.jd.meter.dao.DeviceTypeDao;
+import com.jd.meter.entity.CameraInfo;
 import com.jd.meter.entity.DeviceData;
 import com.jd.meter.entity.DeviceInfo;
 import com.jd.meter.entity.DeviceType;
-import com.jd.meter.sync.SyncTriggerService;
 import com.jd.meter.util.ObjectUtil;
 import com.jd.meter.util.SnowflakeIdGenerator;
+import com.jd.meter.ys.sdk.YsClientProxy;
 
 @Service("deviceService")
 public class DeviceService {
 	private static Logger LOGGER = LoggerFactory.getLogger(DeviceService.class);
-	 
+	
 	@Value("${meter.centerServer.syncdata:false}")
-	public boolean syncdata = false;
+	private boolean syncdata = false;
 	@Autowired
-	DeviceTypeDao deviceTypeDao;
+	private DeviceTypeDao deviceTypeDao;
 	@Autowired
-	DeviceInfoDao deviceInfoDao;
+	private DeviceInfoDao deviceInfoDao;
 	@Autowired
-	DeviceDataDao deviceDataDao;
+	private DeviceDataDao deviceDataDao;
 	@Autowired
-	SyncTriggerService syncTriggerService;
+	private YsClientProxy ysClientProxy;
+	 
+	private List<DeviceInfo>  queryDeviceInfoAllOrderByInputNumCache;
+	private long  queryDeviceInfoAllOrderByInputNumCacheExpireTime=0;//findAllDeviceInfoOrderByInputNumCache的实效时间10分钟
+	private Map<Long,DeviceType> deviceTypeCache = Maps.newHashMap();
+	private Map<Long,DeviceInfo> deviceInfoCache = Maps.newHashMap();
+	private Map<String,CameraInfo> cameraCache = Maps.newHashMap();
+	private Map<String,Long> cameraDeviceInfoCache = Maps.newHashMap();
 	
-	List<DeviceInfo> allDeviceInfoList; 
-	Map<Long,DeviceType> deviceTypeCache = new HashMap<Long, DeviceType>();
 	
-	
-	CacheBuilder<Object, Object> deviceInfoCache = 
-			 CacheBuilder.newBuilder()
-			 .expireAfterWrite(120, TimeUnit.SECONDS);
-
-
+	//CacheBuilder<Object, Object> deviceInfoCache = CacheBuilder.newBuilder().expireAfterWrite(120, TimeUnit.SECONDS);
 	
 	public DeviceType  queryDeviceTypeByType(Long type, boolean fromCache) {
 		DeviceType obj;
@@ -54,7 +55,6 @@ public class DeviceService {
 				return obj;
 			}
 		}
-		
 		
 		obj = deviceTypeDao.findOne(type);
 		if(obj != null){
@@ -141,12 +141,6 @@ public class DeviceService {
 		deviceInfo.setWarningReason(deviceData.getWarningReason());
 		deviceInfo.setSnapDataId(deviceData.getId());
 		deviceInfoDao.save(deviceInfo);
-
-		if(syncdata){
-			if(deviceData.getSyncSuccessTime() == null){
-				syncTriggerService.sendDataSync(deviceData);
-			}
-		}
 	}
 	/**
 	 * 接受到同步过来的数据
@@ -172,10 +166,24 @@ public class DeviceService {
 			deviceInfoDao.save(deviceInfo);
 		}
 	}
+ 
+	public List<DeviceInfo> queryDeviceInfoAllOrderByInputNum(){
+		if(System.currentTimeMillis() > queryDeviceInfoAllOrderByInputNumCacheExpireTime){
+			queryDeviceInfoAllOrderByInputNumCache = null;
+		}
+		if(queryDeviceInfoAllOrderByInputNumCache == null){
+			queryDeviceInfoAllOrderByInputNumCache = deviceInfoDao.findAllDeviceInfoOrderByInputNum();
+			queryDeviceInfoAllOrderByInputNumCacheExpireTime = System.currentTimeMillis() + 600 * 1000;
+		}
+		
+		 return queryDeviceInfoAllOrderByInputNumCache;
+	}
+	
 
-	public List<Map<Integer,List<DeviceInfo>>> queryDeviceInfo() {
+	public List<Map<Integer,List<DeviceInfo>>> queryDeviceInfoGroupByInputNum() {
 		List<Map<Integer,List<DeviceInfo>>> resultList = new ArrayList<Map<Integer,List<DeviceInfo>>>();
-		List<DeviceInfo> deviceInfoList = deviceInfoDao.findAllDeviceInfo();
+		List<DeviceInfo> deviceInfoList = queryDeviceInfoAllOrderByInputNum();
+
 		Integer inputNum = 0;
 		Map<Integer,List<DeviceInfo>> map = null;
 		List<DeviceInfo> list = null;
@@ -205,10 +213,19 @@ public class DeviceService {
 	public void updateDeviceDataForSyncSuccess(DeviceData deviceData) {
 		deviceDataDao.save(deviceData);
 	}
-	public DeviceInfo queryDeviceInfoById(Long deviceId) {
-		return deviceInfoDao.findOne(deviceId);
+	
+	
+	public DeviceInfo queryDeviceInfoById(Long deviceInfoId, boolean useCache) {
+		if(deviceInfoId == null){
+			return null;
+		}
+		DeviceInfo info = deviceInfoCache.get(deviceInfoId);
+		if(useCache && info != null){
+			return info;
+		} 
+		info = deviceInfoDao.findOne(deviceInfoId);
+ 		return cache(info);
 	}
-
 
 	public List<DeviceInfo> queryDeviceInfoBySnapStatus(Integer[] snapStatus) {
 		List<DeviceInfo> list = deviceInfoDao.findBySnapStatusIn(snapStatus);
@@ -219,7 +236,18 @@ public class DeviceService {
 		return list;
 	}
 	
-
+	private DeviceInfo queryDeviceInfoByCameraSerial(String deviceSerial) {
+		DeviceInfo info = queryDeviceInfoById(cameraDeviceInfoCache.get(deviceSerial), true);
+		if(info == null){
+			List<DeviceInfo> list = deviceInfoDao.findByCameraSerial(deviceSerial);
+			if(list.size() > 1){
+				info = list.get(0);
+				cache(info);
+			}
+		}
+		return info;
+	}
+	
 	/**
 	 * 获取待同步的数据
 	 * @param length
@@ -234,13 +262,15 @@ public class DeviceService {
 		return deviceDataDao.findOne(deviceId);
 	}
 
-	public void bindCamera(Long deviceInfoId, String cameraSerial, boolean force) {
+	public void bindCamera(Long deviceInfoId, String cameraSerialId, boolean force) {
 		DeviceInfo deviceInfo = deviceInfoDao.findOne(deviceInfoId);
-		deviceInfo.setCameraSerial(cameraSerial);
+		deviceInfo.setCameraSerial(cameraSerialId);
 		deviceInfo.setUpdateTime(new Date());
 		deviceInfo.setCameraBindTime(deviceInfo.getUpdateTime());
 		deviceInfoDao.save(deviceInfo);
-	}
+		
+		clean(deviceInfo);
+ 	}
 
 	public void reSetCutRange(Long deviceInfoId, Integer x, Integer y, Integer w, Integer h) {
 		DeviceInfo deviceInfo = deviceInfoDao.findOne(deviceInfoId);
@@ -252,9 +282,75 @@ public class DeviceService {
 		deviceInfoDao.save(deviceInfo);
 	}
 
-//	public Boolean imageRecollect(Long deviceId) {
-//		String message = "" + deviceId;
-//		return sendMsg.send(message);
-//	}
+	public Page<CameraInfo> queryCameraList(Pageable pageable, boolean withDeviceInfo){
+		Page<CameraInfo> page = ysClientProxy.cameraList(pageable);
+		if(withDeviceInfo){
+			List<CameraInfo> list = page.getContent();
+			for(CameraInfo item : list){
+				item.setDeviceInfo(queryDeviceInfoByCameraSerial(item.getDeviceSerial()));
+			}
+		}
+		return page;
+	}
+	
 
+	public void bindCameraToDeviceInfo(String cameraSerial, Long deviceInfoId){
+		queryDeviceInfoByCameraSerial(cameraSerial);
+		
+		// 解绑之前的摄像头
+		List<DeviceInfo> list = deviceInfoDao.findByCameraSerial(cameraSerial);
+		for(DeviceInfo info : list){
+			info.setCameraSerial(null);
+			deviceInfoDao.save(info);
+			clean(info);
+		}
+		//绑定现在的摄像头
+		DeviceInfo info = deviceInfoDao.findOne(deviceInfoId);
+		clean(info);
+		
+		info.setUpdateTime(new Date());
+		info.setCameraBindTime(info.getUpdateTime());
+		info.setCameraSerial(cameraSerial);
+		deviceInfoDao.save(info);
+		cache(info);
+	}
+	
+	private DeviceInfo cache(DeviceInfo info) {
+		if(info == null){
+			return null;
+		}
+		deviceInfoCache.put(info.getId(), info);
+		cameraDeviceInfoCache.put(info.getCameraSerial(), info.getId());
+ 		return info;
+	}
+	
+	private DeviceInfo clean(DeviceInfo info) {
+		if(info == null){
+			return null;
+		}
+		deviceInfoCache.remove(info.getId());
+		cameraDeviceInfoCache.remove(info.getCameraSerial());
+ 		return info;
+	}
+	
+	public void cleanAll(){
+		deviceTypeCache = Maps.newHashMap();
+		deviceInfoCache = Maps.newHashMap();
+		cameraCache = Maps.newHashMap();
+		cameraDeviceInfoCache = Maps.newHashMap();
+		queryDeviceInfoAllOrderByInputNumCacheExpireTime = 0;
+	}
+
+	public CameraInfo queryCameraById(String deviceSerial, boolean withDeviceInfo) {
+		CameraInfo info = cameraCache.get(deviceSerial);
+		if(info == null){
+			info = ysClientProxy.deviceInfo(deviceSerial);
+			cameraCache.put(deviceSerial, info);
+		}
+		 
+		if(withDeviceInfo && info != null && info.getDeviceInfo() == null){
+			info.setDeviceInfo(this.queryDeviceInfoByCameraSerial(deviceSerial));
+		}
+ 		return info;
+	}
 }

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.jd.meter.entity.CameraCaptureVo;
 import com.jd.meter.entity.CameraInfo;
 import com.jd.meter.util.SimpleHttpUtils;
 
@@ -48,6 +49,7 @@ public class YsClientProxy extends YsClientBase{
 	 }
 	 
 
+	 
 	 /**
 	  * 设备抓拍图片,返回图片的url
 	  * 抓拍设备当前画面，该接口仅适用于IPC或者关联IPC的NVR设备。
@@ -62,6 +64,16 @@ public class YsClientProxy extends YsClientBase{
 		 data = data.getJSONObject("data");
 		 return data.getString("picUrl");
 	 }
+	 public CameraCaptureVo capture(CameraCaptureVo param){
+		 Map<String, String> params = huildParamsWithToken();
+		 params.put("deviceSerial", param.getCamaraSerial());
+		 params.put("channelNo", param.getCamaraChannelNo());
+		 JSONObject data = post(domainUrl+"/api/lapp/device/capture", params, "设备抓拍图片").getJSONObject("data");
+		 data = data.getJSONObject("data");		 
+		 param.setYsUrl(data.getString("picUrl"));
+		 return param;
+	 }
+	 
 	 
 	/**
 	 * 根据UUID查询抓拍图片（设备互联互通使用）,返回图片url
@@ -119,6 +131,10 @@ public class YsClientProxy extends YsClientBase{
 	  * @return
 	  */
 	 public CameraInfo deviceInfo( String deviceSerial){
+		 if(deviceSerial.startsWith("virtual_")){
+			 return moke(deviceSerial.substring(8));
+		 }
+		 
 		 Map<String, String> params = huildParamsWithToken();
 		 params.put("deviceSerial", deviceSerial); 
 		 JSONObject data = post(domainUrl+"/api/lapp/device/info", params, "获取设备版本信息").getJSONObject("data");
@@ -137,8 +153,21 @@ public class YsClientProxy extends YsClientBase{
 		 params.put("pageSize", String.valueOf(pageable.getPageSize()));
 		 JSONObject body = post(domainUrl+"/api/lapp/camera/list", params, "获取设备列表");
 		 List<CameraInfo> list = JSON.parseArray(body.getJSONArray("data").toJSONString(), CameraInfo.class);
+		 if(list.size() == 0){
+			 for (int i = 0; i < 20; i++) {
+				 list.add(moke(String.valueOf(i)));
+			}
+		 }
 		 //JSONArray data = body.getJSONArray("data");
 		 JSONObject page = body.getJSONObject("page");  //{"page":0,"size":50,"total":1}
 		 return new PageImpl<CameraInfo>(list,pageable,page.getInteger("total"));
+	 }
+	 
+	 private CameraInfo moke(String i){
+		 CameraInfo came = new CameraInfo();
+		 came.setDeviceSerial("virtual_"+i);
+		 came.setChannelName("模拟摄像头"+i);
+		 came.setDeviceName("模拟摄像头"+i);
+		 return came;
 	 }
 }
