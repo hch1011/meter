@@ -21,9 +21,9 @@ public class YsClientBase {
 	@Value("${ys.sdk.domainUrl}")
 	protected String domainUrl="https://open.ys7.com";
 	@Value("${ys.sdk.appKey}")
-	protected String appKey="b0acdca68ec04401b127195e5c85e171";
+	protected String appKey="016f67daff44473ca558cc82c47e4c1a";
 	@Value("${ys.sdk.appSecret}")
-	protected String appSecret="ed1abe6f91fe6c7a28864db51fd96b8e";
+	protected String appSecret="da0c5b40a88f56f09f0eb80803e08b0c";
 	
 	@Value("${ys.sdk.domainUrl}/api/lapp/token/get")
 	private String tokenApi="https://open.ys7.com/api/lapp/token/get";
@@ -105,7 +105,7 @@ public class YsClientBase {
 		return header;
 	}
 	
-	public  Map<String, String> huildParamsWithToken(){
+	public  Map<String, String> buildParamsWithToken(){
 		Map<String, String> param = new HashMap<String,String>();
 		param.put("accessToken", getToken());
 		return param;

@@ -22,7 +22,7 @@
 					<td></td>
 				</tr>
 				</thead>
-				<c:forEach items="${page.content}" var="item">
+				<c:forEach items="${list}" var="item">
 				<tr>
 					<td>${item.deviceSerial}</td>
 					<td>${item.deviceName}/${item.channelName}</td>

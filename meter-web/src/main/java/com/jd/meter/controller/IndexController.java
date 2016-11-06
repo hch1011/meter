@@ -43,9 +43,7 @@ public class IndexController {
         model.addAttribute("list", list);
 		model.addAttribute("type", 1);//前端主页面选中
         return "monitor";
-    }
-     
-    
+    } 
     
     @RequestMapping(value = "/monitor/json")
     public String monitorJson(Model model){
@@ -59,6 +57,7 @@ public class IndexController {
     public String login(HttpServletRequest request, HttpServletResponse Response, Model model){
 		return "login";
     }
+
 	
 	@RequestMapping(value = "/go")
     public String go(HttpServletRequest request, HttpServletResponse Response, Model model){
@@ -71,5 +70,5 @@ public class IndexController {
     		){
 		return path+"_html";
     }
-    
+
 } 

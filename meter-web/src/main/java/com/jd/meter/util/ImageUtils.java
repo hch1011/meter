@@ -5,6 +5,9 @@ import org.springframework.stereotype.Component;
 import com.jd.meter.exception.MeterExceptionFactory;
 
 import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.imageio.stream.ImageInputStream;
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.CropImageFilter;
@@ -12,6 +15,7 @@ import java.awt.image.FilteredImageSource;
 import java.awt.image.ImageFilter;
 import java.io.File;
 import java.io.IOException;
+import java.util.Iterator;
 
 /**
  * Created by hujintao on 2016/8/13.
@@ -40,55 +44,48 @@ public class ImageUtils {
             if (srcWidth >= w && srcHeight >= h) {
                 Image image = bi.getScaledInstance(srcWidth, srcHeight, Image.SCALE_DEFAULT);
 
-                int x1 = x * srcWidth / 400;
-                int y1 = y * srcHeight / 270;
-                int w1 = w * srcWidth / 400;
-                int h1 = h * srcHeight / 270;
-
-                cropFilter = new CropImageFilter(x1, y1, w1, h1);
+                cropFilter = new CropImageFilter(x, y, w, h);
                 img = Toolkit.getDefaultToolkit().createImage(new FilteredImageSource(image.getSource(), cropFilter));
-                BufferedImage tag = new BufferedImage(w1, h1, BufferedImage.TYPE_INT_RGB);
+                BufferedImage tag = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
                 Graphics g = tag.getGraphics();
                 g.drawImage(img, 0, 0, null); // 绘制缩小后的图
                 g.dispose();
                 // 输出为文件
-                ImageIO.write(tag, "png", new File(targetImagePath));
+                ImageIO.write(tag, "jpg", new File(targetImagePath));
             }
         } catch (IOException e) {
             throw MeterExceptionFactory.applicationException("裁剪图片出错", e);
         }
     }
+ 
+    /**
+     * 图片伸缩，不破坏图片
+     * 
+     * @param srcFile 原图片路径
+     * @param dstFile 目标图片路径
+     * @param dstWidth 目标宽度
+     * @param dstHeight 目标高度
+     * @date 2013-11-1
+     */
+    public static void scale(String srcFile, String dstFile, int dstWidth, int dstHeight) {
 
-    @Deprecated
-    public static void imageRecognition(String imagePath, int x, int y, int w, int h) throws IOException {
-        Image img;
-        ImageFilter cropFilter;
-        // 读取源图像
-        BufferedImage bi = ImageIO.read(new File(imagePath));
-        int srcWidth = bi.getWidth();      // 源图宽度
-        int srcHeight = bi.getHeight();    // 源图高度
+    	try {
+    		ImageInputStream iis = ImageIO.createImageInputStream(new File(srcFile));
 
-        //若原图大小大于切片大小，则进行切割
-        if (srcWidth >= w && srcHeight >= h) {
-            Image image = bi.getScaledInstance(srcWidth, srcHeight, Image.SCALE_DEFAULT);
+    		Iterator<ImageReader> iterator = ImageIO.getImageReaders(iis);
 
-            int x1 = x * srcWidth / 400;
-            int y1 = y * srcHeight / 270;
-            int w1 = w * srcWidth / 400;
-            int h1 = h * srcHeight / 270;
+    		ImageReader reader = (ImageReader) iterator.next();
 
-            cropFilter = new CropImageFilter(x1, y1, w1, h1);
-            img = Toolkit.getDefaultToolkit().createImage(new FilteredImageSource(image.getSource(), cropFilter));
-            BufferedImage tag = new BufferedImage(w1, h1, BufferedImage.TYPE_INT_RGB);
+    		reader.setInput(iis, true);
 
-            Graphics g = tag.getGraphics();
-            g.drawImage(img, 0, 0, null); // 绘制缩小后的图
-            g.dispose();
-            //重新识别选取的区域
-            // to do
+    		BufferedImage source = reader.read(0);
 
-            // 输出为文件
-            ImageIO.write(tag, "png", new File(imagePath));
-        }
+    		BufferedImage tag = new BufferedImage(dstWidth, dstHeight, source.getType());
+    		tag.getGraphics().drawImage(source, 0, 0, dstWidth, dstHeight, null);
+    		File file = new File(dstFile);
+    		ImageIO.write(tag, reader.getFormatName(), file);
+    	} catch (Exception e) {
+    		e.printStackTrace();
+    	}
     }
 }

@@ -37,7 +37,7 @@ import com.jd.meter.util.TimeUtils;
  * Created by Darker on 2016/5/6.
  */
 @Controller
-public class DeviceController extends BaseController{
+public class MeterController extends BaseController{
 
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 	public final static String defaultDateFormat = "yyyy-MM-dd";
@@ -46,9 +46,9 @@ public class DeviceController extends BaseController{
 	@Autowired
 	DeviceTypeDao deviceTypeDao;
 	@Autowired
-    private DeviceService  deviceService;
+    DeviceService  deviceService;
 	@Autowired
-	private ImageCutService imageCutService;
+	ImageCutService imageCutService;
 
 	/**
 	 * 提交数据
@@ -270,7 +270,13 @@ public class DeviceController extends BaseController{
 		return map;
 	}
 
-
+	/**
+	 * 清空缓存
+	 * @param request
+	 * @param Response
+	 * @param model
+	 * @return
+	 */
 	@RequestMapping(value = "/cc", method = RequestMethod.GET)
 	@ResponseBody
 	public Object clearCacle(

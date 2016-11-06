@@ -2,15 +2,17 @@ package com.jd.meter.service;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Date;
+
+import javax.annotation.PostConstruct;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSON;
 import com.jd.meter.entity.CameraCaptureVo;
@@ -27,123 +29,277 @@ import com.jd.meter.ys.sdk.YsClientProxy;
 /**
  * Created by hujintao on 2016/8/13.
  */
-@Component
+@Service("cameraService")
 public class CameraService {
 
-	@Value("${meter.camera.image.folder}")
-	private String cameraImageFolder;
-	
+	@Value("${meter.camera.snapshot.saved.folder}")
+	private String cameraSnapshotFolder;
+	@Value("${meter.camera.snapshot.saved.width}")
+	private int cameraSnapshotSavedWidth = 800;
+ 	
 	@Autowired
     DeviceService deviceService;
 	@Autowired
     YsClientProxy ysClientProxy;
-
+	
+	@PostConstruct
+	public void init(){
+		System.out.println("----cameraSnapshotFolder="+cameraSnapshotFolder);
+		System.out.println("----cameraSnapshotSavedWidth="+cameraSnapshotSavedWidth);
+		if(cameraSnapshotFolder==null || cameraSnapshotFolder.startsWith("$")){
+			cameraSnapshotFolder= "c:\\data\\meter_snapshots\\";
+		}
+		if(cameraSnapshotSavedWidth <= 200){
+			cameraSnapshotSavedWidth = 800;
+		}
+		System.out.println("----cameraSnapshotFolder="+cameraSnapshotFolder);
+		System.out.println("----cameraSnapshotSavedWidth="+cameraSnapshotSavedWidth);
+	}
 	/**
-	 * 拍照,识别
+	 * 拍照识别流程
+	 * 流程参数:NeedRecognition是否抓拍；NeedSave是否保存图片；NeedRecognition识别
+	 * 
 	 */
-	public CameraCaptureVo paizhao(CameraCaptureVo param){
-		// 拍照
-		if(param.isOpCapture() ){
-			_capture(param);
+	public CameraCaptureVo captureSuite(CameraCaptureVo param){
+		validateAndInitParam(param);
+
+		if(param.isNeedCapture()){
+			doCapture(param);
 		}
 		
-		if(param.isOpSave()){
-		
+		if(param.isNeedSave()){
+			doSave(param);
 		}
 
-		if(param.isOpRecognition()){
-			_opRecognition(param);
+		if(param.isNeedRecognition()){
+			doRecognition(param);
  		}
 		
 		return param;
 	}
 	
-	// 拍照
-	void _capture(CameraCaptureVo param){
-		param.setCaptureTime(TimeUtils.getDateString(new Date(), TimeUtils.fullNumberFormat));
-		if(StringUtils.isBlank(param.getCamaraChannelNo())){
-			CameraInfo camera = deviceService.queryCameraById(param.getCamaraSerial(), true);
-			if(camera == null){
-				throw MeterExceptionFactory.applicationException("未获取到摄像头信息", null);
-			}else{
-				param.setCamaraChannelNo(camera.getChannelNo());
-				if(camera.getDeviceInfo() != null){
-					param.setDeviceId(camera.getDeviceInfo().getId());
-					param.setDeviceType(camera.getDeviceInfo().getType());
-					genFileName(param);
-				}
-			}
-		}			
+	/**
+	 * 拍照，可以获得图片url
+	 * @param param
+	 */
+	void doCapture(CameraCaptureVo param){
+		param.setCaptureTime(TimeUtils.getDateString(new Date(), TimeUtils.fullNumberFormat));	
 		ysClientProxy.capture(param);
 	}
 	
-	// 存盘，需要ysUrl，deviceType等
-	void _opSave(CameraCaptureVo param){
-		if(StringUtils.isBlank(param.getFileName())){
+	/**
+	 * 存盘原始文件，需要ysUrl，deviceType等
+	 * 文件统一存为宽600px，高度等比缩放的格式
+	 * 
+	 * @param param
+	 */
+	void doSave(CameraCaptureVo param){		
+		if(StringUtils.isBlank(param.getWholeFileName())){
 			genFileName(param);
 		}
-		ysClientProxy.writeFileFromUrl(param.getYsUrl(), cameraImageFolder + param.getFileName());
+		
+		//ysClientProxy.writeFileFromUrl(param.getYsUrl(), cameraImageFolder + param.getWholeFileName());
+		ysClientProxy.writeImageFromUrl(
+				param.getYsUrl(), 
+				cameraSnapshotFolder + param.getWholeFileName(),
+				cameraSnapshotSavedWidth, 
+				null);
 	}
 	
-	// 裁剪
-	void _opCut(CameraCaptureVo param){
-		if(!param.canCut()){
-			throw MeterExceptionFactory.applicationException("设置裁剪范围错误，不能裁剪图片", null);
+	/**
+	 * 裁剪,裁剪前必须保存文件
+	 * @param param
+	 */
+	void doCut(CameraCaptureVo param){
+		// 判断裁剪后的文件名
+		if(StringUtils.isBlank(param.getPartialFileName())){
+			throw MeterExceptionFactory.applicationException("未设置裁剪后的文件名", null);
 		}
-		// 裁剪
+		
+		// 获取裁剪范围
+		if(!param.canCut()){
+			if(param.getDeviceInfoId() == null){
+				parseWholeFileName(param);
+			}
+			DeviceInfo device = deviceService.queryDeviceInfoById(param.getDeviceInfoId(), true);
+			param.setX(device.getX());
+			param.setY(device.getY());
+			param.setW(device.getW());
+			param.setH(device.getH());
+		}
+		
+		if(!param.canCut()){
+			throw MeterExceptionFactory.applicationException("裁剪范围错误，不能裁剪图片", null);
+		}
+		
+		// 裁剪文件存在,不重新裁剪
+		File file = new File(cameraSnapshotFolder + param.getPartialFileName());
+		if(file.exists()){//必须判断，防止误删其他文件
+			return;
+		}
+		
+		// 裁剪并存盘
 		try {
-			ImageUtils.cutImage(cameraImageFolder + param.getFileName(), cameraImageFolder + param.getFileName2(), 
-				param.getX(), param.getY(), param.getW(), param.getH());
+			ImageUtils.cutImage(
+					cameraSnapshotFolder + param.getWholeFileName(), 
+					cameraSnapshotFolder + param.getPartialFileName(), 
+					param.getX(), 
+					param.getY(), 
+					param.getW(), 
+					param.getH()
+					);
 		} catch (IOException e) {
 			throw MeterExceptionFactory.applicationException("裁剪图片错误", e);
 		}
 	}
 		
-	// 识别
-	void _opRecognition(CameraCaptureVo param){
-		if(StringUtils.isBlank(param.getRecognitionProgramPath())){
-			// 先获取deviceType，然后获取识别程序路径
-			if(param.getDeviceType() == null && param.getDeviceId() != null ){
-				DeviceInfo device = deviceService.queryDeviceInfoById(param.getDeviceId(), true);
-				if(device != null){
-					param.setDeviceType(device.getType());
-				}
-			}
-			// 从文件名获取deviceType
-			if(param.getDeviceType() == null && StringUtils.isNotEmpty(param.getFileName())){
-				parseFileName(param);
-			}
-			
-			if(param.getDeviceType() == null){
-				throw MeterExceptionFactory.applicationException("获取不到设备类型，无法选择识别程序", null);
-			}
-			
-			DeviceType type = deviceService.queryDeviceTypeByType(param.getDeviceType(), true);
-			if(type != null){
-				param.setRecognitionProgramPath(type.getRecognitionProgramPath());
-			}
-		}
+	/**
+	 * 调用识别程序，识别图像,必须要有原文件名
+	 * @param param
+	 */
+	void doRecognition(CameraCaptureVo param){
 		if(StringUtils.isBlank(param.getRecognitionProgramPath())){
 			throw MeterExceptionFactory.applicationException("获取不到识别程序", null);
 		}
 		
-		String resultFileName = cameraImageFolder + param.getFileName()+".txt";
+		//2. 裁剪图片
+		doCut(param);
+		
+		
+		//3. 识别
+		String resultFileName = cameraSnapshotFolder + param.getPartialFileName()+".txt";
 		File f = new File(resultFileName);
-		if(f.exists()){
-			f.delete();
+		if(f.exists() ){
+			if(f.isFile()){
+				f.delete();
+			}else{
+				throw MeterExceptionFactory.applicationException("识别程序结果文件已存在，不能写结果文件", null);
+			}
 		}
+		
 		NativeWinExe.call(
 				param.getRecognitionProgramPath(), 
-				cameraImageFolder + param.getFileName2(), 
-				cameraImageFolder + param.getFileName()+".txt");
-		
+				cameraSnapshotFolder + param.getPartialFileName(), 
+				resultFileName);
+		//4. 读结果
 		readFile(param, resultFileName);
 	}
 	
-	static void readFile(CameraCaptureVo param, String resultFileName){
+	/**
+	 * 初始化并校验各参数
+	 * camaraSerial; CamaraChannelNo; deviceId; deviceType;
+	 * @param param
+	 */
+	public void validateAndInitParam(CameraCaptureVo param){
+		// 如果要识别，必须先保存
+		if(param.isNeedRecognition()){
+			param.setNeedSave(true);
+		}
+		// 如果要保存，必须有url,如果没有url就要设置抓拍
+		if(param.isNeedSave() && StringUtils.isBlank(param.getYsUrl())){
+			param.setNeedCapture(true);
+		}
+		
+		CameraInfo cameraInfo = null;
+		DeviceInfo deviceInfo = null;
+		
+		// get camera By id
+		if(param.getCamaraSerial() != null){
+			cameraInfo = deviceService.queryCameraById( param.getCamaraSerial(), true);
+			if(cameraInfo == null){
+				throw MeterExceptionFactory.applicationException("获取不到摄像头信息 ", null);
+			}
+		}
+		// get deviceInfo by Id
+		if(param.getDeviceInfoId() != null){
+			deviceInfo = deviceService.queryDeviceInfoById(param.getDeviceInfoId(), true);
+			if(deviceInfo == null){
+				throw MeterExceptionFactory.applicationException("获取不到仪表信息", null);
+			}
+		}
+		
+		//  get camera By device
+		if(cameraInfo == null && deviceInfo != null){
+			cameraInfo = deviceService.queryCameraById(deviceInfo.getCameraSerial(), false);
+	 	}
+		
+		if(cameraInfo == null){
+			throw MeterExceptionFactory.applicationException("获取不到摄像头信息 ", null);
+		}
+		
+		// set ------------拍照信息
+		if(StringUtils.isBlank(param.getCamaraSerial())){
+			param.setCamaraSerial(cameraInfo.getDeviceSerial());
+		}
+		if(StringUtils.isBlank(param.getCamaraChannelNo())){
+			param.setCamaraChannelNo(cameraInfo.getChannelNo());
+		}
+		
+		// 如果不需要保存，返回
+		if(!param.isNeedSave()){
+			return;
+		}
+		
+		//  get device By camera
+		if(deviceInfo == null && cameraInfo != null){
+			if(cameraInfo.getDeviceInfo() != null){
+				deviceInfo = cameraInfo.getDeviceInfo();
+			}else{
+				deviceInfo = deviceService.queryDeviceInfoById(param.getDeviceInfoId(), true);
+			}
+ 		}
+		
+		if(deviceInfo == null){
+			throw MeterExceptionFactory.applicationException("获取不到仪表信息", null);
+		}
+		// set ------------保存信息
+		if(param.getDeviceInfoId() == null){
+			param.setDeviceInfoId(deviceInfo.getId());
+		}
+		if(param.getDeviceInfoType() == null){
+			param.setDeviceInfoType(deviceInfo.getType());
+		}
+		
+		// 如果不需要识别，返回
+		if(!param.isNeedRecognition()){
+			return;
+		}
+		// set ------------识别信息
+		if(param.getX() == 0){
+			param.setX(deviceInfo.getX());
+		}
+		if(param.getY() == 0){
+			param.setY(deviceInfo.getY());
+		}
+		if(param.getW() == 0){
+			param.setW(deviceInfo.getW());
+		}
+		if(param.getH() == 0){
+			param.setH(deviceInfo.getH());
+		}
+		
+		// 获取识别程序
+		DeviceType deviceType = deviceService.queryDeviceTypeByType(param.getDeviceInfoType(),true);
+		if(deviceType != null){
+			param.setRecognitionProgramPath(deviceType.getRecognitionProgramPath());
+		}
+		if(param.getRecognitionProgramPath() == null){
+			throw MeterExceptionFactory.applicationException("获取不到识别程序", null);
+		}
+	}
+	
+	//读取结果
+	private static void readFile(CameraCaptureVo param, String resultFileName){
+		File resultFile = new File(resultFileName);
+		for(int i = 5; i > 0; i--){
+			if(!resultFile.exists()){
+				ObjectUtil.sleep(500, true);
+			}
+		}
+		
 		BufferedReader bf = null;
 		try {
-			bf = new BufferedReader(new FileReader(resultFileName));
+			bf = new BufferedReader(new InputStreamReader(new FileInputStream(resultFile),"UTF-8"));
 			String str = bf.readLine();
 			if(str.startsWith("true")){
 				str = str.replaceAll("true", "");
@@ -156,18 +312,18 @@ public class CameraService {
 				str = str.trim();
 				param.setSuccess(false);
 				param.setCode(str);
-				param.setMsg("");
-				while((str = bf.readLine()) != null)
-				param.setMsg(param.getMsg() + "\br" + str);
+				param.setMsg("识别程序错误:");
+				while((str = bf.readLine()) != null){
+					param.setMsg(param.getMsg() + "\r" + str);
+				}
 			}
 		}catch(Exception e){
 			param.setCode("9999");
-			param.setMsg("读取结果错误:"+e.getMessage());
+			param.setMsg("读取结果错误:" + e.getMessage());
 			throw MeterExceptionFactory.applicationException("读取结果错误:"+e.getMessage(), e);
 		} finally {
 			ObjectUtil.close(bf, true);
 		}
-		
 	}
 	
 	public static void main(String[] args) {
@@ -176,35 +332,57 @@ public class CameraService {
 		System.out.println(JSON.toJSONString(param, true));
 	}
 	
-	// 生成文件名
+	/**
+	 * 生成文件名，如果原始文件有裁剪范围，生成裁剪文件，带相对目录
+	 * yyyy\MM\dd\yyyyMMddhhmmss_deviceType_deviceId_camaraSerial.jpg
+	 * yyyy\MM\dd\yyyyMMddhhmmss_deviceType_deviceId_camaraSerial_x_y_w_h.jpg  用于识别
+	 * @param param
+	 */
 	void genFileName(CameraCaptureVo param){
-		if(StringUtils.isNotBlank(param.getFileName())){
-			return;
+		Date currentDate = new Date();
+		String folder = TimeUtils.getDateString(currentDate, "yyyy_MM\\dd\\");
+		if(StringUtils.isBlank(param.getCaptureTime())){
+			param.setCaptureTime(TimeUtils.getDateString(currentDate, "yyyyMMddhhmmss"));
 		}
-		String folder = TimeUtils.getDateString(new Date(), "yyyy\\MM\\dd\\");
-		// yyyy\MM\dd\time_deviceType_deviceId_camaraSerial.jpg
-		String str = folder + String.format("{}_{}_{}_{}.jpg",param.getCaptureTime(), param.getDeviceType(), param.getDeviceId(), param.getCamaraSerial());
-		param.setFileName(str);
+		//原始文件
+		String fileName = folder + String.format("%s_%s_%s_%s.jpg",
+				param.getCaptureTime(), 
+				param.getDeviceInfoType(), 
+				param.getDeviceInfoId(), 
+				param.getCamaraSerial());
+		param.setWholeFileName(fileName);
+		//裁剪文件
 		if(param.canCut()){
-			str = folder + String.format("{}_{}_{}_{}_{}_{}_{}_{}.jpg",
-					param.getCaptureTime(), param.getDeviceType(), param.getDeviceId(), param.getCamaraSerial(),
-					param.getX(),param.getY(),param.getW(),param.getH());
-			param.setFileName2(str);
+			fileName = folder + String.format("%s_%s_%s_%s_%s_%s_%s_%s.jpg",
+					param.getCaptureTime(), 
+					param.getDeviceInfoType(), 
+					param.getDeviceInfoId(), 
+					param.getCamaraSerial(),
+					param.getX(),
+					param.getY(),
+					param.getW(),
+					param.getH()
+					);
+			param.setPartialFileName(fileName);
 		}
 	}
 	
 	// 解析文件名得到各元数据
-	void parseFileName(CameraCaptureVo param){
-		if(StringUtils.isBlank(param.getFileName())){
+	void parseWholeFileName(CameraCaptureVo param){
+		if(StringUtils.isBlank(param.getWholeFileName())){
 			return;
 		}
-		String[] arrays = param.getFileName().split("[_.]");//["yyMMddhhmmss","deviceType","deviceId","camaraSerial","jpg"]
+		String[] arrays = param.getWholeFileName().split("[_.]");//["yyMMddhhmmss","deviceType","deviceId","camaraSerial","jpg"]
 		if(arrays.length < 5){
 			throw MeterExceptionFactory.applicationException("文件名不合法，无法解析", null);
 		}
 		param.setCaptureTime(arrays[0]);
-		param.setDeviceType(Long.parseLong(arrays[1]));
-		param.setDeviceId(Long.parseLong(arrays[2]));
+		param.setDeviceInfoType(Long.parseLong(arrays[1]));
+		param.setDeviceInfoId(Long.parseLong(arrays[2]));
 		param.setCamaraSerial(arrays[3]);
+	}
+	
+	public File buildFile(String snapshotName) {
+		return new File(cameraSnapshotFolder+snapshotName);
 	}
 }

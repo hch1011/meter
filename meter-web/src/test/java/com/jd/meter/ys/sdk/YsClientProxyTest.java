@@ -11,7 +11,7 @@ import com.jd.meter.util.TimeUtils;
 public class YsClientProxyTest {
 	YsClientProxy ysClientProxy = new YsClientProxy();
 
-	public static String testDeviceSerial  = "630782726";
+	public static String testDeviceSerial  = "573604832";
 	@Test
 	public void testDeviceAdd() {
 		ysClientProxy.deviceAdd(testDeviceSerial, "MFDBNC");

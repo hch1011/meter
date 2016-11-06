@@ -7,9 +7,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.jd.meter.dao.DeviceDataDao;
 import com.jd.meter.dao.DeviceInfoDao;
@@ -18,6 +19,7 @@ import com.jd.meter.entity.CameraInfo;
 import com.jd.meter.entity.DeviceData;
 import com.jd.meter.entity.DeviceInfo;
 import com.jd.meter.entity.DeviceType;
+import com.jd.meter.exception.MeterExceptionFactory;
 import com.jd.meter.util.ObjectUtil;
 import com.jd.meter.util.SnowflakeIdGenerator;
 import com.jd.meter.ys.sdk.YsClientProxy;
@@ -41,8 +43,11 @@ public class DeviceService {
 	private long  queryDeviceInfoAllOrderByInputNumCacheExpireTime=0;//findAllDeviceInfoOrderByInputNumCache的实效时间10分钟
 	private Map<Long,DeviceType> deviceTypeCache = Maps.newHashMap();
 	private Map<Long,DeviceInfo> deviceInfoCache = Maps.newHashMap();
-	private Map<String,CameraInfo> cameraCache = Maps.newHashMap();
-	private Map<String,Long> cameraDeviceInfoCache = Maps.newHashMap();
+	
+	private Map<String,CameraInfo> cameraCache = Maps.newHashMap();		//摄像头列表缓存,key是序列号
+	private long                   cameraCacheExpireTime = 0; 			//摄像头列表缓存过期时间，存1小时
+	
+	private Map<String,Long> cameraDeviceInfoCache = Maps.newHashMap();	//摄像头与仪表绑定关系
 	
 	
 	//CacheBuilder<Object, Object> deviceInfoCache = CacheBuilder.newBuilder().expireAfterWrite(120, TimeUnit.SECONDS);
@@ -272,27 +277,96 @@ public class DeviceService {
 		clean(deviceInfo);
  	}
 
-	public void reSetCutRange(Long deviceInfoId, Integer x, Integer y, Integer w, Integer h) {
+	/**
+	 * 保存仪表识别范围
+	 * 
+	 * @param deviceInfoId
+	 * @param x
+	 * @param y
+	 * @param w
+	 * @param h
+	 */
+	public void updateCutRange(Long deviceInfoId, Integer x, Integer y, Integer w, Integer h) {
+		if(x<1 || y<1  || w<10 || h<10){
+			throw MeterExceptionFactory.applicationException("识别范围不正确", null);
+		}
+		
 		DeviceInfo deviceInfo = deviceInfoDao.findOne(deviceInfoId);
+		if(deviceInfo == null){
+			throw MeterExceptionFactory.applicationException("为找到对应的仪表", null);
+		}
+		
 		deviceInfo.setX(x);
 		deviceInfo.setY(y);
 		deviceInfo.setW(w);
 		deviceInfo.setH(h);
 		deviceInfo.setUpdateTime(new Date());
 		deviceInfoDao.save(deviceInfo);
+		cache(deviceInfo);
+	}
+	
+
+
+	public CameraInfo queryCameraById(String deviceSerial, boolean withDeviceInfo) {
+		CameraInfo info = cameraCache.get(deviceSerial);
+		if(info == null){
+			loadAllCameraListFromSDK();
+			info = cameraCache.get(deviceSerial);
+		}
+
+		if(info == null){
+			throw MeterExceptionFactory.applicationException("未找到摄像头", null);
+		}
+		if(withDeviceInfo){
+			info.setDeviceInfo(this.queryDeviceInfoByCameraSerial(deviceSerial));
+		}
+ 		return info;
 	}
 
-	public Page<CameraInfo> queryCameraList(Pageable pageable, boolean withDeviceInfo){
-		Page<CameraInfo> page = ysClientProxy.cameraList(pageable);
+	public List<CameraInfo> queryAllCameraList(boolean withDeviceInfo){
+		long currentTime =  System.currentTimeMillis();
+		if(cameraCacheExpireTime < currentTime ){
+			try {
+				// 重新加载摄像头列表
+				loadAllCameraListFromSDK();
+			} catch (Exception e) {
+				// 如果获取列表失败，原数据再可用5分钟
+				cameraCacheExpireTime = System.currentTimeMillis() + 5 * 60 *1000L;
+			}
+		}
+		ArrayList<CameraInfo> list = Lists.newArrayList(cameraCache.values());
+		 
 		if(withDeviceInfo){
-			List<CameraInfo> list = page.getContent();
 			for(CameraInfo item : list){
 				item.setDeviceInfo(queryDeviceInfoByCameraSerial(item.getDeviceSerial()));
 			}
 		}
-		return page;
+		return list;
 	}
 	
+	/**
+	 * 从SDK查询所有摄像头
+	 * @return
+	 */
+	private Map<String,CameraInfo> loadAllCameraListFromSDK(){
+		//摄像头列表缓存,key是序列号
+		Map<String,CameraInfo> tmpMap = Maps.newHashMap();
+		int page = 0;//当前第几页
+		int pageSize = 10000;//每页大小，实际每页最大大小，还得开放平台确定
+		PageRequest pageable = new PageRequest(page, pageSize);
+		Page<CameraInfo> dataPage = ysClientProxy.cameraList(pageable);
+		while(dataPage.getContent().size() > 0){
+			for(CameraInfo item : dataPage.getContent()){
+				tmpMap.put(item.getDeviceSerial(), item);
+			}
+			pageable = new PageRequest(++page, dataPage.getSize());
+			dataPage = ysClientProxy.cameraList(pageable);
+		}
+		
+		cameraCache = tmpMap;
+		cameraCacheExpireTime = System.currentTimeMillis() + 3600 * 1000L;
+		return tmpMap;
+	}
 
 	public void bindCameraToDeviceInfo(String cameraSerial, Long deviceInfoId){
 		queryDeviceInfoByCameraSerial(cameraSerial);
@@ -339,18 +413,5 @@ public class DeviceService {
 		cameraCache = Maps.newHashMap();
 		cameraDeviceInfoCache = Maps.newHashMap();
 		queryDeviceInfoAllOrderByInputNumCacheExpireTime = 0;
-	}
-
-	public CameraInfo queryCameraById(String deviceSerial, boolean withDeviceInfo) {
-		CameraInfo info = cameraCache.get(deviceSerial);
-		if(info == null){
-			info = ysClientProxy.deviceInfo(deviceSerial);
-			cameraCache.put(deviceSerial, info);
-		}
-		 
-		if(withDeviceInfo && info != null && info.getDeviceInfo() == null){
-			info.setDeviceInfo(this.queryDeviceInfoByCameraSerial(deviceSerial));
-		}
- 		return info;
 	}
 }
