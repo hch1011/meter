@@ -118,7 +118,7 @@ public class DeviceService {
 		
 		// checkData
 		DeviceInfo deviceInfo = deviceInfoDao.findOne(deviceData.getDeviceId());
-		ObjectUtil.checkNotNull(deviceInfo, true, "仪表不存在，deviceId="+deviceData.getDeviceId());
+		ObjectUtil.checkNotNull(deviceInfo, true, "仪表不存在，deviceId="+ deviceData.getDeviceId());
 		DeviceType deviceType = deviceTypeDao.findOne(deviceInfo.getType());
 		ObjectUtil.checkNotNull(deviceType, true, "设备类型不存在，type="+deviceInfo.getType());
 		

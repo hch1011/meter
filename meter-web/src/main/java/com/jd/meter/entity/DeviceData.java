@@ -33,7 +33,7 @@ public class DeviceData  implements Serializable{
 	private Float snapData;			//最新预读数据
 	
 	@Column(name = "snap_status")
-	private Integer snapStatus;		//最新预读状态；0正常,1预警,报警,失败
+	private Integer snapStatus;		//最新预读状态；0失败;1正常,2预警,3报警
 	
 	@Column(name = "snap_time")
 	@Temporal(TemporalType.TIMESTAMP)
@@ -56,8 +56,12 @@ public class DeviceData  implements Serializable{
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date updateTime;
 
+
+	@Column(name = "picture_local_path")
+	private String pictureLocalPath;//本地保存的原始图片相对路径
+	
 	@Column(name = "picture_url")
-	private String pictureUrl;		//图片路径
+	private String pictureUrl;		//改属性不一定有效。图片url,可以是外部平台url；也可以是自己的url(尽量使用pictureLocalPath凭借)
 	
 	@Column(name = "warning_reason")
 	private String warningReason;	//报警原因

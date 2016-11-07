@@ -7,8 +7,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Date;
 
-import javax.annotation.PostConstruct;
-
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,8 +15,10 @@ import org.springframework.stereotype.Service;
 import com.alibaba.fastjson.JSON;
 import com.jd.meter.entity.CameraCaptureVo;
 import com.jd.meter.entity.CameraInfo;
+import com.jd.meter.entity.DeviceData;
 import com.jd.meter.entity.DeviceInfo;
 import com.jd.meter.entity.DeviceType;
+import com.jd.meter.exception.MeterException;
 import com.jd.meter.exception.MeterExceptionFactory;
 import com.jd.meter.util.ImageUtils;
 import com.jd.meter.util.NativeWinExe;
@@ -27,7 +27,7 @@ import com.jd.meter.util.TimeUtils;
 import com.jd.meter.ys.sdk.YsClientProxy;
 
 /**
- * Created by hujintao on 2016/8/13.
+ * 摄像头服务，快照服务
  */
 @Service("cameraService")
 public class CameraService {
@@ -42,42 +42,63 @@ public class CameraService {
 	@Autowired
     YsClientProxy ysClientProxy;
 	
-	@PostConstruct
-	public void init(){
-		System.out.println("----cameraSnapshotFolder="+cameraSnapshotFolder);
-		System.out.println("----cameraSnapshotSavedWidth="+cameraSnapshotSavedWidth);
-		if(cameraSnapshotFolder==null || cameraSnapshotFolder.startsWith("$")){
-			cameraSnapshotFolder= "c:\\data\\meter_snapshots\\";
-		}
-		if(cameraSnapshotSavedWidth <= 200){
-			cameraSnapshotSavedWidth = 800;
-		}
-		System.out.println("----cameraSnapshotFolder="+cameraSnapshotFolder);
-		System.out.println("----cameraSnapshotSavedWidth="+cameraSnapshotSavedWidth);
-	}
 	/**
-	 * 拍照识别流程
-	 * 流程参数:NeedRecognition是否抓拍；NeedSave是否保存图片；NeedRecognition识别
+	 * 拍照识别流程，所有跟快照相关的服务入口，包括抓拍，保存，裁剪，识别
+	 * 
+	 * 流程参数:
+	 * NeedRecognition是否抓拍；
+	 * NeedSave是否保存图片；
+	 * NeedRecognition识别
 	 * 
 	 */
 	public CameraCaptureVo captureSuite(CameraCaptureVo param){
-		validateAndInitParam(param);
-
-		if(param.isNeedCapture()){
-			doCapture(param);
+		try {
+ 			initAndvalidateParam(param);
+ 			
+			if(param.isNeedCapture()){
+				doCapture(param);
+			}
+			
+			if(param.isNeedSave()){
+				doSave(param);
+			}
+	
+			if(param.isNeedRecognition()){
+				doRecognition(param);
+	 		}
+		} catch (MeterException e) {
+			param.setScreenMessage(e.getScreenMessage());
+			param.setDebugMessage(e.getDebugMessage());
+			throw e;
+		} catch (Exception e2) {
+			param.setScreenMessage("系统错误");
+			param.setDebugMessage(e2.getMessage());
+			throw e2;
+		}finally {
+			if(param.isNeedSubmitResult()){
+				doSubmitDeviceData(param);
+			}
 		}
-		
-		if(param.isNeedSave()){
-			doSave(param);
-		}
-
-		if(param.isNeedRecognition()){
-			doRecognition(param);
- 		}
-		
 		return param;
 	}
 	
+	void doSubmitDeviceData(CameraCaptureVo param){
+
+		DeviceData deviceData = new DeviceData();
+		deviceData.setDeviceId(param.getDeviceInfoId());
+		deviceData.setSnapTime(param.getCurrentTime());
+		deviceData.setDataType(1);
+		deviceData.setCreateTime(deviceData.getSnapTime());
+		deviceData.setUpdateTime(deviceData.getSnapTime());
+		deviceData.setPictureUrl(param.getWholeFileName());
+		if("200".equals(param.getCode()) || "0".equals(param.getCode())){
+			deviceData.setSnapData(param.getValue());
+		}else{
+			deviceData.setWarningReason(param.getScreenMessage());
+		}
+		
+		deviceService.submitData(deviceData);
+	}
 	/**
 	 * 拍照，可以获得图片url
 	 * @param param
@@ -190,7 +211,8 @@ public class CameraService {
 	 * camaraSerial; CamaraChannelNo; deviceId; deviceType;
 	 * @param param
 	 */
-	public void validateAndInitParam(CameraCaptureVo param){
+	public void initAndvalidateParam(CameraCaptureVo param){
+		param.setCurrentTime(new Date());
 		// 如果要识别，必须先保存
 		if(param.isNeedRecognition()){
 			param.setNeedSave(true);
@@ -312,14 +334,15 @@ public class CameraService {
 				str = str.trim();
 				param.setSuccess(false);
 				param.setCode(str);
-				param.setMsg("识别程序错误:");
+				param.setScreenMessage("识别程序报错:");
 				while((str = bf.readLine()) != null){
-					param.setMsg(param.getMsg() + "\r" + str);
+					param.setDebugMessage(param.getDebugMessage() + "\r" + str);
 				}
 			}
 		}catch(Exception e){
 			param.setCode("9999");
-			param.setMsg("读取结果错误:" + e.getMessage());
+			param.setScreenMessage("读取结果错误:");
+			param.setDebugMessage( e.getMessage());
 			throw MeterExceptionFactory.applicationException("读取结果错误:"+e.getMessage(), e);
 		} finally {
 			ObjectUtil.close(bf, true);

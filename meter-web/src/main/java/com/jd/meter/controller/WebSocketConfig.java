@@ -22,7 +22,4 @@ public class WebSocketConfig implements ServerApplicationConfig{
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-	 
-	 
 } 

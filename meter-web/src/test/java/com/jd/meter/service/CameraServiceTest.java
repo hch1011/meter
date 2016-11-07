@@ -17,7 +17,7 @@ public class CameraServiceTest {
 	@Test
 	public void testQueryDataForMonitorPage() {
 		CameraCaptureVo param = new CameraCaptureVo();
-		cameraService.captureSuite(param );
+		cameraService.captureSuite(param);
 		 
 	}
 

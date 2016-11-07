@@ -1,6 +1,7 @@
 package com.jd.meter.entity;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * 快照相关信息
@@ -9,17 +10,20 @@ import java.io.Serializable;
 public class CameraCaptureVo implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
+    Date currentTime;				//当前时间
+	
 	// 如果识别会返回下列值
     boolean success;  				//识别状态
     String code;  					//returnCode,正常0
     Float value;					//识别值
-    String msg;						//错误消息
+    String screenMessage;			//用于显示的消息
+    String debugMessage;			//用于调试的明细
     
     //指令
     boolean needCapture;			//是否抓拍，如果不抓拍，图片可以从其他地方获取
     boolean needSave;				//是否保存到本地
     boolean needRecognition ;		//是否识别
-    boolean needUpdateDeviceStatus;	//是否需要修改仪表状态
+    boolean needSubmitResult;		//是否提交结果到业务流程
     
 	// 拍照参数
     String camaraSerial;			
@@ -74,17 +78,7 @@ public class CameraCaptureVo implements Serializable{
 	public void setValue(Float value) {
 		this.value = value;
 	}
-
-
-	public String getMsg() {
-		return msg;
-	}
-
-
-	public void setMsg(String msg) {
-		this.msg = msg;
-	}
-
+ 
 
 	public boolean isNeedCapture() {
 		return needCapture;
@@ -93,6 +87,25 @@ public class CameraCaptureVo implements Serializable{
 
 	public void setNeedCapture(boolean needCapture) {
 		this.needCapture = needCapture;
+	}
+	
+	public String getScreenMessage() {
+		return screenMessage;
+	}
+
+
+	public void setScreenMessage(String screenMessage) {
+		this.screenMessage = screenMessage;
+	}
+
+
+	public String getDebugMessage() {
+		return debugMessage;
+	}
+
+
+	public void setDebugMessage(String debugMessage) {
+		this.debugMessage = debugMessage;
 	}
 
 
@@ -114,15 +127,14 @@ public class CameraCaptureVo implements Serializable{
 	public void setNeedRecognition(boolean needRecognition) {
 		this.needRecognition = needRecognition;
 	}
-
-
-	public boolean isNeedUpdateDeviceStatus() {
-		return needUpdateDeviceStatus;
+	
+	public boolean isNeedSubmitResult() {
+		return needSubmitResult;
 	}
 
 
-	public void setNeedUpdateDeviceStatus(boolean needUpdateDeviceStatus) {
-		this.needUpdateDeviceStatus = needUpdateDeviceStatus;
+	public void setNeedSubmitResult(boolean needSubmitResult) {
+		this.needSubmitResult = needSubmitResult;
 	}
 
 
@@ -263,6 +275,16 @@ public class CameraCaptureVo implements Serializable{
 
 	public void setRecognitionProgramPath(String recognitionProgramPath) {
 		this.recognitionProgramPath = recognitionProgramPath;
+	}
+
+
+	public Date getCurrentTime() {
+		return currentTime;
+	}
+
+
+	public void setCurrentTime(Date currentTime) {
+		this.currentTime = currentTime;
 	}
 
 	
