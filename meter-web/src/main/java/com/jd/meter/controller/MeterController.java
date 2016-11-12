@@ -10,8 +10,6 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.jd.meter.service.ImageCutService;
-
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +29,7 @@ import com.jd.meter.entity.DeviceInfo;
 import com.jd.meter.entity.DeviceType;
 import com.jd.meter.service.DeviceService;
 import com.jd.meter.util.ExcelTemplate;
+import com.jd.meter.util.ImageUtils;
 import com.jd.meter.util.TimeUtils;
 
 /**
@@ -47,8 +46,8 @@ public class MeterController extends BaseController{
 	DeviceTypeDao deviceTypeDao;
 	@Autowired
     DeviceService  deviceService;
-	@Autowired
-	ImageCutService imageCutService;
+	 
+	
 
 	/**
 	 * 提交数据
@@ -257,7 +256,7 @@ public class MeterController extends BaseController{
 	) {
 		Map<String, Object> map = new HashMap<>();
 		try{
-			imageCutService.imageRecognition(imagePath, x, y, w, h);
+			ImageUtils.cutImage(imagePath, imagePath, x, y, w, h);
 			map.put("success", true);
 		} catch (IOException e) {
 			logger.error("image recognition failed");
