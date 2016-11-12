@@ -408,10 +408,16 @@ public class DeviceService {
 	}
 	
 	public void cleanAll(){
+		
+		queryDeviceInfoAllOrderByInputNumCache = null;;
+		queryDeviceInfoAllOrderByInputNumCacheExpireTime=0;//findAllDeviceInfoOrderByInputNumCache的实效时间10分钟
+		
 		deviceTypeCache = Maps.newHashMap();
 		deviceInfoCache = Maps.newHashMap();
-		cameraCache = Maps.newHashMap();
-		cameraDeviceInfoCache = Maps.newHashMap();
-		queryDeviceInfoAllOrderByInputNumCacheExpireTime = 0;
+		
+		cameraCache = Maps.newHashMap();		//摄像头列表缓存,key是序列号
+		cameraCacheExpireTime = 0; 			//摄像头列表缓存过期时间，存1小时
+		
+		cameraDeviceInfoCache = Maps.newHashMap();	//摄像头与仪表绑定关系
 	}
 }
