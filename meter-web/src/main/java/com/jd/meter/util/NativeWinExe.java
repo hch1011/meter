@@ -38,10 +38,10 @@ public class NativeWinExe {
 	
 	public static void main(String[] args) {
 		System.out.println("main() start");
-		String cmdStr = "C:\\data\\meter\\halcondot\\f32.exe " ;
-		String fileIn = "C:\\data\\meter\\image\\f000.JPG";
-		//String fileOut = "C:\\data\\meter\\image\\f000.txt";
-		call(cmdStr,  fileIn);
+		String cmdStr = "C:\\D\\data\\meter\\11月8日电流表加数码管\\11月8日电流表加数码管.exe " ;
+		String fileIn = "C:\\D\\data\\meter\\snapshots\\2016_11\\06\\20161106100246_1_1000003_573604832_68_211_600_235.jpg";
+		String fileout = "C:\\D\\data\\meter\\snapshots\\2016_11\\06\\20161106100246_1_1000003_573604832_68_211_600_235.jpg.txt";
+		call(cmdStr,  fileIn, fileout);
 		
 		System.out.println("main() end");
 	}
