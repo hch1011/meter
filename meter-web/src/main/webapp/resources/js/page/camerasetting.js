@@ -13,10 +13,10 @@ function bindCameraAndDevice(){
 	    cache:false,
 	    dataType:'json',
 	    success:function(data) {
-	    	alert("修改成功！");
+	    	alert("修改成功");
 	    },
 	    error : function() {
-	    	 alert("通信错误");  
+	    	alert("通信错误");  
 	    }
 	});
 }
@@ -34,13 +34,13 @@ function preview(){
 	    success:function(data) {
 	    	if(data.result == 'sucess'){
 	    		var url = data.data;
-	    		$("#divPreView").html("<img id='img_preview' src='"+url+"'>" );
+	    		$("#divPreView").html("<img id='img_preview' width='600px'  src='"+url+"'>" );
 	    		$("#img_preview").load(
 	    			initJcrop()
 	    		);
 	    		return;
 	    	}else{
-	    		alert(data.msg)
+	    		alert(data.screenMessage)
 	    		return;
 	    	}
 	    	
@@ -67,7 +67,6 @@ function saveRang(){
 	}
 	
 	var url = basePath+"/camera/range?deviceInfoId="+deviceInfoId+"&x="+x+"&y="+y+"&w="+w+"&h="+h;
-	alert(url);
 	$.ajax({
 	    url: url,
 	    type: 'put',
@@ -79,7 +78,7 @@ function saveRang(){
 	    		alert("成功保存");
 	    		return;
 	    	}else{
-	    		alert(data.msg)
+	    		alert(data.screenMessage)
 	    		return;
 	    	}
 	    	alert("服务器错误")
@@ -93,8 +92,8 @@ function saveRang(){
 function initJcrop(){
 	//initvalue
 	var img = $("#img_preview");
-	var showWidth = 800; //显示的宽度,这里的宽度要与存盘文件一致，否则切割时存在偏差,属性文件设置
-	img.css("width",showWidth+'px').css("height","auto");
+	var showWidth = 600; //显示的宽度,这里的宽度要与存盘文件一致，否则切割时存在偏差,属性文件设置
+	//img.css("width",showWidth+'px').css("height","auto");
  
 	var rang_x = $("#rang_x").val();
 	var rang_y = $("#rang_y").val();
@@ -148,22 +147,25 @@ function recognition(){
 	    dataType:'json',
 	    contentType: "application/json", 
 	    success:function(data) {
-	    	if(data.result == 'sucess'){
-	    		var result = data.data;
-	    		if(result.value != null){
-	    			$("#divResult").html(result.value);
+	    	if(data.result == 'sucess'){  //controller的返回值
+	    		data = data.data;//识别结果对象
+	    		if(data.result == 'success'){
+	    			$("#divResult").html(data.value);
+	    			if(data.value >= 100){
+	    				$("#divResult").html(data.value + "(这是模拟结果，"+data.screenMessage+")");
+	    			}
 	    		}else{
-	    			alert(result.msg);
+	    			$("#divResult").html("1:"+data.screenMessage); 
 	    		}
 	    		return;
 	    	}else{
-	    		alert(data.msg)
+    			$("#divResult").html("2:"+data.screenMessage); 
 	    		return;
 	    	}
-	    	alert("服务器错误")
+			$("#divResult").html("服务器错误");
 	    },
 	    error : function() {
-	    	 alert("通信错误");  
+			$("#divResult").html("通信错误");
 	    }
 	});
 }; 

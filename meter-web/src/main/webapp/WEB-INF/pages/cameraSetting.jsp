@@ -60,16 +60,17 @@
 		<button type="button" class="btn btn-success" onclick="bindCameraAndDevice()">保存关联</button>
 		<div class="interval"></div>
 		<em class="word">识别范围：</em>
-		<input id="rang_x" name="x" value="${camera.deviceInfo.x}" size="3">
-		<input id="rang_y" name="y" value="${camera.deviceInfo.y}" size="3">
-		<input id="rang_w" name="w" value="${camera.deviceInfo.w}" size="3">
-		<input id="rang_h" name="h" value="${camera.deviceInfo.h}" size="3">
+		x:<input id="rang_x" readonly name="x" value="${camera.deviceInfo.x}" size="3">
+		y:<input id="rang_y" readonly name="y" value="${camera.deviceInfo.y}" size="3">
+		w:<input id="rang_w" readonly name="w" value="${camera.deviceInfo.w}" size="3">
+		h:<input id="rang_h" readonly name="h" value="${camera.deviceInfo.h}" size="3">
+		
 		<button type="button" class="btn btn-success" onclick="saveRang()">保存范围</button>
 		<br/>
 		<div class="interval"></div>
 		<button type="button" class="btn btn-primary bu" onclick="recognition()">识别图片</button>
 		<div class="interval"></div>
-		<em class="word-a">识别结果：<em id="divResult">fdfd</em></em>
+		<em class="word-a">识别结果：<em id="divResult"></em></em> 
 	</div>
 
 

@@ -62,13 +62,13 @@
 				    		alert("操作成功");
 				    		return;
 				    	}else{
-				    		alert(data.msg)
+				    		alert(data.screenMessage)
 				    		return;
 				    	}
 				    	alert("服务器错误")
 				    },
 				    error : function() {
-				    	 alert("通信错误");  
+				    	alert("通信错误");  
 				    }
 				});
 			});
