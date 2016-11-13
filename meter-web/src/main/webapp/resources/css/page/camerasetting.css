@@ -27,17 +27,17 @@
 }
 .left{
     float:left;
-    width: 380px;
+    width: 30%;
     font-size: 14px;
     padding-bottom:2000px;
     margin-bottom:-2000px;
 }
 .right{
     float: left;
-    width: 800px;
+    width: 60%;
     padding-bottom: 2000px;
     margin-bottom: -2000px;
-    margin-left: 100px;
+    margin-left: 5%;
 }
 .camera-setting-body .word{
     font-size: 16px;
