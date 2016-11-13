@@ -46,10 +46,18 @@
 }
 .camera-setting-body .word-a{
     font-size: 16px;
-    color: #bb603c;
+    color: white;
     font-weight: 700;
     width: 370px;
     display: block;
+    border-style: inset;
+    border-width: 1px;
+    height: 36px;
+    vertical-align: middle;
+    border-radius: 4px;
+    background-color: #337ab7;
+    padding-top: 4px;
+    padding-left: 5px;
 }
 .camera-setting-body .interval{
     height: 45px;
@@ -72,7 +80,9 @@
     margin-left: 14px;
 }
 #divResult{
-    color: black;
+    color: #ff4500;
+    letter-spacing: 2px;
+    font-size: 16px;
 }
 .camera-setting-body .left input{
     border-style: inset;
