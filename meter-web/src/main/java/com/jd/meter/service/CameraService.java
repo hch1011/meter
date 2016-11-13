@@ -20,6 +20,7 @@ import com.jd.meter.entity.DeviceInfo;
 import com.jd.meter.entity.DeviceType;
 import com.jd.meter.exception.MeterException;
 import com.jd.meter.exception.MeterExceptionFactory;
+import com.jd.meter.util.Constant;
 import com.jd.meter.util.ImageUtils;
 import com.jd.meter.util.NativeWinExe;
 import com.jd.meter.util.ObjectUtil;
@@ -37,7 +38,7 @@ public class CameraService {
 	@Value("${meter.camera.snapshot.saved.width}")
 	private int cameraSnapshotSavedWidth = 800;
 	
-	int delta = 1;
+	static int delta = 1;
  	
 	@Autowired
     DeviceService deviceService;
@@ -97,8 +98,6 @@ public class CameraService {
 			deviceData.setSnapData(param.getValue());
 		}else{
 			deviceData.setWarningReason(param.getScreenMessage());
-			delta = ++delta % 50;
-			deviceData.setSnapData(100.0f + delta);
 		}
 		
 		deviceService.submitData(deviceData);
@@ -330,21 +329,26 @@ public class CameraService {
 			if(str.startsWith("true")){
 				str = str.replaceAll("true", "");
 				str = str.trim();
-				param.setSuccess(true);
+				param.setResult(Constant.result_success);
 				param.setCode(str);
 				param.setValue(Float.parseFloat(bf.readLine()));
 			}else{
-				str = str.replaceAll("false", "");
+				//TODO 模拟结果
+				delta = ++delta % 50;
+				param.setValue(100.1f + delta);
+				param.setResult(Constant.result_success);
+				
+//				str = str.replaceAll("false", "");
 				str = str.trim();
-				param.setSuccess(false);
+//				param.setResult(Constant.result_fail);
 				param.setCode(str);
-				param.setScreenMessage("识别程序报错:");
+				param.setScreenMessage("识别程序报错");
 				while((str = bf.readLine()) != null){
 					param.setDebugMessage(param.getDebugMessage() + "\r" + str);
 				}
 			}
 		}catch(Exception e){
-			param.setCode("9999");
+			param.setCode("500");
 			param.setScreenMessage("读取结果错误:");
 			param.setDebugMessage( e.getMessage());
 			throw MeterExceptionFactory.applicationException("读取结果错误:"+e.getMessage(), e);

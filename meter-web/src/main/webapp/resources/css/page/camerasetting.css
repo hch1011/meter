@@ -16,7 +16,7 @@
 
 }
 .camera-setting-body #img_preview{
-    width: 630px;
+    width: 600px;
     margin-left: 100px;
 }
 .container{
@@ -52,7 +52,7 @@
     display: block;
 }
 .camera-setting-body .interval{
-    height: 45px;
+    height: 12px;
 }
 .camera-setting-body #deviceInfoId{
     border-style: ridge;

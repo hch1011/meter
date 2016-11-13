@@ -27,9 +27,10 @@ public class NativeWinExe {
 			ProcessBuilder pb = new ProcessBuilder();
 			pb.directory(new File(dir));
 			pb.command(commands); 
-			Process p = pb.start();
-			InputStream f = p.getInputStream();
-			System.out.println("result=" + getString(f));
+			pb.start();
+			//Process p = pb.start();
+			//InputStream f = p.getInputStream();
+			//System.out.println("result=" + getString(f));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

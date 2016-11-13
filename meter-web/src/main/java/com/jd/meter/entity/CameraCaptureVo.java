@@ -13,7 +13,7 @@ public class CameraCaptureVo implements Serializable{
     Date currentTime;				//当前时间
 	
 	// 如果识别会返回下列值
-    boolean success;  				//识别状态
+    String result;  				//识别状态,success|false
     String code;  					//returnCode,正常0
     Float value;					//识别值
     String screenMessage;			//用于显示的消息
@@ -50,13 +50,13 @@ public class CameraCaptureVo implements Serializable{
 	}
 
 
-	public boolean isSuccess() {
-		return success;
+	public String getResult() {
+		return result;
 	}
 
 
-	public void setSuccess(boolean success) {
-		this.success = success;
+	public void setResult(String result) {
+		this.result = result;
 	}
 
 

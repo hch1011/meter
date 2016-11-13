@@ -30,7 +30,7 @@ public class BaseController {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("result", "fail");
 		if(StringUtils.isNotBlank(msg)){
-			map.put("msg", msg);
+			map.put("screenMessage", msg);
 		}
 		return map;
 	}
