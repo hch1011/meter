@@ -36,6 +36,8 @@ public class CameraService {
 	private String cameraSnapshotFolder;
 	@Value("${meter.camera.snapshot.saved.width}")
 	private int cameraSnapshotSavedWidth = 800;
+	
+	int delta = 1;
  	
 	@Autowired
     DeviceService deviceService;
@@ -95,6 +97,8 @@ public class CameraService {
 			deviceData.setSnapData(param.getValue());
 		}else{
 			deviceData.setWarningReason(param.getScreenMessage());
+			delta = ++delta % 50;
+			deviceData.setSnapData(100.0f + delta);
 		}
 		
 		deviceService.submitData(deviceData);
@@ -313,7 +317,7 @@ public class CameraService {
 	//读取结果
 	private static void readFile(CameraCaptureVo param, String resultFileName){
 		File resultFile = new File(resultFileName);
-		for(int i = 5; i > 0; i--){
+		for(int i = 0; i < 6; i++){
 			if(!resultFile.exists()){
 				ObjectUtil.sleep(500, true);
 			}
