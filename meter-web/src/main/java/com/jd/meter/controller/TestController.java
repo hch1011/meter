@@ -46,7 +46,7 @@ public class TestController extends BaseController{
 			List<DeviceInfo> deviceInfoList = deviceInfoDao.findAll();
 			model.addAttribute("deviceInfoList", deviceInfoList);
 		}
-		model.addAttribute("type", 6);//前端测试数据选中
+		model.addAttribute("type", 7);//前端测试数据选中
 		
 		List<CameraInfo> deviceList = ysClientProxy.deviceList(0,50);
 		model.addAttribute("deviceList", deviceList);//前端测试数据选中

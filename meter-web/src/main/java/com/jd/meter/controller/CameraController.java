@@ -60,8 +60,9 @@ public class CameraController extends BaseController{
 			Model model
 	) {
 		
-		List<CameraInfo> list = deviceService.queryAllCameraList(true);;
+		List<CameraInfo> list = deviceService.queryAllCameraList(true);
 		model.addAttribute("list", list);
+		model.addAttribute("type", 6);
 		return "camera/list";
 	}
 
@@ -90,6 +91,7 @@ public class CameraController extends BaseController{
 		
 		model.addAttribute("deviceInfoList", list);
 		model.addAttribute("camera", camera);
+		model.addAttribute("type", 6);
 		return "camera/setting";
 	}
 

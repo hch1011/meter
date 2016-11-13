@@ -42,7 +42,7 @@
 		<li>
 			<a href="/meter/camera/list" data-num="6">
 			<img src="/meter/resources/images/icon06.png" title="摄像头管理" />
-			<h2>摄像头管理</h2>
+			<h2 style="width: 70px;">摄像头管理</h2>
 			</a>
 		</li>
 		<li>
@@ -52,7 +52,7 @@
 			</a>
 		</li>
 		<li>
-			<a  id="tbCleanCache" href="#" data-num="7">
+			<a  id="tbCleanCache" href="#" data-num="8">
 			<img src="/meter/resources/images/icon01.png" title="清空缓存" />
 			<h2>清空缓存</h2>
 			</a>
