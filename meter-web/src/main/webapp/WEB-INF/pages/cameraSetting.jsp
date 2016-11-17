@@ -46,6 +46,8 @@
 	<input type="hidden" id="cameraSerial" name="cameraSerial" value="${camera.deviceSerial}">
 	<div class="container">
 	<div class="left">
+		<button type="button" class="btn btn-primary bu" onclick="preview()">预览图片</button>
+		<div class="interval"></div>
 		<em class="word">关联仪表：</em>
 		<select id="deviceInfoId"  name="deviceInfoId">
 			<option value=''>---请选择仪表---</option>
@@ -65,8 +67,6 @@
 		
 		<button type="button" class="btn btn-success" onclick="saveRang()">保存范围</button>
 		<br/>
-		<div class="interval"></div>
-		<button type="button" class="btn btn-primary bu" onclick="preview()">预览图片</button>
 		<div class="interval"></div>
 		<button type="button" class="btn btn-primary bu" onclick="recognition()">识别图片</button>
 		<div class="interval"></div>
