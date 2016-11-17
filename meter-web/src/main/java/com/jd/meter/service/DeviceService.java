@@ -15,6 +15,7 @@ import com.google.common.collect.Maps;
 import com.jd.meter.dao.DeviceDataDao;
 import com.jd.meter.dao.DeviceInfoDao;
 import com.jd.meter.dao.DeviceTypeDao;
+import com.jd.meter.entity.CameraCaptureVo;
 import com.jd.meter.entity.CameraInfo;
 import com.jd.meter.entity.DeviceData;
 import com.jd.meter.entity.DeviceInfo;
@@ -37,7 +38,12 @@ public class DeviceService {
 	@Autowired
 	private DeviceDataDao deviceDataDao;
 	@Autowired
+	private CameraService cameraService;
+	@Autowired
 	private YsClientProxy ysClientProxy;
+	
+	@Autowired
+	private MonitorJobService monitorJobService;
 	 
 	private List<DeviceInfo>  queryDeviceInfoAllOrderByInputNumCache;
 	private long  queryDeviceInfoAllOrderByInputNumCacheExpireTime=0;//findAllDeviceInfoOrderByInputNumCache的实效时间10分钟
@@ -52,6 +58,17 @@ public class DeviceService {
 	
 	//CacheBuilder<Object, Object> deviceInfoCache = CacheBuilder.newBuilder().expireAfterWrite(120, TimeUnit.SECONDS);
 	
+	public Collection<DeviceType>  queryAllDeviceType(boolean fromCache) {
+		if(fromCache && deviceTypeCache.size() > 0){
+			return deviceTypeCache.values();
+		}
+		List<DeviceType> list = deviceTypeDao.findAll();
+		for(DeviceType item : list){
+			deviceTypeCache.put(item.getType(), item);
+		}
+		return list;
+	}
+
 	public DeviceType  queryDeviceTypeByType(Long type, boolean fromCache) {
 		DeviceType obj;
 		if(fromCache){
@@ -419,5 +436,29 @@ public class DeviceService {
 		cameraCacheExpireTime = 0; 			//摄像头列表缓存过期时间，存1小时
 		
 		cameraDeviceInfoCache = Maps.newHashMap();	//摄像头与仪表绑定关系
+		
+		monitorJobService.reloadAllDeviceType();
+	}
+
+	
+	public void monitor(JobTaskWrap task) {
+		if(task.getDeviceInfoList() == null){
+			task.setDeviceInfoList(queryDeviceInfoByType(task.getDeviceType())); 
+		}
+		for(DeviceInfo device : task.getDeviceInfoList()){
+			monitor(device);
+		}
+	}
+	
+	public void monitor(DeviceInfo device) {
+		 try {
+			CameraCaptureVo param = new CameraCaptureVo();
+			param.setDeviceInfoId(device.getId());
+			param.setNeedRecognition(true);
+			param.setNeedSubmitResult(true);
+			cameraService.captureHandle(param);
+		} catch (Exception e) {
+			LOGGER.error(e.getMessage(),e);
+		}
 	}
 }

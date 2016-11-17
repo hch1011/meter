@@ -28,6 +28,7 @@ import com.jd.meter.entity.DeviceData;
 import com.jd.meter.entity.DeviceInfo;
 import com.jd.meter.entity.DeviceType;
 import com.jd.meter.service.DeviceService;
+import com.jd.meter.service.MonitorJobService;
 import com.jd.meter.util.ExcelTemplate;
 import com.jd.meter.util.ImageUtils;
 import com.jd.meter.util.TimeUtils;
@@ -46,9 +47,9 @@ public class MeterController extends BaseController{
 	DeviceTypeDao deviceTypeDao;
 	@Autowired
     DeviceService  deviceService;
-	 
+	@Autowired
+	MonitorJobService monitorJobService;
 	
-
 	/**
 	 * 提交数据
 	 * @param request
@@ -179,6 +180,8 @@ public class MeterController extends BaseController{
 		
 		deviceTypeDao.save(deviceTypeDB);
 
+		//监控中心更新
+		monitorJobService.reloadDeviceType(deviceTypeDB);
 		return paramPage( request, response, deviceType.getType(), model );
     }
 	

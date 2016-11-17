@@ -2,10 +2,12 @@
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:context="http://www.springframework.org/schema/context" xmlns:mvc="http://www.springframework.org/schema/mvc"
 	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:task="http://www.springframework.org/schema/task"
 	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.1.xsd
-		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd">
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd
+		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd">
 
   	<!--开启注解 -->
 	<context:annotation-config />
@@ -19,6 +21,20 @@
 		ignore-unresolvable="true" ignore-resource-not-found="true" />
 
   	<import resource="jpa-context.xml"/>
+  	
+  	<!-- 
+	<bean id="taskExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+		<property name="corePoolSize" value="2" />
+		<property name="maxPoolSize" value="10" />
+		<property name="threadNamePrefix" value="market-task-executor-" />
+	</bean>
+	 -->
+	 
+	<task:scheduled-tasks>
+		<task:scheduled ref="monitorJob" method="process" cron="0 * * * * ?" />
+	</task:scheduled-tasks>  
+
+	<bean id="propertyMessage" class="com.jd.meter.exception.i18n.PropertyMessage" />
 
 	<bean id="mapper" class="org.dozer.DozerBeanMapper">
 		<property name="mappingFiles">
@@ -41,5 +57,6 @@
         <property name="useCodeAsDefaultMessage" value="true"/>
 	</bean>
 	
-    <bean id="propertyMessage" class="com.jd.meter.exception.i18n.PropertyMessage" />
+    
+    
 </beans>

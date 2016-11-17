@@ -190,7 +190,7 @@ public class CameraController extends BaseController{
 	@ResponseBody
 	public Object captureStream(@RequestBody CameraCaptureVo param){
 		try {
-			cameraService.captureSuite(param);
+			cameraService.captureHandle(param);
 			return success(param);
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage(), e);

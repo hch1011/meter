@@ -16,7 +16,7 @@ import com.jd.meter.util.Constant;
 @Table(name = "device_type")
 public class DeviceType implements Serializable{
 	private static final long serialVersionUID = 1L;
-
+	
 	@Transient
 	List<DeviceInfo> deviceInfoList;
 	
@@ -65,7 +65,7 @@ public class DeviceType implements Serializable{
 	private String frequencyWarningStrategy;//报警策略，四种策略（<,<=,>,>=） ；其他符号表示不做判断
 	
 	@Column(name = "snap_times")
-    private String snapTimes;				//最新预读时间列表
+    private String snapTimes;				//最新预读时间列表,每日巡检时间
 
 	@Column(name = "monitor_page_flag")
 	private Integer monitorPageFlag;		//是否需要出现在监控首页

@@ -94,7 +94,9 @@
 				         	<div class="col-sm-6">
 				            	<!-- <div class="del time-del">-</div> -->
 				            	<input class="form-control time-day" type="text" name="snapTimes"  value="${currentDeviceType.snapTimes}">
-				            	<!-- <div class="plus time-plus">+</div> -->
+				            	<!-- 多个时间英文逗号分隔，可以输入两种时间格式: 小时:分钟格式，或分钟格式(2位)
+				            	举例如下:00, 30, 09:15, 22:05表示每小时的00分钟，30分钟都监控一次，另外09:15,22:05也监控一次
+				            	 -->
 				            </div>
 	          			</div>
 	          		</td>
@@ -109,5 +111,8 @@
 	          	</tr>
 	          	</tbody>
 	          </table>
+	          <br>每日巡检时间格式说明：
+	          <br> * 多个时间用英文逗号分隔，可以混合输入两种时间格式: 小时:分钟格式，或分钟格式，这里的小时与分钟都要求两位数字。
+	          <br> * 举例如下:00,30,09:15, 22:05表示每小时的00分钟，30分钟都监控一次，另外09:15,22:05也监控一次
 			</form>
 	</div>

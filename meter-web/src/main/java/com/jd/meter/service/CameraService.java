@@ -8,6 +8,8 @@ import java.io.InputStreamReader;
 import java.util.Date;
 
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -32,7 +34,8 @@ import com.jd.meter.ys.sdk.YsClientProxy;
  */
 @Service("cameraService")
 public class CameraService {
-
+	private static Logger LOGGER = LoggerFactory.getLogger(CameraService.class);
+	
 	@Value("${meter.camera.snapshot.saved.folder}")
 	private String cameraSnapshotFolder;
 	@Value("${meter.camera.snapshot.saved.width}")
@@ -54,7 +57,8 @@ public class CameraService {
 	 * NeedRecognition识别
 	 * 
 	 */
-	public CameraCaptureVo captureSuite(CameraCaptureVo param){
+	public CameraCaptureVo captureHandle(CameraCaptureVo param){
+		LOGGER.debug("captureFlow("); 
 		try {
  			initAndvalidateParam(param);
  			
@@ -68,6 +72,10 @@ public class CameraService {
 	
 			if(param.isNeedRecognition()){
 				doRecognition(param);
+	 		}
+			
+			if(param.isNeedSubmitResult()){
+				doSubmitDeviceData(param);
 	 		}
 		} catch (MeterException e) {
 			param.setScreenMessage(e.getScreenMessage());

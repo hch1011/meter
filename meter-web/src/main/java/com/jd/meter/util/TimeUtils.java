@@ -5,6 +5,12 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
+
+import com.google.common.collect.Lists;
+import com.jd.meter.exception.MeterExceptionFactory;
 
 public class TimeUtils { 
 	
@@ -266,6 +272,56 @@ public class TimeUtils {
     	return i;
     }
     
+    
+    /**
+     * 
+     * 解析时间表达式，两种格式，可混合使用,分隔符逗号
+     * 10:00,12:00,10,20
+     * 
+     * 10:00  表示指定时间运行
+     * 10表示每小时的对应分钟运行
+     * 
+     * @param timeExpression
+     * @param exceptionIfBadSubExpression  
+     * @return
+     */
+    public static List<String> parseTimeExpression(String timeExpression, boolean exceptionIfBadSubExpression){
+    	timeExpression = timeExpression.replace(":", "");
+    	timeExpression = timeExpression.replace("：", "");
+    	List<String> rtList = Lists.newArrayList();
+    	String[] arrays = timeExpression.split("[^\\d]");
+    	
+    	String tmpStr;
+    	
+    	for(String item : arrays){ 
+			if(StringUtils.isBlank(item)){
+    			continue;
+    		}
+			switch (item.length()) {
+			case 2:
+    			for(int i=0; i<24; i++){
+    				tmpStr = i < 10 ? "0"+i+item : i+item;
+    				rtList.add(tmpStr);
+    			}				
+				break;
+			case 4:
+				rtList.add(item);
+				break;
+			default:
+				if(exceptionIfBadSubExpression){
+					throw MeterExceptionFactory.applicationException("时间格式错误:"+item, null);
+				}
+			}
+    	}
+    	
+    	return rtList;
+    } 
+
+    
+    public static void main(String[] args) {
+    	System.out.println(parseTimeExpression("00:00,01:11 02:12，03；04    1", false));
+	}
+    
     static void testSubForMonth(){
     	Date data1 = getDate("2016-03-28 00:00:00");
     	Date data2 = getDate("2017-03-28 00:00:00");
@@ -314,8 +370,4 @@ public class TimeUtils {
     	System.out.println("26 = " + TimeUtils.spaceForMonth(getDate("2009-02-01"), getDate("2011-03-31")));
     	System.out.println("38 = " + TimeUtils.spaceForMonth(getDate("2009-02-01"), getDate("2012-03-31")));
     }
-    
-    public static void main(String[] args) {
-    	TimeUtils.testSubForMonth();
-	}
 }
