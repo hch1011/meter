@@ -50,7 +50,7 @@
   
   <!-- <filter>  
        <filter-name>sessionFilter</filter-name>  
-       <filter-class>com.jd.meter.filter.SessionFilter</filter-class>  
+       <filter-class>com.tj.meter.filter.SessionFilter</filter-class>  
   </filter>  
   <filter-mapping>  
 	    <filter-name>sessionFilter</filter-name>  

@@ -5,8 +5,9 @@ import java.util.List;
 import org.junit.Test;
 
 import com.alibaba.fastjson.JSON;
-import com.jd.meter.entity.CameraInfo;
-import com.jd.meter.util.TimeUtils;
+import com.tj.meter.entity.CameraInfo;
+import com.tj.meter.util.TimeUtils;
+import com.tj.meter.ys.sdk.YsClientProxy;
 
 public class YsClientProxyTest {
 	YsClientProxy ysClientProxy = new YsClientProxy();
