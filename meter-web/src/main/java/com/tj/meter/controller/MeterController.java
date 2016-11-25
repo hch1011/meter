@@ -107,14 +107,14 @@ public class MeterController extends BaseController{
 			@RequestParam(value="deviceId", required = true)Long deviceId) {
 		DeviceInfo deviceInfo = deviceService.queryDeviceInfoById(deviceId, true);
 		Map<String, Object> map = new HashMap<String, Object>();
+		String date = TimeUtils.getDateString(deviceInfo.getSnapTime(), defaultDateFormat);
+		String time = TimeUtils.getDateString(deviceInfo.getSnapTime(), defaultTimeFormat);
+		DeviceType deviceType = deviceService.queryDeviceTypeByType(deviceInfo.getType(), true);
 		map.put("deviceInfo", deviceInfo);
-		Date snapTime = deviceInfo.getSnapTime();
-		String date = TimeUtils.getDateString(snapTime, defaultDateFormat);
-		String time = TimeUtils.getDateString(snapTime, defaultTimeFormat);
+		map.put("deviceType", deviceType);
 		map.put("date", date);
 		map.put("time", time);
-		DeviceData deviceData = deviceService.queryDeviceDataById(deviceInfo.getSnapDataId());
-		map.put("deviceData", deviceData);
+		//map.put("deviceData", deviceData);
 		return map;
 	}
 

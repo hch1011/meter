@@ -36,7 +36,8 @@
 				var imgUrl = '/meter/resources/images/' + 'light' + snapStatus +'.png'
 				$('#myModal .body-detail .tl .tl-image').find('img').attr('src', imgUrl)
 				
-				var dataName = infoName.split('#')[0]  
+				//var dataName = infoName.split('#')[0]  
+				var dataName = $(this).attr('data-dataname')
 				$(".body-detail .data-name").html(dataName)
 				var dataUnit = $(this).attr('data-dataunit')
 				$(".body-detail .data-unit").html(dataUnit)

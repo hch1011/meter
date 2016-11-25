@@ -46,6 +46,10 @@ public class DeviceInfo implements Serializable{
 	@Column(name = "snap_data_id")
 	private Long snapDataId;		//最新预读数据ID
 	
+
+	@Column(name = "picture_local_path")
+	private String pictureLocalPath;//本地保存的原始图片相对路径
+	
 	@Column(name = "snap_data")
 	private Float snapData;			//最新预读数据
 	
@@ -313,6 +317,14 @@ public class DeviceInfo implements Serializable{
 
 	public void setCameraBindTime(Date cameraBindTime) {
 		this.cameraBindTime = cameraBindTime;
+	}
+
+	public String getPictureLocalPath() {
+		return pictureLocalPath;
+	}
+
+	public void setPictureLocalPath(String pictureLocalPath) {
+		this.pictureLocalPath = pictureLocalPath;
 	}
 
 	public String getSnapStatusEn() {

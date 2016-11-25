@@ -12,9 +12,6 @@
             self.__jcrop_api;
             self.__init();
             self.__initEvent();
-
-
-
         },
 
         __initEvent: function () {
@@ -49,7 +46,6 @@
                     contentType: 'application/json',
                     success: function(res){
                         alert(res.success)
-
                     },
                     error: function(errorcode){
                         throw new Error(errorcode.status)
@@ -75,15 +71,17 @@
                 dataType: 'json',
                 contentType: 'application/json',
                 success: function(res){
+                    $('.img-info-body .label-a').html(res.deviceType.dataName+"("+res.deviceType.dataUnit+")")
                     $('.img-info-body .i-a').val(res.deviceInfo.snapData)
                     $('.img-info-body .i-b').val(res.date)
+                    $('.img-info-body .label-c').html(res.deviceType.dataName+"变化率("+res.deviceType.changeRateUnit+")")
                     $('.img-info-body .i-c').val(res.deviceInfo.changeRate)
+
                     $('.img-info-body .i-d').val(res.time)
-                    if(res.deviceData == null || res.deviceData.pictureUrl == null || res.deviceData.pictureUrl == "") {
-                        alert("无对应数据")
+                    if(res.deviceData.pictureLocalPath == "") {
+                        $('.img-info-body img').attr("src", window.basePath + res.deviceInfo.pictureLocalPath);
                     } else {
-                        var imgUrl = window.basePath + res.deviceData.pictureUrl
-                        $('.img-info-body img').attr("src", imgUrl);
+                        
                     }
                 },
                 error: function(errorcode){

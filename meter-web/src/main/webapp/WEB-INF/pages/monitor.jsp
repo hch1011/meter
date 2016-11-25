@@ -9,7 +9,9 @@
 	<c:forEach items="${list}" var="type">
 		<h2>${type.typeName} 监测部分:</h2>
 		<c:forEach items="${type.deviceInfoList}" var="info">
-	 	<div class="block" data-id="${info.id}" data-snapstatus="${info.snapStatus}"
+	 	<div class="block" 
+	 	    data-id="${info.id}" 
+	 	    data-snapstatus="${info.snapStatus}"
 	 		data-dataname="${type.dataName}" data-dataunit="${type.dataUnit}" data-snapdata="${info.snapData}"
 	 		data-rateunit="${type.changeRateUnit}" data-rate="${info.changeRate}" 
 	 		data-frequency="${info.frequency}" data-typename="${type.typeName}"
@@ -39,7 +41,7 @@
 				 		<table>
 				 			<tr>
 				 				<td>
-				 					<label><span class="data-name">接地电流</span>值(<span class="data-unit">mA</span>)：</label>
+				 					<label><span class="data-name">接地电流</span>(<span class="data-unit">mA</span>)：</label>
 				 				</td>
 				 				<td class="snap-data">
 				 					<input type="text" value="4.2"/>

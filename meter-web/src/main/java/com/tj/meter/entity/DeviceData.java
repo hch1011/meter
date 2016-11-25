@@ -56,12 +56,11 @@ public class DeviceData  implements Serializable{
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date updateTime;
 
-
 	@Column(name = "picture_local_path")
 	private String pictureLocalPath;//本地保存的原始图片相对路径
 	
 	@Column(name = "picture_url")
-	private String pictureUrl;		//改属性不一定有效。图片url,可以是外部平台url；也可以是自己的url(尽量使用pictureLocalPath凭借)
+	private String pictureUrl;		//该属性不一定有效。图片url,可以是外部平台url；也可以是自己的url(尽量使用pictureLocalPath凭借)
 	
 	@Column(name = "warning_reason")
 	private String warningReason;	//报警原因
@@ -222,6 +221,14 @@ public class DeviceData  implements Serializable{
 	}
 	public void incSincCount() {
 		sincCount++;
+	}
+
+	public String getPictureLocalPath() {
+		return pictureLocalPath;
+	}
+
+	public void setPictureLocalPath(String pictureLocalPath) {
+		this.pictureLocalPath = pictureLocalPath;
 	}
 	
 }

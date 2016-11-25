@@ -155,13 +155,14 @@ public class DeviceService {
 		deviceDataDao.save(deviceData);
 		
 		//update DeviceInfo
- 		deviceInfo.setChangeRate(deviceData.getChangeRate());
-		deviceInfo.setFrequency(deviceData.getFrequency());
+		deviceInfo.setSnapDataId(deviceData.getId());
 		deviceInfo.setSnapData(deviceData.getSnapData());
 		deviceInfo.setSnapStatus(deviceData.getSnapStatus());
 		deviceInfo.setSnapTime(deviceData.getSnapTime());
+ 		deviceInfo.setChangeRate(deviceData.getChangeRate());
+		deviceInfo.setFrequency(deviceData.getFrequency());
 		deviceInfo.setWarningReason(deviceData.getWarningReason());
-		deviceInfo.setSnapDataId(deviceData.getId());
+		deviceInfo.setPictureLocalPath(deviceData.getPictureLocalPath());
 		deviceInfoDao.save(deviceInfo);
 	}
 	/**
