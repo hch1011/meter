@@ -21,6 +21,8 @@ public class CameraInfo implements Serializable {
 	
 	DeviceInfo deviceInfo;
 
+	String lastSnapshotUrl; 		// 最新的快照URL
+
     @Id
     @Column(name = "device_serial")
 	private String deviceSerial;	// 设备序列号:427734168
@@ -167,5 +169,13 @@ public class CameraInfo implements Serializable {
 
 	public void setVideoLevel(String videoLevel) {
 		this.videoLevel = videoLevel;
+	}
+
+	public String getLastSnapshotUrl() {
+		return lastSnapshotUrl;
+	}
+
+	public void setLastSnapshotUrl(String lastSnapshotUrl) {
+		this.lastSnapshotUrl = lastSnapshotUrl;
 	}
 }

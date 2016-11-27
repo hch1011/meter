@@ -20,6 +20,7 @@ import com.tj.meter.entity.CameraInfo;
 import com.tj.meter.entity.DeviceData;
 import com.tj.meter.entity.DeviceInfo;
 import com.tj.meter.entity.DeviceType;
+import com.tj.meter.exception.MeterException;
 import com.tj.meter.exception.MeterExceptionFactory;
 import com.tj.meter.util.ObjectUtil;
 import com.tj.meter.util.SnowflakeIdGenerator;
@@ -28,6 +29,9 @@ import com.tj.meter.ys.sdk.YsClientProxy;
 @Service("deviceService")
 public class DeviceService {
 	private static Logger LOGGER = LoggerFactory.getLogger(DeviceService.class);
+
+	@Autowired
+	Cache cache;
 	
 	@Value("${meter.centerServer.syncdata:false}")
 	private boolean syncdata = false;
@@ -42,29 +46,19 @@ public class DeviceService {
 	@Autowired
 	private YsClientProxy ysClientProxy;
 	
-	@Autowired
-	private MonitorJobService monitorJobService;
-	 
-	private List<DeviceInfo>  queryDeviceInfoAllOrderByInputNumCache;
-	private long  queryDeviceInfoAllOrderByInputNumCacheExpireTime=0;//findAllDeviceInfoOrderByInputNumCache的实效时间10分钟
-	private Map<Long,DeviceType> deviceTypeCache = Maps.newHashMap();
-	private Map<Long,DeviceInfo> deviceInfoCache = Maps.newHashMap();
 	
-	private Map<String,CameraInfo> cameraCache = Maps.newHashMap();		//摄像头列表缓存,key是序列号
-	private long                   cameraCacheExpireTime = 0; 			//摄像头列表缓存过期时间，存1小时
-	
-	private Map<String,Long> cameraDeviceInfoCache = Maps.newHashMap();	//摄像头与仪表绑定关系
+
 	
 	
 	//CacheBuilder<Object, Object> deviceInfoCache = CacheBuilder.newBuilder().expireAfterWrite(120, TimeUnit.SECONDS);
 	
 	public Collection<DeviceType>  queryAllDeviceType(boolean fromCache) {
-		if(fromCache && deviceTypeCache.size() > 0){
-			return deviceTypeCache.values();
+		if(fromCache && cache.deviceTypeCache.size() > 0){
+			return cache.deviceTypeCache.values();
 		}
 		List<DeviceType> list = deviceTypeDao.findAll();
 		for(DeviceType item : list){
-			deviceTypeCache.put(item.getType(), item);
+			cache.deviceTypeCache.put(item.getType(), item);
 		}
 		return list;
 	}
@@ -72,7 +66,7 @@ public class DeviceService {
 	public DeviceType  queryDeviceTypeByType(Long type, boolean fromCache) {
 		DeviceType obj;
 		if(fromCache){
-			obj = deviceTypeCache.get(type);
+			obj = cache.deviceTypeCache.get(type);
 			if(obj != null){
 				return obj;
 			}
@@ -80,7 +74,7 @@ public class DeviceService {
 		
 		obj = deviceTypeDao.findOne(type);
 		if(obj != null){
-			deviceTypeCache.put(type, obj);
+			cache.deviceTypeCache.put(type, obj);
 		}
 		 
 		return obj;
@@ -123,47 +117,67 @@ public class DeviceService {
 	 * @param deviceData
 	 */
 	public void submitData(DeviceData deviceData) {
-		// init
-		if(deviceData.getCreateTime() == null){
-			deviceData.setCreateTime(new Date());
+		 
+						
+		try {
+			// init
+			if(deviceData.getCreateTime() == null){
+				deviceData.setCreateTime(new Date());
+			}
+			deviceData.setUpdateTime(deviceData.getCreateTime());
+			
+			if(deviceData.getSnapData() == null){
+				deviceData.setSnapData(0f);
+			}
+			
+			// checkData
+			DeviceInfo deviceInfo = deviceInfoDao.findOne(deviceData.getDeviceId());
+			// 一直失败状态，只更新时间
+			if(DeviceData.snapStatus_fail.equals(deviceData.getSnapStatus())
+				&& DeviceData.snapStatus_fail.equals(deviceInfo.getSnapStatus())){
+				DeviceInfo deviceInfoUpdate = new DeviceInfo();
+				deviceInfoUpdate.setId(deviceInfo.getId());
+				deviceInfoUpdate.setSnapData(deviceData.getSnapData());
+				deviceInfoUpdate.setUpdateTime(new Date());
+				deviceInfoUpdate.setSnapTime(new Date());
+				deviceInfoUpdate.setPictureLocalPath(deviceData.getPictureLocalPath());
+				deviceInfoUpdate.setWarningReason(deviceData.getWarningReason());
+				deviceInfoDao.save(deviceInfoUpdate);
+				return;
+			}
+			
+			ObjectUtil.checkNotNull(deviceInfo, true, "仪表不存在，deviceId="+ deviceData.getDeviceId());
+			DeviceType deviceType = deviceTypeDao.findOne(deviceInfo.getType());
+			ObjectUtil.checkNotNull(deviceType, true, "设备类型不存在，type="+deviceInfo.getType());
+			
+			//TODO 变化率计算
+			if(deviceInfo.getChangeRate() == null){
+				deviceInfo.setChangeRate(deviceData.getSnapData() - deviceInfo.getSnapData());
+			}
+			
+			//设置报警信息
+			deviceType.resetDataWarningStatus(deviceData);
+		
+			//save Devicedata
+			if(deviceData.getId() == null){
+				deviceData.setId(SnowflakeIdGenerator.getInstance().nextId());
+			}
+			deviceData.setDeviceCode(deviceInfo.getCode());
+			deviceDataDao.save(deviceData);
+			
+			//update DeviceInfo
+			deviceInfo.setSnapDataId(deviceData.getId());
+			deviceInfo.setSnapData(deviceData.getSnapData());
+			deviceInfo.setSnapStatus(deviceData.getSnapStatus());
+			deviceInfo.setSnapTime(deviceData.getSnapTime());
+	 		deviceInfo.setChangeRate(deviceData.getChangeRate());
+			deviceInfo.setFrequency(deviceData.getFrequency());
+			deviceInfo.setWarningReason(deviceData.getWarningReason());
+			deviceInfo.setPictureLocalPath(deviceData.getPictureLocalPath());
+			deviceInfoDao.save(deviceInfo);
+		} catch (Exception e) {
+			LOGGER.error(e.getMessage(),e);
 		}
-		deviceData.setUpdateTime(deviceData.getCreateTime());
-		
-		if(deviceData.getSnapData() == null){
-			deviceData.setSnapData(0f);
-		}
-		
-		// checkData
-		DeviceInfo deviceInfo = deviceInfoDao.findOne(deviceData.getDeviceId());
-		ObjectUtil.checkNotNull(deviceInfo, true, "仪表不存在，deviceId="+ deviceData.getDeviceId());
-		DeviceType deviceType = deviceTypeDao.findOne(deviceInfo.getType());
-		ObjectUtil.checkNotNull(deviceType, true, "设备类型不存在，type="+deviceInfo.getType());
-		
-		//TODO 变化率计算
-		if(deviceInfo.getChangeRate() == null){
-			deviceInfo.setChangeRate(deviceData.getSnapData() - deviceInfo.getSnapData());
-		}
-		
-		//设置报警信息
-		deviceType.resetDataWarningStatus(deviceData);
-	
-		//save Devicedata
-		if(deviceData.getId() == null){
-			deviceData.setId(SnowflakeIdGenerator.getInstance().nextId());
-		}
-		deviceData.setDeviceCode(deviceInfo.getCode());
-		deviceDataDao.save(deviceData);
-		
-		//update DeviceInfo
-		deviceInfo.setSnapDataId(deviceData.getId());
-		deviceInfo.setSnapData(deviceData.getSnapData());
-		deviceInfo.setSnapStatus(deviceData.getSnapStatus());
-		deviceInfo.setSnapTime(deviceData.getSnapTime());
- 		deviceInfo.setChangeRate(deviceData.getChangeRate());
-		deviceInfo.setFrequency(deviceData.getFrequency());
-		deviceInfo.setWarningReason(deviceData.getWarningReason());
-		deviceInfo.setPictureLocalPath(deviceData.getPictureLocalPath());
-		deviceInfoDao.save(deviceInfo);
 	}
 	/**
 	 * 接受到同步过来的数据
@@ -191,15 +205,15 @@ public class DeviceService {
 	}
  
 	public List<DeviceInfo> queryDeviceInfoAllOrderByInputNum(){
-		if(System.currentTimeMillis() > queryDeviceInfoAllOrderByInputNumCacheExpireTime){
-			queryDeviceInfoAllOrderByInputNumCache = null;
+		if(System.currentTimeMillis() > cache.queryDeviceInfoAllOrderByInputNumCacheExpireTime){
+			cache.queryDeviceInfoAllOrderByInputNumCache = null;
 		}
-		if(queryDeviceInfoAllOrderByInputNumCache == null){
-			queryDeviceInfoAllOrderByInputNumCache = deviceInfoDao.findAllDeviceInfoOrderByInputNum();
-			queryDeviceInfoAllOrderByInputNumCacheExpireTime = System.currentTimeMillis() + 600 * 1000;
+		if(cache.queryDeviceInfoAllOrderByInputNumCache == null){
+			cache.queryDeviceInfoAllOrderByInputNumCache = deviceInfoDao.findAllDeviceInfoOrderByInputNum();
+			cache.queryDeviceInfoAllOrderByInputNumCacheExpireTime = System.currentTimeMillis() + 600 * 1000;
 		}
 		
-		 return queryDeviceInfoAllOrderByInputNumCache;
+		 return cache.queryDeviceInfoAllOrderByInputNumCache;
 	}
 	
 
@@ -242,12 +256,12 @@ public class DeviceService {
 		if(deviceInfoId == null){
 			return null;
 		}
-		DeviceInfo info = deviceInfoCache.get(deviceInfoId);
+		DeviceInfo info = cache.deviceInfoCache.get(deviceInfoId);
 		if(useCache && info != null){
 			return info;
 		} 
 		info = deviceInfoDao.findOne(deviceInfoId);
- 		return cache(info);
+ 		return cache.cache(info);
 	}
 
 	public List<DeviceInfo> queryDeviceInfoBySnapStatus(Integer[] snapStatus) {
@@ -260,40 +274,30 @@ public class DeviceService {
 	}
 	
 	private DeviceInfo queryDeviceInfoByCameraSerial(String deviceSerial) {
-		DeviceInfo info = queryDeviceInfoById(cameraDeviceInfoCache.get(deviceSerial), true);
+		DeviceInfo info = queryDeviceInfoById(cache.cameraDeviceInfoCache.get(deviceSerial), true);
 		if(info == null){
 			List<DeviceInfo> list = deviceInfoDao.findByCameraSerial(deviceSerial);
-			if(list.size() > 1){
+			if(list.size() >= 1){
 				info = list.get(0);
-				cache(info);
+				cache.cache(info);
 			}
 		}
 		return info;
 	}
 	
-	/**
-	 * 获取待同步的数据
-	 * @param length
-	 * @return
-	 */
-	public List<DeviceData> queryWaitingSync(int length) {
-		List<DeviceData> list = deviceDataDao.findWaitingSync(length);
-		return list;
-	}
+//	/**
+//	 * 获取待同步的数据
+//	 * @param length
+//	 * @return
+//	 */
+//	public List<DeviceData> queryWaitingSync(int length) {
+//		List<DeviceData> list = deviceDataDao.findWaitingSync(length);
+//		return list;
+//	}
  	
 	public DeviceData queryDeviceDataById(Long deviceId) {
 		return deviceDataDao.findOne(deviceId);
 	}
-
-	public void bindCamera(Long deviceInfoId, String cameraSerialId, boolean force) {
-		DeviceInfo deviceInfo = deviceInfoDao.findOne(deviceInfoId);
-		deviceInfo.setCameraSerial(cameraSerialId);
-		deviceInfo.setUpdateTime(new Date());
-		deviceInfo.setCameraBindTime(deviceInfo.getUpdateTime());
-		deviceInfoDao.save(deviceInfo);
-		
-		clean(deviceInfo);
- 	}
 
 	/**
 	 * 保存仪表识别范围
@@ -305,6 +309,10 @@ public class DeviceService {
 	 * @param h
 	 */
 	public void updateCutRange(Long deviceInfoId, Integer x, Integer y, Integer w, Integer h) {
+		if(deviceInfoId == null){
+			throw MeterExceptionFactory.applicationException("为指定仪表，不能保存范围", null);
+		}
+		
 		if(x<1 || y<1  || w<10 || h<10){
 			throw MeterExceptionFactory.applicationException("识别范围不正确", null);
 		}
@@ -320,16 +328,14 @@ public class DeviceService {
 		deviceInfo.setH(h);
 		deviceInfo.setUpdateTime(new Date());
 		deviceInfoDao.save(deviceInfo);
-		cache(deviceInfo);
+		cache.cache(deviceInfo);
 	}
 	
-
-
 	public CameraInfo queryCameraById(String deviceSerial, boolean withDeviceInfo) {
-		CameraInfo info = cameraCache.get(deviceSerial);
+		CameraInfo info = cache.cameraCache.get(deviceSerial);
 		if(info == null){
 			loadAllCameraListFromSDK();
-			info = cameraCache.get(deviceSerial);
+			info = cache.cameraCache.get(deviceSerial);
 		}
 
 		if(info == null){
@@ -343,16 +349,16 @@ public class DeviceService {
 
 	public List<CameraInfo> queryAllCameraList(boolean withDeviceInfo){
 		long currentTime =  System.currentTimeMillis();
-		if(cameraCacheExpireTime < currentTime ){
+		if(cache.cameraCacheExpireTime < currentTime ){
 			try {
 				// 重新加载摄像头列表
 				loadAllCameraListFromSDK();
 			} catch (Exception e) {
 				// 如果获取列表失败，原数据再可用5分钟
-				cameraCacheExpireTime = System.currentTimeMillis() + 5 * 60 *1000L;
+				cache.cameraCacheExpireTime = System.currentTimeMillis() + 5 * 60 *1000L;
 			}
 		}
-		ArrayList<CameraInfo> list = Lists.newArrayList(cameraCache.values());
+		ArrayList<CameraInfo> list = Lists.newArrayList(cache.cameraCache.values());
 		 
 		if(withDeviceInfo){
 			for(CameraInfo item : list){
@@ -381,65 +387,44 @@ public class DeviceService {
 			dataPage = ysClientProxy.cameraList(pageable);
 		}
 		
-		cameraCache = tmpMap;
-		cameraCacheExpireTime = System.currentTimeMillis() + 3600 * 1000L;
+		cache.cameraCache = tmpMap;
+		cache.cameraCacheExpireTime = System.currentTimeMillis() + 3600 * 1000L;
 		return tmpMap;
 	}
 
-	public void bindCameraToDeviceInfo(String cameraSerial, Long deviceInfoId){
-		queryDeviceInfoByCameraSerial(cameraSerial);
+
+//	public void bindCamera(Long deviceInfoId, String cameraSerialId, boolean force) {
+//		DeviceInfo deviceInfo = deviceInfoDao.findOne(deviceInfoId);
+//		deviceInfo.setCameraSerial(cameraSerialId);
+//		deviceInfo.setUpdateTime(new Date());
+//		deviceInfo.setCameraBindTime(deviceInfo.getUpdateTime());
+//		deviceInfoDao.save(deviceInfo);
+//		
+//		clean(deviceInfo);
+// 	}
+
+	
+	public void bindCameraAndDeviceInfo(String cameraSerial, Long deviceInfoId, boolean force){
 		
 		// 解绑之前的摄像头
 		List<DeviceInfo> list = deviceInfoDao.findByCameraSerial(cameraSerial);
+				
 		for(DeviceInfo info : list){
 			info.setCameraSerial(null);
 			deviceInfoDao.save(info);
-			clean(info);
+			cache.clean(info);
 		}
 		//绑定现在的摄像头
 		DeviceInfo info = deviceInfoDao.findOne(deviceInfoId);
-		clean(info);
+		cache.clean(info);
 		
 		info.setUpdateTime(new Date());
 		info.setCameraBindTime(info.getUpdateTime());
 		info.setCameraSerial(cameraSerial);
 		deviceInfoDao.save(info);
-		cache(info);
+		cache.cache(info);
 	}
-	
-	private DeviceInfo cache(DeviceInfo info) {
-		if(info == null){
-			return null;
-		}
-		deviceInfoCache.put(info.getId(), info);
-		cameraDeviceInfoCache.put(info.getCameraSerial(), info.getId());
- 		return info;
-	}
-	
-	private DeviceInfo clean(DeviceInfo info) {
-		if(info == null){
-			return null;
-		}
-		deviceInfoCache.remove(info.getId());
-		cameraDeviceInfoCache.remove(info.getCameraSerial());
- 		return info;
-	}
-	
-	public void cleanAll(){
-		
-		queryDeviceInfoAllOrderByInputNumCache = null;;
-		queryDeviceInfoAllOrderByInputNumCacheExpireTime=0;//findAllDeviceInfoOrderByInputNumCache的实效时间10分钟
-		
-		deviceTypeCache = Maps.newHashMap();
-		deviceInfoCache = Maps.newHashMap();
-		
-		cameraCache = Maps.newHashMap();		//摄像头列表缓存,key是序列号
-		cameraCacheExpireTime = 0; 			//摄像头列表缓存过期时间，存1小时
-		
-		cameraDeviceInfoCache = Maps.newHashMap();	//摄像头与仪表绑定关系
-		
-		monitorJobService.reloadAllDeviceType();
-	}
+	 
 
 	
 	public void monitor(JobTaskWrap task) {
@@ -452,14 +437,62 @@ public class DeviceService {
 	}
 	
 	public void monitor(DeviceInfo device) {
+		CameraCaptureVo param = new CameraCaptureVo();
+		param.setDeviceInfoId(device.getId());
+		param.setNeedRecognition(true);
+		//param.setNeedSubmitResult(true);
+		
 		 try {
-			CameraCaptureVo param = new CameraCaptureVo();
-			param.setDeviceInfoId(device.getId());
-			param.setNeedRecognition(true);
-			param.setNeedSubmitResult(true);
 			cameraService.captureHandle(param);
-		} catch (Exception e) {
+			DeviceData deviceData = buildDeviceData(param, null);
+			submitData(deviceData);
+		} catch (MeterException  e) {
+			DeviceData deviceData = buildDeviceData(param, null);
+			//TODO 如果出错，使用测试数据
+			deviceData.setSnapData(testDate());
+			deviceData.setWarningReason(e.getScreenMessage());
+			submitData(deviceData);
+			LOGGER.error(e.getMessage());
+		} catch (Exception  e) {
+			DeviceData deviceData = buildDeviceData(param, null);
+			deviceData.setSnapStatus(DeviceData.snapStatus_fail);
+			deviceData.setWarningReason("系统错误");
+			submitData(deviceData);
 			LOGGER.error(e.getMessage(),e);
 		}
+	}
+	
+	DeviceData buildDeviceData(CameraCaptureVo param, String dataType){
+		if(dataType == null){
+			dataType = DeviceData.dataType_scheduleLaunch;
+		}
+		
+		DeviceData deviceData = new DeviceData();
+		deviceData.setDeviceId(param.getDeviceInfoId());
+		deviceData.setSnapTime(param.getCurrentTime());
+		deviceData.setDataType(dataType);
+		deviceData.setCreateTime(param.getCurrentTime());
+		deviceData.setUpdateTime(param.getCurrentTime());
+		deviceData.setPictureUrl(param.getYsUrl());
+		deviceData.setPictureLocalPath(param.getWholeFileName());
+		
+		if("200".equals(param.getCode()) || "0".equals(param.getCode())){
+			deviceData.setSnapStatus(DeviceData.snapStatus_normal);
+			deviceData.setSnapData(param.getValue());
+		}else{
+			deviceData.setSnapStatus(DeviceData.snapStatus_fail);
+			deviceData.setSnapData(0f);
+			deviceData.setWarningReason(param.getScreenMessage());
+		} 
+ 		return deviceData;
+	}
+	
+	int i = 100;
+	float testDate(){
+		i++;
+		if(i>150){
+			i=100;
+		}
+		return (float)i;
 	}
 }

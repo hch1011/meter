@@ -20,7 +20,7 @@
 			<td colspan="2">${camera.deviceName}</td>
 		</tr>
 		<tr>
-			<td rowspan="2"class="size">仪表信息</td>
+			<td rowspan="2"　class="size">仪表信息</td>
 			<td class="warning">仪表编号</td>
 			<td class="warning">仪表名称</td>
 			<td class="warning">仪表类别</td>
@@ -29,14 +29,7 @@
 		<tr>
 			<td>${camera.deviceInfo.code}</td>
 			<td>${camera.deviceInfo.name}</td>
-			<td>
-				<c:if test="${camera.deviceInfo.type == 1}">
-					SF6密度
-				</c:if>
-				<c:if test="${camera.deviceInfo.type == 2}">
-					氧化锌避雷器
-				</c:if>
-			</td>
+			<td>${camera.deviceInfo.deviceType.typeName}　</td>
 			<td>${camera.deviceInfo.inputNum}</td>
 		</tr>
 		</tbody>
@@ -74,8 +67,9 @@
 	</div>
 
 
-	<div id="divPreView" class="right">
-		<img id="img_preview" src="http://pic.ys7.com:99/image/3/3/2a21227c84cf4e549a8b15a2199291b7/2/24/6086/705315165/48144" />
-	</div>
+		<div id="divPreView" class="right" >
+			
+			<!--  <img id="img_preview" src=" " alt="摄像头快照" /> -->
+		</div>
 	</div>
 </div>

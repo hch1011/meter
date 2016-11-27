@@ -23,7 +23,7 @@ public class DeviceDataDaoTest {
     	DeviceData data = new DeviceData();
     	data.setId(1L);
     	data.setCreateTime(new Date());
-    	data.setDataType(1);
+//    	data.setDataType(1);
     	data.setDeviceCode("deviceCode");
     	data.setDeviceId(1L);
     	data.setMetaData("metaData");

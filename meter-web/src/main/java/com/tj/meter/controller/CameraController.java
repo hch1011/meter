@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,7 +68,7 @@ public class CameraController extends BaseController{
 	}
 
 	/**
-	 * 所有摄像头
+	 * 摄像头设置
 	 */
 	@RequestMapping(value = "/camera/setting", method = RequestMethod.GET)
 	public String camereSetting(
@@ -80,6 +81,15 @@ public class CameraController extends BaseController{
 		if(camera == null){
 			return "camera/setting";
 		}
+
+		if(StringUtils.isBlank(camera.getLastSnapshotUrl())){
+			try {
+				String url = ysClientProxy.capture(camera.getDeviceSerial(), camera.getChannelNo());
+				camera.setLastSnapshotUrl(url);
+			} catch (Exception e) {
+				//camera.setPicUrl(url);//应该设置一张获取图片失败的
+	 		}
+		}
 		
 		List<Map<Integer,List<DeviceInfo> >> deviceInfoListByInputNum = deviceService.queryDeviceInfoGroupByInputNum();
 		List<DeviceInfo> list = new ArrayList<>();
@@ -88,6 +98,7 @@ public class CameraController extends BaseController{
 				list.addAll(item.get(key));
 			}
 		}
+
 		
 		model.addAttribute("deviceInfoList", list);
 		model.addAttribute("camera", camera);
@@ -110,7 +121,7 @@ public class CameraController extends BaseController{
 			@RequestParam(value="force",required=false, defaultValue="false") boolean force
 	) { 
 		try {
-			deviceService.bindCamera(deviceInfoId, cameraSerial,force);
+			deviceService.bindCameraAndDeviceInfo(cameraSerial, deviceInfoId, force);
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage(), e);
 			return fail(e.getMessage());
@@ -130,26 +141,35 @@ public class CameraController extends BaseController{
 	public Object camerePreview(
 			HttpServletRequest request,
 			HttpServletResponse response,
-			@RequestParam(value="cameraSerial",required=true)  String cameraSerial
+			@RequestParam(value="deviceInfoId",required=false)  Long deviceInfoId,
+			@RequestParam(value="cameraSerial",required=false)  String cameraSerial
 	) { 
-		//测试数据
-		if(cameraSerial.startsWith("virtual_")){
-			int i=1;
-			try {
-				i = Integer.parseInt(cameraSerial.substring(8))%2+1;
-			} catch (Exception e) {
-				LOGGER.error(e.getMessage(), e);
-			}
-			return success("/meter/resources/images/demo/"+i+".jpg"); 
-		}
 		
 		try {
+			if(StringUtils.isBlank(cameraSerial)){
+				DeviceInfo info = deviceService.queryDeviceInfoById(deviceInfoId, true);
+				if(info == null || info.getCameraSerial() == null){
+					throw MeterExceptionFactory.applicationException("仪表没关联摄像头", null);
+				}
+				cameraSerial = info.getCameraSerial();
+			}
+			
+			//测试数据
+			if(cameraSerial.startsWith("virtual_")){
+				int i=1;
+				try {
+					i = Integer.parseInt(cameraSerial.substring(8))%2+1;
+				} catch (Exception e) {
+					LOGGER.error(e.getMessage(), e);
+				}
+				return success("/meter/resources/images/demo/"+i+".jpg"); 
+			}
 			CameraInfo camera = deviceService.queryCameraById(cameraSerial, true);
 			if(camera == null){
 				throw MeterExceptionFactory.applicationException("摄像头未找到:"+cameraSerial, null);
 			}
-
 			String url = ysClientProxy.capture(camera.getDeviceSerial(), camera.getChannelNo());
+			camera.setLastSnapshotUrl(url);
 			return success(url);
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage(), e);
@@ -164,7 +184,7 @@ public class CameraController extends BaseController{
 	 */
 	@RequestMapping(value = "/camera/range", method = RequestMethod.PUT)
 	@ResponseBody
-	public Object camereReSetRange(
+	public Object camereRange(
 			HttpServletRequest request,
 			HttpServletResponse response,
 			@RequestParam(value="deviceInfoId",required=false)  Long deviceInfoId,
@@ -200,6 +220,7 @@ public class CameraController extends BaseController{
 	
 	/**
 	 * 读取本地存盘快照文件
+	 * ** = 用本地文件夹下的文件相对路径
 	 * @param path
 	 * @return
 	 */

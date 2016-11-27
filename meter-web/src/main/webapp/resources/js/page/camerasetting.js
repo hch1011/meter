@@ -22,6 +22,8 @@ function bindCameraAndDevice(){
 }
 
 function preview(){
+	$("#divPreView").html("正在获取图片..." );
+	
 	var basePath = $("#basePath").val(); 
 	var cameraSerial = $("#cameraSerial").val();
 	var deviceInfoId = $("#deviceInfoId").val();
@@ -43,7 +45,6 @@ function preview(){
 	    		alert(data.screenMessage)
 	    		return;
 	    	}
-	    	
 	    	alert("服务器错误")
 	    },
 	    error : function() {
@@ -92,7 +93,7 @@ function saveRang(){
 function initJcrop(){
 	//initvalue
 	var img = $("#img_preview");
-	var showWidth = 600; //显示的宽度,这里的宽度要与存盘文件一致，否则切割时存在偏差,属性文件设置
+	//var showWidth = 600; //显示的宽度,这里的宽度要与存盘文件一致，否则切割时存在偏差,属性文件设置
 	//img.css("width",showWidth+'px').css("height","auto");
  
 	var rang_x = $("#rang_x").val();
@@ -100,10 +101,10 @@ function initJcrop(){
 	var rang_w = $("#rang_w").val();
 	var rang_h = $("#rang_h").val();
 	
-	if(rang_x == '' || rang_x <= 0)rang_x = 350;
-	if(rang_y == '' || rang_y <= 0)rang_y = 200;
-	if(rang_w == '' || rang_w <= 0)rang_w = 100;
-	if(rang_h == '' || rang_h <= 0)rang_h = 100;
+	if(rang_x == '' || rang_x <= 0)rang_x = 0;
+	if(rang_y == '' || rang_y <= 0)rang_y = 0;
+	if(rang_w == '' || rang_w <= 0)rang_w = 600;
+	if(rang_h == '' || rang_h <= 0)rang_h = 500;
 	rang_x=parseInt(rang_x);
 	rang_y=parseInt(rang_y);
 	rang_w=parseInt(rang_w);
@@ -127,19 +128,20 @@ function showCoords(c){
 };  
 
 function recognition(){ 
+	$("#divResult").html("识别中...");
+	
 	var basePath = $("#basePath").val(); 
 	var deviceInfoId = $("#deviceInfoId").val();
 	var imageUrl =  $("#img_preview")[0].src;
  
-	var json = { 
-	};
+	var json = {};
 	json.needRecognition = true;
 	json.ysUrl = imageUrl; 
 	json.camaraSerial = $("#cameraSerial").val(); 
 	json.deviceInfoId = $("#deviceInfoId").val(); 
 	
 	var url = basePath+"/camera/captureSuite";
-	$("#divResult").html("识别中");
+	
 	$.ajax({
 	    url: url,
 	    type: 'post',
@@ -155,11 +157,11 @@ function recognition(){
 	    				$("#divResult").html(data.value + "(这是模拟结果，"+data.screenMessage+")");
 	    			}
 	    		}else{
-	    			$("#divResult").html("1:"+data.screenMessage); 
+	    			$("#divResult").html(data.screenMessage); 
 	    		}
 	    		return;
 	    	}else{
-    			$("#divResult").html("2:"+data.screenMessage); 
+    			$("#divResult").html(data.screenMessage); 
 	    		return;
 	    	}
 			$("#divResult").html("服务器错误");
@@ -169,3 +171,5 @@ function recognition(){
 	    }
 	});
 }; 
+
+preview();

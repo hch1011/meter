@@ -74,9 +74,9 @@ public class CameraService {
 				doRecognition(param);
 	 		}
 			
-			if(param.isNeedSubmitResult()){
-				doSubmitDeviceData(param);
-	 		}
+//			if(param.isNeedSubmitResult()){
+//				doSubmitDeviceData(param, null);
+//	 		}
 		} catch (MeterException e) {
 			param.setScreenMessage(e.getScreenMessage());
 			param.setDebugMessage(e.getDebugMessage());
@@ -86,30 +86,13 @@ public class CameraService {
 			param.setDebugMessage(e2.getMessage());
 			throw e2;
 		}finally {
-			if(param.isNeedSubmitResult()){
-				doSubmitDeviceData(param);
-			}
+//			if(param.isNeedSubmitResult()){
+//				doSubmitDeviceData(param);
+//			}
 		}
 		return param;
 	}
 	
-	void doSubmitDeviceData(CameraCaptureVo param){
-
-		DeviceData deviceData = new DeviceData();
-		deviceData.setDeviceId(param.getDeviceInfoId());
-		deviceData.setSnapTime(param.getCurrentTime());
-		deviceData.setDataType(1);
-		deviceData.setCreateTime(deviceData.getSnapTime());
-		deviceData.setUpdateTime(deviceData.getSnapTime());
-		deviceData.setPictureUrl(param.getWholeFileName());
-		if("200".equals(param.getCode()) || "0".equals(param.getCode())){
-			deviceData.setSnapData(param.getValue());
-		}else{
-			deviceData.setWarningReason(param.getScreenMessage());
-		}
-		
-		deviceService.submitData(deviceData);
-	}
 	/**
 	 * 拍照，可以获得图片url
 	 * @param param

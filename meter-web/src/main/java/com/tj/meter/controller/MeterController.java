@@ -30,6 +30,7 @@ import com.tj.meter.util.ExcelTemplate;
 import com.tj.meter.util.ImageUtils;
 import com.tj.meter.util.TimeUtils;
 import com.tj.meter.dao.DeviceTypeDao;
+import com.tj.meter.service.Cache;
 import com.tj.meter.service.DeviceService;
 import com.tj.meter.service.MonitorJobService;
 
@@ -49,6 +50,8 @@ public class MeterController extends BaseController{
     DeviceService  deviceService;
 	@Autowired
 	MonitorJobService monitorJobService;
+	@Autowired
+	Cache cache;
 	
 	/**
 	 * 提交数据
@@ -63,6 +66,7 @@ public class MeterController extends BaseController{
 			HttpServletRequest request,
 	    	HttpServletResponse response,
 	    	DeviceData deviceData) {
+		deviceData.setDataType(DeviceData.dataType_manualEdit);
 		deviceService.submitData(deviceData);
 		
 		return deviceData;
@@ -272,6 +276,7 @@ public class MeterController extends BaseController{
 		return map;
 	}
 
+	
 	/**
 	 * 清空缓存
 	 * @param request
@@ -287,7 +292,7 @@ public class MeterController extends BaseController{
 			@PageableDefault(page=0, size=100) Pageable pageable,
 			Model model
 	) {
-		deviceService.cleanAll();
+		cache.cleanAll();
 		return success();
 	}
 	

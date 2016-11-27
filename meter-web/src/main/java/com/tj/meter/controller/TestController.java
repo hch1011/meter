@@ -1,6 +1,5 @@
 package com.tj.meter.controller;
 
-import java.util.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -11,12 +10,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.tj.meter.dao.DeviceInfoDao;
 import com.tj.meter.dao.DeviceTypeDao;
 import com.tj.meter.entity.CameraInfo;
-import com.tj.meter.entity.DeviceData;
 import com.tj.meter.entity.DeviceInfo;
 import com.tj.meter.service.DeviceService;
 import com.tj.meter.ys.sdk.YsClientProxy;
@@ -52,22 +49,7 @@ public class TestController extends BaseController{
 		model.addAttribute("deviceList", deviceList);//前端测试数据选中
 		return "test/data";
 	}
-	
 
-	@RequestMapping(value = "/test/data", method=RequestMethod.POST)	
-	public String testdataCreate(
-			DeviceData deviceData,
-			Model model
-			) {
-		deviceData.setDataType(1);
-		deviceData.setSnapTime(new Date());
-		deviceData.setCreateTime(deviceData.getSnapTime());
-		deviceData.setUpdateTime(deviceData.getSnapTime());
-		
-		deviceService.submitData(deviceData);
-		return testdataPage(null,model);
-	}
-	
 	@RequestMapping(value = "/ys/capture", method=RequestMethod.GET)
 	public Object capture(
  			@RequestParam(name="deviceSerial", required = false) String deviceSerial

@@ -16,6 +16,15 @@ import javax.persistence.TemporalType;
 @Entity()
 @Table(name = "device_data")
 public class DeviceData  implements Serializable{
+	//schedule.launch正常监控(任务触发), manual.launch人工 触发监控, manual.edit人工修改 	
+	public static final String dataType_scheduleLaunch = "schedule.launch";
+	public static final String dataType_manualLaunch = "manual.launch";
+	public static final String dataType_manualEdit = "manual.edit";
+	public static final Integer  snapStatus_fail = 0;//失败
+	public static final Integer  snapStatus_normal = 0;//正常
+	public static final Integer  snapStatus_warning = 0;//预警
+	public static final Integer  snapStatus_alarm = 0;//报警
+	
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -46,7 +55,7 @@ public class DeviceData  implements Serializable{
 	private Integer frequency;		//动作次数
 	
 	@Column(name = "data_type")
-	private Integer	dataType;		//数值类型：1预读，2重新识别，3人工修正 
+	private String	dataType;		//数值类型：schedule.launch正常监控(任务触发), manual.launch人工 触发监控, manual.edit人工修改 
 	
 	@Column(name = "create_time")
 	@Temporal(TemporalType.TIMESTAMP)
@@ -60,7 +69,7 @@ public class DeviceData  implements Serializable{
 	private String pictureLocalPath;//本地保存的原始图片相对路径
 	
 	@Column(name = "picture_url")
-	private String pictureUrl;		//该属性不一定有效。图片url,可以是外部平台url；也可以是自己的url(尽量使用pictureLocalPath凭借)
+	private String pictureUrl;		//该属性不一定有效。图片url,可以是外部平台url；也可以是自己的url(尽量使用pictureLocalPath拼接一个)
 	
 	@Column(name = "warning_reason")
 	private String warningReason;	//报警原因
@@ -116,11 +125,13 @@ public class DeviceData  implements Serializable{
 		this.snapTime = snapTime;
 	}
 
-	public Integer getDataType() {
+	
+
+	public String getDataType() {
 		return dataType;
 	}
 
-	public void setDataType(Integer dataType) {
+	public void setDataType(String dataType) {
 		this.dataType = dataType;
 	}
 

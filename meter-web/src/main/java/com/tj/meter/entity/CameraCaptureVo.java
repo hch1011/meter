@@ -11,6 +11,7 @@ public class CameraCaptureVo implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
     Date currentTime;				//当前时间
+    boolean submited;				//当前结果是否已提交到监控服务
 	
 	// 如果识别会返回下列值
     String result;  				//识别状态,success|false
@@ -23,7 +24,7 @@ public class CameraCaptureVo implements Serializable{
     boolean needCapture;			//是否抓拍，如果不抓拍，图片可以从其他地方获取
     boolean needSave;				//是否保存到本地
     boolean needRecognition ;		//是否识别
-    boolean needSubmitResult;		//是否提交结果到业务流程
+//    boolean needSubmitResult;		//是否提交结果到业务流程
     
 	// 拍照参数
     String camaraSerial;			
@@ -128,14 +129,14 @@ public class CameraCaptureVo implements Serializable{
 		this.needRecognition = needRecognition;
 	}
 	
-	public boolean isNeedSubmitResult() {
-		return needSubmitResult;
-	}
-
-
-	public void setNeedSubmitResult(boolean needSubmitResult) {
-		this.needSubmitResult = needSubmitResult;
-	}
+//	public boolean isNeedSubmitResult() {
+//		return needSubmitResult;
+//	}
+//
+//
+//	public void setNeedSubmitResult(boolean needSubmitResult) {
+//		this.needSubmitResult = needSubmitResult;
+//	}
 
 
 	public String getCamaraSerial() {
@@ -287,5 +288,13 @@ public class CameraCaptureVo implements Serializable{
 		this.currentTime = currentTime;
 	}
 
-	
+
+	public boolean isSubmited() {
+		return submited;
+	}
+
+
+	public void setSubmited(boolean submited) {
+		this.submited = submited;
+	}
 }
