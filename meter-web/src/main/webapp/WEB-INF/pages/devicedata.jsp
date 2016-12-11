@@ -59,13 +59,6 @@
 				<span>电流历史曲线图</span>			
 				<div id="placeholder" style="width:700px;height:350px;"></div>
 			</div>
-			
-			<div class="table-container">
-				<table id="tab" >
-					<tr> <td>时间</td> <td>数值</td></tr>
-				</table>
-			</div>
-			
 	</div>
 	
 	

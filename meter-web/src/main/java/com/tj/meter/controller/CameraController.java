@@ -152,18 +152,7 @@ public class CameraController extends BaseController{
 					throw MeterExceptionFactory.applicationException("仪表没关联摄像头", null);
 				}
 				cameraSerial = info.getCameraSerial();
-			}
-			
-			//测试数据
-			if(cameraSerial.startsWith("virtual_")){
-				int i=1;
-				try {
-					i = Integer.parseInt(cameraSerial.substring(8))%2+1;
-				} catch (Exception e) {
-					LOGGER.error(e.getMessage(), e);
-				}
-				return success("/meter/resources/images/demo/"+i+".jpg"); 
-			}
+			} 
 			CameraInfo camera = deviceService.queryCameraById(cameraSerial, true);
 			if(camera == null){
 				throw MeterExceptionFactory.applicationException("摄像头未找到:"+cameraSerial, null);

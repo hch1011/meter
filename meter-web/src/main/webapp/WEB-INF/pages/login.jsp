@@ -51,6 +51,7 @@
 			     -->
 			     <c:if test="${screenMessage != null}"><label>${screenMessage}</label></c:if>
 			    </li>
+			    <li> <label>普通用户user/user123,管理员admin/admin123</label></li>
 		    </ul>
 		</form>
 	    </div>

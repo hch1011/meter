@@ -322,7 +322,13 @@ public class CameraService {
 				str = str.trim();
 				param.setResult(Constant.result_success);
 				param.setCode(str);
-				param.setValue(Float.parseFloat(bf.readLine()));
+				if(param.getDeviceInfoType().intValue() == 1){
+					bf.readLine();
+					param.setValue(Float.parseFloat(bf.readLine()));
+				}else{
+					param.setValue(Float.parseFloat(bf.readLine()));
+				}
+				
 			}else{
 				//TODO 模拟结果
 				delta = ++delta % 50;

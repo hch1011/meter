@@ -26,13 +26,16 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.tj.meter.entity.CameraInfo;
 import com.tj.meter.entity.DeviceData;
 import com.tj.meter.entity.DeviceInfo;
 import com.tj.meter.entity.DeviceType;
+import com.tj.meter.exception.MeterExceptionFactory;
 import com.tj.meter.util.ExcelTemplate;
 import com.tj.meter.util.ImageUtils;
 import com.tj.meter.util.MultiValue;
 import com.tj.meter.util.TimeUtils;
+import com.tj.meter.ys.sdk.YsClientProxy;
 import com.google.common.collect.Lists;
 import com.tj.meter.dao.DeviceTypeDao;
 import com.tj.meter.service.Cache;
@@ -55,6 +58,8 @@ public class MeterController extends BaseController{
     DeviceService  deviceService;
 	@Autowired
 	MonitorJobService monitorJobService;
+	@Autowired
+	YsClientProxy ysClientProxy;
 	@Autowired
 	Cache cache;
 	
@@ -200,6 +205,17 @@ public class MeterController extends BaseController{
 		String date = TimeUtils.getDateString(deviceInfo.getSnapTime(), defaultDateFormat);
 		String time = TimeUtils.getDateString(deviceInfo.getSnapTime(), defaultTimeFormat);
 		DeviceType deviceType = deviceService.queryDeviceTypeByType(deviceInfo.getType(), true);
+		if(StringUtils.isBlank(deviceInfo.getPictureLocalPath())){
+			try {
+				CameraInfo camera = deviceService.queryCameraById(deviceInfo.getCameraSerial(), true);
+				String url = ysClientProxy.capture(camera.getDeviceSerial(), camera.getChannelNo());
+				camera.setLastSnapshotUrl(url);
+				
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
+		}
+		
 		map.put("deviceInfo", deviceInfo);
 		map.put("deviceType", deviceType);
 		map.put("date", date);
