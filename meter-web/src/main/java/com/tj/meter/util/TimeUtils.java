@@ -12,8 +12,7 @@ import org.apache.commons.lang.StringUtils;
 import com.google.common.collect.Lists;
 import com.tj.meter.exception.MeterExceptionFactory;
 
-public class TimeUtils { 
-	
+public class TimeUtils {
     // 一天毫秒数
     public static final long timeLengthOfDay = 24*3600*1000;
     public static final long timeLengthOfYear = 365*24*3600*1000;

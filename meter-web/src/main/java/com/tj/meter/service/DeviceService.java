@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import com.google.common.collect.Lists;
@@ -179,30 +181,30 @@ public class DeviceService {
 			LOGGER.error(e.getMessage(),e);
 		}
 	}
-	/**
-	 * 接受到同步过来的数据
-	 * @param deviceData
-	 */
-	public void receiveSyncDeviceData(DeviceData deviceData) {
-		LOGGER.info("receiveSyncDeviceData");
-		DeviceData deviceDataDB = deviceDataDao.findOne(deviceData.getId());
-		if(deviceDataDB != null){
-			return;
-		}
-		deviceDataDao.save(deviceData);
-		
-		DeviceInfo deviceInfo = deviceInfoDao.findOne(deviceData.getDeviceId());
-		if(deviceInfo != null && deviceInfo.getSnapTime().before(deviceData.getSnapTime())){
-	 		deviceInfo.setChangeRate(deviceData.getChangeRate());
-			deviceInfo.setFrequency(deviceData.getFrequency());
-			deviceInfo.setSnapData(deviceData.getSnapData());
-			deviceInfo.setSnapStatus(deviceData.getSnapStatus());
-			deviceInfo.setSnapTime(deviceData.getSnapTime());
-			deviceInfo.setWarningReason(deviceData.getWarningReason());
-			deviceInfo.setSnapDataId(deviceData.getId());
-			deviceInfoDao.save(deviceInfo);
-		}
-	}
+//	/**
+//	 * 接受到同步过来的数据
+//	 * @param deviceData
+//	 */
+//	public void receiveSyncDeviceData(DeviceData deviceData) {
+//		LOGGER.info("receiveSyncDeviceData");
+//		DeviceData deviceDataDB = deviceDataDao.findOne(deviceData.getId());
+//		if(deviceDataDB != null){
+//			return;
+//		}
+//		deviceDataDao.save(deviceData);
+//		
+//		DeviceInfo deviceInfo = deviceInfoDao.findOne(deviceData.getDeviceId());
+//		if(deviceInfo != null && deviceInfo.getSnapTime().before(deviceData.getSnapTime())){
+//	 		deviceInfo.setChangeRate(deviceData.getChangeRate());
+//			deviceInfo.setFrequency(deviceData.getFrequency());
+//			deviceInfo.setSnapData(deviceData.getSnapData());
+//			deviceInfo.setSnapStatus(deviceData.getSnapStatus());
+//			deviceInfo.setSnapTime(deviceData.getSnapTime());
+//			deviceInfo.setWarningReason(deviceData.getWarningReason());
+//			deviceInfo.setSnapDataId(deviceData.getId());
+//			deviceInfoDao.save(deviceInfo);
+//		}
+//	}
  
 	public List<DeviceInfo> queryDeviceInfoAllOrderByInputNum(){
 		if(System.currentTimeMillis() > cache.queryDeviceInfoAllOrderByInputNumCacheExpireTime){
@@ -295,10 +297,18 @@ public class DeviceService {
 //		return list;
 //	}
  	
+	public List<DeviceData> queryDeviceDataListByRange(Long deviceId, Date fromDate, Date toDate,Pageable pageable) {
+		if(pageable == null){
+			pageable = new PageRequest(0, 500, Direction.ASC, "id"); 
+		} 
+		return deviceDataDao.findByRange(deviceId, fromDate, toDate);
+	}
+
 	public DeviceData queryDeviceDataById(Long deviceId) {
 		return deviceDataDao.findOne(deviceId);
 	}
 
+	
 	/**
 	 * 保存仪表识别范围
 	 * 

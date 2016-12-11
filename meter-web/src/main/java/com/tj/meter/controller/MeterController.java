@@ -2,6 +2,8 @@ package com.tj.meter.controller;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -11,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
+import org.joda.time.DateTimeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +31,9 @@ import com.tj.meter.entity.DeviceInfo;
 import com.tj.meter.entity.DeviceType;
 import com.tj.meter.util.ExcelTemplate;
 import com.tj.meter.util.ImageUtils;
+import com.tj.meter.util.MultiValue;
 import com.tj.meter.util.TimeUtils;
+import com.google.common.collect.Lists;
 import com.tj.meter.dao.DeviceTypeDao;
 import com.tj.meter.service.Cache;
 import com.tj.meter.service.DeviceService;
@@ -73,13 +78,94 @@ public class MeterController extends BaseController{
     }
 
 	@RequestMapping(value = "/device/data/info", method = RequestMethod.GET)
-	public Object getDeviceData(
+	public Object getDeviceDataPage(
 			HttpServletRequest request,
 	    	HttpServletResponse response,
+	    	@RequestParam(value="beginDate", required = false) String beginDate,
+	    	@RequestParam(value="beginTime", required = false) String beginTime, 
+	    	@RequestParam(value="endTime", required = false) String endDate,
+	    	@RequestParam(value="toTime", required = false) String endTime,
+	    	@RequestParam(value="deviceId", required = false) String deviceId,
 	    	Model model) {
+		Date currentDate = new Date();
+		if(StringUtils.isBlank(endDate)){
+			endDate = TimeUtils.getDateString(currentDate, "yyyy-MM-dd");
+		}
+		if(StringUtils.isBlank(endTime)){
+			//endTime = TimeUtils.getDateString(currentDate, "HH:mm:ss");
+			endTime = "23:59:59";
+		}
+		Date toDateTime = TimeUtils.getDate(endDate + " " + endTime, "yyyy-MM-dd HH:mm:ss");
+
+		if(StringUtils.isBlank(beginDate)){
+			beginDate = TimeUtils.getDateString(TimeUtils.add(toDateTime, null, null, -14), "yyyy-MM-dd");
+		}
+		if(StringUtils.isBlank(beginTime)){
+			beginTime = "00:00:00";
+		} 
+
+		List<DeviceInfo>  deviceList = deviceService.queryDeviceInfoAllOrderByInputNum();
+		
+		model.addAttribute("beginDate", beginDate);
+		model.addAttribute("beginTime", beginTime);
+		model.addAttribute("endDate", endDate);
+		model.addAttribute("endTime", endTime);
+		model.addAttribute("deviceId", deviceId);
+		model.addAttribute("deviceList", deviceList);
 
 		model.addAttribute("type", 3);//前端数据查询选中
 		return "devicedata";
+    }
+	
+	@RequestMapping(value = "/device/data/info/json", method = RequestMethod.GET)
+	@ResponseBody
+	public Object getDeviceDataJson(
+			HttpServletRequest request,
+	    	HttpServletResponse response,
+	    	@RequestParam(value="beginDate", required = false) String beginDate,
+	    	@RequestParam(value="beginTime", required = false) String beginTime, 
+	    	@RequestParam(value="endDate", required = false) String endDate,
+	    	@RequestParam(value="endTime", required = false) String endTime,
+	    	@RequestParam(value="deviceId", required = false) Long deviceId,
+	    	Model model) {
+		Date currentDate = new Date();
+		if(StringUtils.isBlank(endDate)){
+			endDate = TimeUtils.getDateString(currentDate, "yyyy-MM-dd");
+		}
+		if(StringUtils.isBlank(endTime)){
+			endTime = TimeUtils.getDateString(currentDate, "HH:mm:ss");
+		}
+		Date toDateTime = TimeUtils.getDate(endDate + " " + endTime, "yyyy-MM-dd HH:mm:ss");
+
+		if(StringUtils.isBlank(beginDate)){
+			beginDate = TimeUtils.getDateString(TimeUtils.add(toDateTime, null, -1, 0), "yyyy-MM-dd");
+		}
+		if(StringUtils.isBlank(beginTime)){
+			beginTime = "00:00:00";
+		}
+		Date fromDateTime = TimeUtils.getDate(beginDate + " " + beginTime, "yyyy-MM-dd HH:mm:ss");
+		 
+		if(deviceId == null){
+			return success();
+		}
+		
+		List<DeviceData> list = deviceService.queryDeviceDataListByRange(deviceId, fromDateTime, toDateTime, null);
+		Map<String, Object> rt = success();
+		List<MultiValue> rtList = Lists.newArrayList(); 
+ 		for(DeviceData data : list){
+			rtList.add(
+					new MultiValue()
+					.setO1(data.getId())
+					.setO2(TimeUtils.getDateString(data.getSnapTime()))
+					.setO3(data.getSnapData() == null? 0 : data.getSnapData())
+					); 
+		}
+		rt.put("list", rtList);
+		rt.put("deviceId", deviceId);
+		rt.put("deviceId", deviceId);
+
+		model.addAttribute("type", 3);//前端数据查询选中
+		return rt;
     }
 	 
 	@RequestMapping(value = "/device/data/img/info", method = RequestMethod.GET)
