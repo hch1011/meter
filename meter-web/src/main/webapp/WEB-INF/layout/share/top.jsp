@@ -1,5 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java"
 	pageEncoding="utf-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>  
 
 <div class="top" id="top" style="background:url(/meter/resources/images/topbg.gif) repeat-x;">
 	<input class="hide-type" type="hidden" value="${type}">
@@ -23,28 +25,36 @@
 		</li>
 		<li>
 			<a href="/meter/device/data/info" data-num="3"><img
-				src="/meter/resources/images/icon03.png" title="数据查询" />
+				src="/meter/resources/images/top/icon_sjcx.png" title="数据查询" />
 			<h2>数据查询</h2>
 			</a>
 		</li>
+		
+		<shiro:hasRole name="admin">
 		<li>
 			<a href="/meter/device/data/param" data-num="4"><img
-				src="/meter/resources/images/icon06.png" title="参数配置" />
+				src="/meter/resources/images/icon03.png" title="参数配置" />
 			<h2>参数配置</h2>
 			</a>
 		</li>
+		</shiro:hasRole>
+		
 		<li>
 			<a href="/meter/device/data/error/report" data-num="5"><img
 				src="/meter/resources/images/icon05.png" title="诊断报告" />
 			<h2>诊断报告</h2>
 			</a>
 		</li>
+		
+		<shiro:hasRole name="admin">
 		<li>
 			<a href="/meter/camera/list" data-num="6">
 			<img src="/meter/resources/images/icon06.png" title="摄像头管理" />
 			<h2 style="width: 70px;">摄像头管理</h2>
 			</a>
 		</li> 
+		</shiro:hasRole>
+		
 		<li>
 			<a  id="tbCleanCache" href="#" data-num="8">
 			<img src="/meter/resources/images/icon01.png" title="清空缓存" />
@@ -52,6 +62,12 @@
 			</a>
 		</li>
 		
+		<li>
+			<a  id="tbLogout" href="${basePath}/logout">
+			<img src="/meter/resources/images/top/icon_logout.png" title="退出" />
+			<h2>退出</h2>
+			</a>
+		</li>
 		
 		<!-- <li>
 			<a href=""><img

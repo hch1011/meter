@@ -1,9 +1,15 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<%
+	String basePath = request.getContextPath();
+	application.setAttribute("basePath", basePath);
+%>
+
 <title>登录</title>
 <link href="resources/css/page/login.css" rel="stylesheet" type="text/css" />
 <script language="JavaScript" src="resources/js/commonjs/jquery-1.12.4.min.js"></script>
@@ -34,11 +40,19 @@
     <div class="loginbody">
 	    <span class="systemlogo"></span> 
 	    <div class="loginbox">
-		    <ul>
-			    <li><input name="" type="text" class="loginuser" value="admin" onclick="JavaScript:this.value=''"/></li>
-			    <li><input name="" type="text" class="loginpwd" value="密码" onclick="JavaScript:this.value=''"/></li>
-			    <li><input name="" type="button" class="loginbtn" value="登录"  onclick="javascript:window.location='index.html'"  /><label><input name="" type="checkbox" value="" checked="checked" />记住密码</label><label><a href="#">忘记密码？</a></label></li>
+	    <form id="loginForm" action="${basePath}/login" method="post">
+		    <ul><!--  onclick="JavaScript:this.value=''" -->
+			    <li><input name="username" type="text" class="loginuser" value="admin" /></li>
+			    <li><input name="password" type="password" class="loginpwd" value="admin123"/></li>
+			    <li><input type="submit" class="loginbtn" value="登录 " />
+			    <!-- 
+			    <label><input name="rememberMe" type="checkbox" value="true" checked="checked" />记住密码</label>			    
+			    <label><a href="#">忘记密码？</a></label>
+			     -->
+			     <c:if test="${screenMessage != null}"><label>${screenMessage}</label></c:if>
+			    </li>
 		    </ul>
+		</form>
 	    </div>
     </div>
     <div class="loginbm">版权所有  2016-06-03</div>
