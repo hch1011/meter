@@ -18,7 +18,7 @@ public interface DeviceDataDao extends CrudRepository<DeviceData, Long>, JpaSpec
 
     @Modifying
     //@Query("select i from DeviceData i where i.deviceId=:deviceId and i.snapTime>=:fromDate and i.snapTime<=:toDate and i.snapData >= 0")
-    @Query(value ="select * from DeviceData i where i.device_id=:deviceId and i.snap_time>=:fromDate and i.snap_time<=:toDate and i.snap_data >= 0 limit 0,200 ",
+    @Query(value ="select * from device_data i where i.device_id=:deviceId and i.snap_time>=:fromDate and i.snap_time<=:toDate and i.snap_data >= 0 limit 0,200 ",
     nativeQuery = true)
     List<DeviceData> findByRange(
     		@Param("deviceId") Long deviceId, 
