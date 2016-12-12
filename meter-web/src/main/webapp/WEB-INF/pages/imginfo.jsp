@@ -4,6 +4,11 @@
  
 	<div class="img-info-body">
 		<input class="device_id" type="hidden" value="${deviceId}" />
+		<input id="rang_x" type="hidden" value="-1" />
+		<input id="rang_y" type="hidden" value="-1" />
+		<input id="rang_w" type="hidden" value="-1" />
+		<input id="rang_h" type="hidden" value="-1" />
+		
 		<input class="has_img" type="hidden" value="false" /><!-- 是否正确加载快照 -->
 	 	<div class="img">
 	 		<img width="600px" src="${basePath}/resources/images/demo/shapshot_loading.jpg" />

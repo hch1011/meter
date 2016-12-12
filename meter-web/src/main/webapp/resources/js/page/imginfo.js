@@ -29,7 +29,7 @@
 
             // 选取识别区域
             $('.img-info-body .btn-b').click(function(){
-                self.__submitRang(self.__jcrop_api)
+                self.__submitRang( )
             })
 
             //图形重新采集
@@ -126,21 +126,32 @@
         		self.__jcrop_api.destroy()
         	}
             self.__jcrop_api = $.Jcrop('.img-info-body img',{
+                onChange: showCoords,  
+                //onSelect: showCoords,
                 //onSelect: self.__submitRang,
                 setSelect: [ rang_x, rang_y, rang_x + rang_w, rang_y + rang_h]
             });
         },
         
-        __submitRang : function (obj) {
-            var x = obj.x
-            var y = obj.y
-            var w = obj.w
-            var h = obj.h
+        showCoords : function (c){
+            $('#rang_x').val(c.x);  
+            $('#rang_y').val(c.y); 
+            $('#rang_w').val(c.w);
+            $('#rang_h').val(c.h);  
+        };
+        
+        __submitRang : function () {
+            var x = $('#rang_x').val();
+            var y = $('#rang_y').val();
+            var w = $('#rang_w').val();
+            var h = $('#rang_h').val();
+            if(x<0 || y<0 || m<10 || h <10){
+            	alert("请选择正确的范围");
+            }
             var deviceId = $('.device_id').val()
             var imagePath = $('.img-info-body img').attr("src");
             var urlPath = window.basePath + '/camera/range?deviceInfoId=' + deviceId  + '&x=' + x + '&y=' + y + '&w=' + w + '&h=' + h
-               alert(urlPath)     
-            $.ajax({
+             $.ajax({
                 url: urlPath,
                 type: 'put',
                 dataType: 'json',

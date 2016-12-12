@@ -293,14 +293,14 @@ public class MeterController extends BaseController{
 	
 	
 	@RequestMapping(value = "/device/data/error/report", method = RequestMethod.GET)
-	public String errorInfo(
+	public String report(
 			HttpServletRequest request,
 	    	HttpServletResponse response,
 	    	@RequestParam(required=false)  Integer[] status,
 	    	Model model
 	    	) {
 		if(status == null || status.length == 0){
-			status = new Integer[]{0,2,3};
+			status = new Integer[]{0,1,2,3};
 		}
 		List<DeviceInfo> list = deviceService.queryDeviceInfoBySnapStatus(status);
 		model.addAttribute("list", list);
@@ -321,7 +321,7 @@ public class MeterController extends BaseController{
 		ExcelTemplate template = new ExcelTemplate();
 		template.readTemplateByClasspath("/excelTemplate/exportingTemplate.xlsx");
 		 
-		List<DeviceInfo> list = deviceService.queryDeviceInfoBySnapStatus(new Integer[]{0,2,3});
+		List<DeviceInfo> list = deviceService.queryDeviceInfoBySnapStatus(new Integer[]{0,1,2,3});
 		
  		int orderNum = 1;			//订单序号
  		DeviceType type;
@@ -337,7 +337,7 @@ public class MeterController extends BaseController{
 			
 			template.createCell(item.getName());// 名称
 			template.createCell(item.getPath());// 商位置
-			template.createCell(item.getCode());// 编号
+			template.createCell(item.getSnapDataScreen());// 编号
 			template.createCell(TimeUtils.getDateString(item.getSnapTime()));//时间
 			template.createCell(item.getSnapStatusCn());// 状态
 			template.setCellStyle(null, "status_"+item.getSnapStatus()+"_Style");

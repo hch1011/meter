@@ -17,7 +17,8 @@
 	</context:component-scan>
 	
 	<context:property-placeholder
-		location="classpath:default.properties"
+		location="file:${user.home}/meter/meter.properties,
+		classpath:default.properties"
 		ignore-unresolvable="true" ignore-resource-not-found="true" />
 
   	<import resource="jpa-context.xml"/>

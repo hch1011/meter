@@ -49,9 +49,6 @@ public class DeviceService {
 	private YsClientProxy ysClientProxy;
 	
 	
-
-	
-	
 	//CacheBuilder<Object, Object> deviceInfoCache = CacheBuilder.newBuilder().expireAfterWrite(120, TimeUnit.SECONDS);
 	
 	public Collection<DeviceType>  queryAllDeviceType(boolean fromCache) {
@@ -119,8 +116,6 @@ public class DeviceService {
 	 * @param deviceData
 	 */
 	public void submitData(DeviceData deviceData) {
-		 
-						
 		try {
 			// init
 			if(deviceData.getCreateTime() == null){
@@ -458,8 +453,6 @@ public class DeviceService {
 			submitData(deviceData);
 		} catch (MeterException  e) {
 			DeviceData deviceData = buildDeviceData(param, null);
-			//TODO 如果出错，使用测试数据
-			deviceData.setSnapData(testDate());
 			deviceData.setWarningReason(e.getScreenMessage());
 			submitData(deviceData);
 			LOGGER.error(e.getMessage());
@@ -491,18 +484,18 @@ public class DeviceService {
 			deviceData.setSnapData(param.getValue());
 		}else{
 			deviceData.setSnapStatus(DeviceData.snapStatus_fail);
-			deviceData.setSnapData(0f);
+			deviceData.setSnapData(null);
 			deviceData.setWarningReason(param.getScreenMessage());
 		} 
  		return deviceData;
 	}
 	
-	int i = 100;
-	float testDate(){
-		i++;
-		if(i>150){
-			i=100;
-		}
-		return (float)i;
-	}
+//	int i = 100;
+//	float testDate(){
+//		i++;
+//		if(i>150){
+//			i=100;
+//		}
+//		return (float)i;
+//	}
 }

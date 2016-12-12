@@ -154,6 +154,14 @@ public class DeviceInfo implements Serializable{
 	public Float getSnapData() {
 		return snapData;
 	}
+	
+
+	public String getSnapDataScreen() {
+		if(snapData == null || snapData.floatValue() < 0){
+			return "-";
+		}
+		return snapData.toString();
+	}
 
 	public void setSnapData(Float snapData) {
 		this.snapData = snapData;

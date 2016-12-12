@@ -58,7 +58,21 @@ public class YsClientProxy extends YsClientBase{
 		 params.put("deviceName", deviceName);
 		 post(domainUrl+"/api/lapp/device/update", params, "修改设备名称");
 	 }
-	 
+	 /**
+	  * 设备抓拍图片,返回图片的url
+	  * 
+	  * 抓拍设备当前画面，该接口仅适用于IPC或者关联IPC的NVR设备。
+	  * @param deviceSerial 设备序列号
+	  * @param deviceName 通道号，IPC设备填写1
+	  */
+	 public String PictureUUID(String deviceSerial, String channelNo){
+		 Map<String, String> params = buildParamsWithToken();
+		 params.put("deviceSerial", deviceSerial);
+		 params.put("channelNo", channelNo);
+		 JSONObject data = post(domainUrl+"/api/lapp/device/uuid/picture ", params, "设备抓拍图片");
+		 data = data.getJSONObject("data");	
+		 return data.getString("picUrl");
+	 }
 
 	 
 	 /**
@@ -72,6 +86,7 @@ public class YsClientProxy extends YsClientBase{
 		 Map<String, String> params = buildParamsWithToken();
 		 params.put("deviceSerial", deviceSerial);
 		 params.put("channelNo", channelNo);
+		 params.put("size", "1024");
 		 JSONObject data = post(domainUrl+"/api/lapp/device/capture", params, "设备抓拍图片");
 		 data = data.getJSONObject("data");	
 		 return data.getString("picUrl");
@@ -87,6 +102,7 @@ public class YsClientProxy extends YsClientBase{
 		 Map<String, String> params = buildParamsWithToken();
 		 params.put("deviceSerial", param.getCamaraSerial());
 		 params.put("channelNo", param.getCamaraChannelNo());
+		 params.put("size", "1024");
 		 JSONObject data = post(domainUrl+"/api/lapp/device/capture", params, "设备抓拍图片");
 		 data = data.getJSONObject("data");		 
 		 param.setYsUrl(data.getString("picUrl"));

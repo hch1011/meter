@@ -42,7 +42,7 @@
 		<li>
 			<a href="/meter/device/data/error/report" data-num="5"><img
 				src="/meter/resources/images/icon05.png" title="诊断报告" />
-			<h2>诊断报告</h2>
+			<h2>生成报表</h2>
 			</a>
 		</li>
 		
