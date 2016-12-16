@@ -46,17 +46,17 @@
 			<option value=''>---请选择仪表---</option>
 			<c:forEach items="${deviceInfoList}" var="device">
 				<option value="${device.id}" <c:if test="${camera.deviceInfo.id == device.id}">selected</c:if>>
-						${device.inputNum}/${device.name}/${device.name}/${device.code}
+						${device.name}
 				</option>
 			</c:forEach>
 		</select>
 		<button type="button" class="btn btn-success" onclick="bindCameraAndDevice()">保存关联</button>
 		<div class="interval"></div>
 		<em class="word">识别范围：</em>
-		x:<input id="rang_x" readonly name="x" value="${camera.deviceInfo.x}" size="3">
-		y:<input id="rang_y" readonly name="y" value="${camera.deviceInfo.y}" size="3">
-		w:<input id="rang_w" readonly name="w" value="${camera.deviceInfo.w}" size="3">
-		h:<input id="rang_h" readonly name="h" value="${camera.deviceInfo.h}" size="3">
+		x:<input id="rang_x" readonly name="x" value="${camera.deviceInfo.x}" size="2">
+		y:<input id="rang_y" readonly name="y" value="${camera.deviceInfo.y}" size="2">
+		w:<input id="rang_w" readonly name="w" value="${camera.deviceInfo.w}" size="2">
+		h:<input id="rang_h" readonly name="h" value="${camera.deviceInfo.h}" size="2">
 		
 		<button type="button" class="btn btn-success" onclick="saveRang()">保存范围</button>
 		<br/>

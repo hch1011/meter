@@ -7,7 +7,7 @@
 
 	<div class="content-body">
 	<c:forEach items="${list}" var="type">
-		<h2>${type.typeName} 监测部分:</h2>
+		<h2>${type.typeName}:</h2>
 		<c:forEach items="${type.deviceInfoList}" var="info">
 	 	<div class="block" 
 	 	    data-id="${info.id}" 

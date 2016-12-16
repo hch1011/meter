@@ -66,6 +66,8 @@
     border-style: ridge;
     border-width: 1px;
     height: 32px;
+    width: 168px;
+    padding-left: 8px;
 }
 .camera-setting-body .bu{
     width: 370px;
@@ -73,11 +75,13 @@
     font-size: 16px;
     letter-spacing: 30px;
 }
+.camera-setting-body #rang_x,
 .camera-setting-body #rang_y,
 .camera-setting-body #rang_w,
 .camera-setting-body #rang_h
 {
-    margin-left: 14px;
+    margin-left: 0px;
+    border: 0;
 }
 #divResult{
     color: #ff4500;

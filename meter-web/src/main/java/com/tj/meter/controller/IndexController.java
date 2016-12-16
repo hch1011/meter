@@ -1,5 +1,7 @@
 package com.tj.meter.controller;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
+
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.tj.meter.entity.DeviceType;
+import com.tj.meter.exception.MeterException;
 import com.tj.meter.service.DeviceService;
 
 /**
@@ -101,8 +104,13 @@ public class IndexController {
 	        }catch(ExcessiveAttemptsException eae){  
 	            model.addAttribute("screenMessage", "ExcessiveAttemptsException");  
 	        }catch(AuthenticationException ae){  
-	            //注意：这个必须放在后面，因为这个异常可以处理所有认证失败的情况
-	            model.addAttribute("screenMessage", "authentication faild");  
+	        	if(ae.getCause() != null && ae.getCause() instanceof MeterException){
+		            model.addAttribute("screenMessage", ((MeterException)ae.getCause()).getScreenMessage()); 
+	        		
+	        	}else{
+		            //注意：这个必须放在后面，因为这个异常可以处理所有认证失败的情况
+		            model.addAttribute("screenMessage", "authentication faild");  
+	        	}
 	        }  
 	        //验证是否登录成功  
 	        if(currentUser.isAuthenticated()){

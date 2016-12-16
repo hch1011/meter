@@ -6,7 +6,9 @@
 <div class="top" id="top" style="background:url(/meter/resources/images/topbg.gif) repeat-x;">
 	<input class="hide-type" type="hidden" value="${type}">
 	<div class="topleft">
-		<a href="main.html" target="_parent"><img src="/meter/resources/images/logo.png"	title="系统首页" /></a>
+		<a href="main.html" target="_parent">
+		 <img src="/meter/resources/images/logo.png"	title="系统首页" />
+		</a>
 	</div>
 
 	<ul class="nav">
@@ -25,12 +27,12 @@
 		</li>
 		<li>
 			<a href="/meter/device/data/info" data-num="3"><img
-				src="/meter/resources/images/top/icon_sjcx.png" title="数据查询" />
+				src="/meter/resources/images/top/icon_sjcx.gif" title="数据查询" />
 			<h2>数据查询</h2>
 			</a>
 		</li>
 		
-		<shiro:hasRole name="admin">
+		<shiro:hasRole name="manager">
 		<li>
 			<a href="/meter/device/data/param" data-num="4"><img
 				src="/meter/resources/images/icon03.png" title="参数配置" />
@@ -41,12 +43,12 @@
 		
 		<li>
 			<a href="/meter/device/data/error/report" data-num="5"><img
-				src="/meter/resources/images/icon05.png" title="诊断报告" />
-			<h2>生成报表</h2>
+				src="/meter/resources/images/icon05.png" title="统计报表" />
+			<h2>数据报表</h2>
 			</a>
 		</li>
 		
-		<shiro:hasRole name="admin">
+		<shiro:hasRole name="manager">
 		<li>
 			<a href="/meter/camera/list" data-num="6">
 			<img src="/meter/resources/images/icon06.png" title="摄像头管理" />

@@ -15,7 +15,7 @@
 	 	</div>
 	 	<div class="img-op">
 	 		<button class="btn btn-info btn-a" type="button">图像重新采集</button> 		
-	 		<shiro:hasRole name="admin">
+	 		<shiro:hasRole name="manager">
 	 			<button class="btn btn-info btn-b" type="button">保存区域选取</button>
 	 		</shiro:hasRole>
 	 	</div>

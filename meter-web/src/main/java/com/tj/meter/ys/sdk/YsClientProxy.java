@@ -23,8 +23,10 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.tj.meter.entity.CameraCaptureVo;
 import com.tj.meter.entity.CameraInfo;
+import com.tj.meter.exception.MeterException;
 import com.tj.meter.exception.MeterExceptionFactory;
 import com.tj.meter.util.SimpleHttpUtils;
+import com.tj.meter.util.SystemMessageReport;
 
 /**
  * 添加设备,删除设备,修改设备名称,设备抓拍图片, 根据UUID查询抓拍图片,获取设备列表,获取单个设备信息,获取摄像头列表
@@ -179,7 +181,7 @@ public class YsClientProxy extends YsClientBase{
 			 newImage = new BufferedImage(width.intValue(), hight.intValue(), sourceImage.getType());
 			 newImage.getGraphics().drawImage(sourceImage, 0, 0, width.intValue(), hight.intValue(), null);
 		 } catch (Exception e) {
-			throw MeterExceptionFactory.applicationException("缩放图片失败", e);
+			throw MeterExceptionFactory.applicationException("有系统错误：缩放图片失败，请联系管理员", e);
 		 }
 		 
 		 try {
@@ -191,11 +193,13 @@ public class YsClientProxy extends YsClientBase{
 	 		 ImageIO.write(newImage, "jpg",  out);
 	 		 FileUtils.writeByteArrayToFile(newFile, out.toByteArray());
 		} catch (Exception e) {
-			
-			throw MeterExceptionFactory.applicationException("保存图片失败", e);
+			MeterException e2 = MeterExceptionFactory.applicationException("有系统错误：保存图片失败，请联系管理员", filePath, e);
+			SystemMessageReport.globalMessage = e2.getScreenMessage();
+			SystemMessageReport.globalException = e2;
+			throw e2;
 		} 
 	 }
-
+	 
 	 /**
 	  * 获取设备列表
 	  * @param pageStart
