@@ -138,7 +138,7 @@
             $('#rang_y').val(c.y); 
             $('#rang_w').val(c.w);
             $('#rang_h').val(c.h);  
-        };
+        },
         
         __submitRang : function () {
             var x = $('#rang_x').val();

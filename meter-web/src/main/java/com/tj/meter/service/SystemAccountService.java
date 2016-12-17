@@ -19,20 +19,21 @@ public class SystemAccountService {
 	@Autowired
 	SystemAccountDao systemAccountDao;
 	
-	public SystemAccount createUser(SystemAccount account){
-		if(StringUtils.isBlank(account.getPassword())){
+	public SystemAccount createUser(SystemAccount accountNew){
+		if(StringUtils.isBlank(accountNew.getPassword())){
 			throw MeterExceptionFactory.applicationException("密码不能空", null);
 		}
-		if(systemAccountDao.findByLoginName(account.getLoginName()) != null){
+		if(systemAccountDao.findByLoginName(accountNew.getLoginName()) != null){
 			throw MeterExceptionFactory.applicationException("用户名已存在", null);
 		}
-		account.setSalt("a"+IdGenerator.randomStr(saltLen));
-		account.setPassword(signPassword(account.getSalt(), account.getPassword()));
-		account.setCreateTime(new Date());
-		account.setUpdateTime(new Date());
-		systemAccountDao.save(account);
+		accountNew.setId(null);
+		accountNew.setSalt("a"+IdGenerator.randomStr(saltLen));
+		accountNew.setPassword(signPassword(accountNew.getSalt(), accountNew.getPassword()));
+		accountNew.setCreateTime(new Date());
+		accountNew.setUpdateTime(new Date());
+		systemAccountDao.save(accountNew);
 		
-		return account;
+		return accountNew;
 	}
 	
 	/*
@@ -55,18 +56,18 @@ public class SystemAccountService {
 	}
 	
 	public  boolean changePassword(String loginName, String oldPassword, String newPassword, boolean checkOldPassword){
-		SystemAccount account = systemAccountDao.findByLoginName(loginName);
-		if(account == null){
+		SystemAccount accountDb = systemAccountDao.findByLoginName(loginName);
+		if(accountDb == null){
 			return false;
 		}
-		if(checkOldPassword && !signPassword(account.getSalt(),oldPassword).equals(account.getPassword())){
+		if(checkOldPassword && !signPassword(accountDb.getSalt(),oldPassword).equals(accountDb.getPassword())){
 			throw MeterExceptionFactory.applicationException("原始密码不正确", null);
 		}
 		 
-		account.setSalt("a"+IdGenerator.randomStr(saltLen));
-		account.setPassword(signPassword(account.getSalt(), account.getPassword()));
-		account.setUpdateTime(new Date());
-		systemAccountDao.save(account);
+		accountDb.setSalt("a"+IdGenerator.randomStr(saltLen));
+		accountDb.setPassword(signPassword(accountDb.getSalt(), accountDb.getPassword()));
+		accountDb.setUpdateTime(new Date());
+		systemAccountDao.save(accountDb);
 		return true;
 	}
 

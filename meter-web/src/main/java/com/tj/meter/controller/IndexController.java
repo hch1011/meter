@@ -16,6 +16,8 @@ import org.apache.shiro.authc.LockedAccountException;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
+import org.apache.shiro.web.util.SavedRequest;
+import org.apache.shiro.web.util.WebUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,6 +84,7 @@ public class IndexController {
         } 
         
 		if(StringUtils.isBlank(username) || StringUtils.isBlank(password)){
+			
 			//model.addAttribute("screenMessage", "请输入正确的用户名或密码");
 			return "login";
 		}
@@ -114,8 +117,17 @@ public class IndexController {
 	        }  
 	        //验证是否登录成功  
 	        if(currentUser.isAuthenticated()){
+	        	SavedRequest savedRequest = WebUtils.getSavedRequest(request);
+	        	if(savedRequest != null){
+		        	String url = savedRequest.getRequestUrl();
+		        	if(StringUtils.isNotBlank(url)){
+		        		url = url.substring(request.getContextPath().length());
+		        		return "redirect:" + url;
+		        	}
+	        	}
 	            return "redirect:index";
-	        }  
+	        }
+	        
 	        token.clear(); 
 	        return "login";
 	}
