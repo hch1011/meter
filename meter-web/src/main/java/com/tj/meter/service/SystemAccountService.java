@@ -65,6 +65,13 @@ public class SystemAccountService {
 		}
 	}
 
+	public void deleteAccount(Integer id){
+		SystemAccount account = systemAccountDao.findOne(id);
+		if(account != null){
+			exceptionIfTrue(SystemAccount.ROLE_ADMIN.equals(account.getRole()), "系统管理员不能被删除");
+			systemAccountDao.delete(id);
+		}
+	}
 	/**
 	 * 管理员根据登录名更新状态，密码等
 	 * @param accountNew
@@ -81,7 +88,7 @@ public class SystemAccountService {
 		//更新密码
 		if(StringUtils.isNotBlank(accountNew.getPassword())){
 			accountDb.setSalt("a" + IdGenerator.randomStr(saltLen));
-			accountDb.setPassword(signPassword(accountDb.getSalt(), accountDb.getPassword()));
+			accountDb.setPassword(signPassword(accountDb.getSalt(), accountNew.getPassword()));
 			update = true;
 		}
 		if(StringUtils.isNotBlank(accountNew.getNickname())){
@@ -96,7 +103,7 @@ public class SystemAccountService {
 			accountDb.setRole(accountNew.getRole());
 			update = true;
 		}
-		if(accountNew.getStatus() == null){
+		if(accountNew.getStatus() != null){
 			accountDb.setStatus(accountNew.getStatus());
 			update = true;
 		} 
