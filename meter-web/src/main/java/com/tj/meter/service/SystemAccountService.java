@@ -1,6 +1,9 @@
 package com.tj.meter.service;
 
+import static com.tj.meter.exception.MeterExceptionFactory.checkNull;
+
 import java.util.Date;
+import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,24 +19,83 @@ import com.tj.meter.util.MD5Utils;
 public class SystemAccountService {
 	public static final int saltLen = 10;
 	
-	@Autowired
+	//@Autowired
 	SystemAccountDao systemAccountDao;
 	
-	public SystemAccount createUser(SystemAccount accountNew){
-		if(StringUtils.isBlank(accountNew.getPassword())){
-			throw MeterExceptionFactory.applicationException("密码不能空", null);
-		}
+
+
+	public List<SystemAccount> queryAllUser() {
+		return systemAccountDao.findAll();
+	}
+	/**
+	 * 管理员创建用户
+	 * @param accountNew
+	 * @return
+	 */
+	public SystemAccount createUserByAdmin(SystemAccount accountNew){
+		checkNull(accountNew.getLoginName(), "请输入登录名");
+		checkNull(accountNew.getPassword(), "密码不能空");
+		checkNull(accountNew.getRole() , "请选择角色"); 
 		if(systemAccountDao.findByLoginName(accountNew.getLoginName()) != null){
 			throw MeterExceptionFactory.applicationException("用户名已存在", null);
 		}
+		
 		accountNew.setId(null);
 		accountNew.setSalt("a"+IdGenerator.randomStr(saltLen));
 		accountNew.setPassword(signPassword(accountNew.getSalt(), accountNew.getPassword()));
 		accountNew.setCreateTime(new Date());
 		accountNew.setUpdateTime(new Date());
+		if(StringUtils.isBlank(accountNew.getRole())){
+			accountNew.setRole(SystemAccount.ROLE_USER);
+		}
+		if(accountNew.getStatus() == null){
+			accountNew.setStatus(SystemAccount.STATUS_VALID);
+		}
 		systemAccountDao.save(accountNew);
-		
 		return accountNew;
+	}
+	
+
+	/**
+	 * 管理员根据登录名更新状态，密码等
+	 * @param accountNew
+	 * @return
+	 */
+	public SystemAccount updateUserByAdmin(SystemAccount accountNew){
+		checkNull(accountNew.getLoginName(), "登录名不能空");
+		SystemAccount accountDb = systemAccountDao.findByLoginName(accountNew.getLoginName());
+		
+		if(accountDb == null){
+			throw MeterExceptionFactory.applicationException("用户存在", null);
+		}
+		boolean update = false;
+		//更新密码
+		if(StringUtils.isNotBlank(accountNew.getPassword())){
+			accountDb.setSalt("a" + IdGenerator.randomStr(saltLen));
+			accountDb.setPassword(signPassword(accountDb.getSalt(), accountDb.getPassword()));
+			update = true;
+		}
+		if(StringUtils.isNotBlank(accountNew.getNickname())){
+			accountDb.setNickname(accountNew.getNickname());
+			update = true;
+		}
+		if(StringUtils.isNotBlank(accountNew.getRealName())){
+			accountDb.setRealName(accountNew.getRealName());
+			update = true;
+		}
+		if(StringUtils.isNotBlank(accountNew.getRole())){
+			accountDb.setRole(accountNew.getRole());
+			update = true;
+		}
+		if(accountNew.getStatus() == null){
+			accountDb.setStatus(accountNew.getStatus());
+			update = true;
+		} 
+		if(update){
+			accountDb.setUpdateTime(new Date());
+			systemAccountDao.save(accountDb);
+		}
+		return accountDb;
 	}
 	
 	/*

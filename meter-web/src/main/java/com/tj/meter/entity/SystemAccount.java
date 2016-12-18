@@ -18,6 +18,9 @@ public class SystemAccount implements Serializable {
 	public static String ROLE_SYSTEM_ADMIN = "systemAdmin" ;//系统管理员
 	public static String ROLE_MANAGER = "manager" ;//普通管理员
 	public static String ROLE_USER = "user" ;//普通用户
+
+	public static Integer STATUS_VALID = 1;//有效
+	public static Integer STATUS_LOCK = 9;//锁定
 	
 	@Id
 	@Column(name = "id")
@@ -114,4 +117,32 @@ public class SystemAccount implements Serializable {
 		}
 		return Sets.newHashSet();
 	}
+	
+	public void cleanPassword(){
+		password = null;
+		salt = null;
+	}
+	
+//	public String getStatusText(){
+//		if(STATUS_LOCK.equals(status)){
+//			return "用户被锁定";
+//		}
+//		if(STATUS_VALID.equals(status)){
+//			return "正常用户";
+//		}
+//		return "无效用户";
+//		
+//	}
+//	public String getRoleText(){
+//		if(ROLE_USER.equals(role)){
+//			return "普通用户";
+//		}
+//		if(ROLE_MANAGER.equals(role)){
+//			return "管理员";
+//		}
+//		if(ROLE_SYSTEM_ADMIN.equals(role)){
+//			return "超级管理员";
+//		}
+//		return "无效角色";
+//	}
 }

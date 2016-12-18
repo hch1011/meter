@@ -89,6 +89,13 @@
         <put-attribute name="jsPath" value="camerasetting"/>
     </definition>
     
+    <definition name="account/list" extends="template">
+        <put-attribute name="title" value="用户列表" cascade="true"/>
+        <put-attribute name="nav" value="" cascade="true"/>
+        <put-attribute name="content" value="/WEB-INF/pages/accountList.jsp"/>
+        <put-attribute name="cssPath" value="accountlist"/>
+        <put-attribute name="jsPath" value="accountlist"/>
+    </definition>
     
     <definition name="login" template="/WEB-INF/pages/login.jsp">  
 	</definition>

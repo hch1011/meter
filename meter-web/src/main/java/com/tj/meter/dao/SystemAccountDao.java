@@ -8,8 +8,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
-import com.tj.meter.entity.DeviceInfo;
-import com.tj.meter.entity.DeviceType;
 import com.tj.meter.entity.SystemAccount;
 
 @Repository
