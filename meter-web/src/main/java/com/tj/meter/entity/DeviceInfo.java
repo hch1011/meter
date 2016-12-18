@@ -157,7 +157,7 @@ public class DeviceInfo implements Serializable{
 	
 
 	public String getSnapDataScreen() {
-		if(snapData == null || snapData.floatValue() < 0){
+		if(snapData == null || snapData.floatValue() < 0.00001){
 			return "-";
 		}
 		return snapData.toString();

@@ -57,6 +57,14 @@
 		</li> 
 		</shiro:hasRole>
 		
+		<!-- 这里要做成下拉框包括：清空缓存，仪表管理，摄像头管理，用户管理 -->
+		<li>
+			<a href="/meter/admin/account/list" data-num="6">
+			<img src="/meter/resources/images/icon06.png" title="系统管理" />
+			<h2 style="width: 70px;">系统管理</h2>
+			</a>
+		</li> 
+		
 		<li>
 			<a  id="tbCleanCache" href="#" data-num="8">
 			<img src="/meter/resources/images/icon01.png" title="清空缓存" />
@@ -70,13 +78,6 @@
 			<h2>退出</h2>
 			</a>
 		</li>
-		
-		<!-- <li>
-			<a href=""><img
-				src="resources/images/icon06.png" title="系统设置" />
-			<h2>系统设置</h2>
-			</a>
-		</li> -->
 	</ul>
 	<!-- 
 	<div class="topright">

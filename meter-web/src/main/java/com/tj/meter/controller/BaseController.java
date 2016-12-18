@@ -49,9 +49,10 @@ public class BaseController {
 				map.put("debugMessage",e2.getDebugMessage());
 				return map;
 			}
+		}else{
+			map.put("screenMessage","系统异常");
+			map.put("debugMessage",e.getMessage());			
 		}
-		map.put("screenMessage","系统异常");
-		map.put("debugMessage",e.getMessage());
 		return map;
 	}
 } 

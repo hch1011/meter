@@ -336,9 +336,9 @@ public class MeterController extends BaseController{
 			 }
 			
 			template.createCell(item.getName());// 名称
-			template.createCell(item.getPath());// 商位置
-			template.createCell(item.getSnapDataScreen());// 编号
+			template.createCell(item.getPath());// 位置
 			template.createCell(TimeUtils.getDateString(item.getSnapTime()));//时间
+			template.createCell(item.getSnapDataScreen());// 值
 			template.createCell(item.getSnapStatusCn());// 状态
 			template.setCellStyle(null, "status_"+item.getSnapStatus()+"_Style");
 			template.createCell(item.getWarningReason());// 故障类型

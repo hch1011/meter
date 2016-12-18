@@ -2,6 +2,7 @@
     pageEncoding="UTF-8"%>
     
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
     
 
 	<div class="report-body">
@@ -11,6 +12,7 @@
                   <th>No</th>
                   <th>类别</th>
                   <th>名称</th>
+                  <th>时间</th>
                   <th>读数</th>
                   <th>状态</th>
                   <th>故障类型</th>
@@ -22,6 +24,7 @@
                   <td>${status.index+1}</td>
                   <td>${item.deviceType.typeName}</td>
                   <td>${item.name}</td>
+                  <td><fmt:formatDate  value="${item.snapTime}" pattern="yyyy-MM-dd HH:mm:ss" /></td>
                   <td>${item.snapDataScreen}</td>
                   <td  class="status_${item.snapStatus}">${item.snapStatusCn}</td>
                   <td>${item.warningReason}</td>
