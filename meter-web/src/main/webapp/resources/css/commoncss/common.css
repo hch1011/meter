@@ -19,7 +19,7 @@ h2{font-weight:normal;margin:0;padding:0;}
 .content{float:left; padding-top: 20px;padding-left: 20px;padding-bottom:2000px;margin-bottom:-2000px;}
 
 /*nav.jsp*/
-.top{font-family: '微软雅黑';margin: 0 auto;min-width: 980px;height:88px;}
+.top{font-family: '微软雅黑';margin: 0 auto;min-width: 1000px;height:88px;}
 .header{height:88px;}
 .topleft{height:88px;background:url(../../images/topleft.jpg) no-repeat;float:left; width:300px;}
 .topleft img{margin-top:12px;margin-left:10px;}
@@ -67,7 +67,7 @@ h2{font-weight:normal;margin:0;padding:0;}
 .ce li{border-bottom: 1px solid rgb(40,40,40);}
 .ce li a{color:white;display:block;cursor:pointer;position: relative;z-index: 999;}
 .ce li .dqian{background:none}
-.er{display:none;overflow: hidden;background:rgb(43, 127, 181);}
+.er{display:none;overflow: hidden;background:rgb(43, 127, 181);position: relative;z-index: 999;}
 .er li{width:100%;border:solid rgb(140,140,140);border-width:1px 0px 0px;height: 25px;}
 .er li a{display:block;color:#000000;background:none;font-size: 14px;cursor:pointer;}
 .er .e_li a{background:url(../../images/top/more.png) no-repeat 120px center;}
