@@ -1,7 +1,5 @@
 package com.tj.meter.controller;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
-
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
