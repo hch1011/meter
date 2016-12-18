@@ -15,7 +15,7 @@ import com.google.common.collect.Sets;
 @Table(name = "system_account")
 public class SystemAccount implements Serializable {
 	private static final long serialVersionUID = 1L;
-	public static String ROLE_SYSTEM_ADMIN = "systemAdmin" ;//系统管理员
+	public static String ROLE_ADMIN = "admin" ;//系统管理员
 	public static String ROLE_MANAGER = "manager" ;//普通管理员
 	public static String ROLE_USER = "user" ;//普通用户
 
@@ -112,8 +112,8 @@ public class SystemAccount implements Serializable {
 			return Sets.newHashSet(ROLE_MANAGER, ROLE_USER);
 		}
 		
-		if(ROLE_SYSTEM_ADMIN.equals(role)){
-			return Sets.newHashSet(ROLE_SYSTEM_ADMIN, ROLE_MANAGER, ROLE_USER);
+		if(ROLE_ADMIN.equals(role)){
+			return Sets.newHashSet(ROLE_ADMIN, ROLE_MANAGER, ROLE_USER);
 		}
 		return Sets.newHashSet();
 	}
@@ -123,26 +123,26 @@ public class SystemAccount implements Serializable {
 		salt = null;
 	}
 	
-//	public String getStatusText(){
-//		if(STATUS_LOCK.equals(status)){
-//			return "用户被锁定";
-//		}
-//		if(STATUS_VALID.equals(status)){
-//			return "正常用户";
-//		}
-//		return "无效用户";
-//		
-//	}
-//	public String getRoleText(){
-//		if(ROLE_USER.equals(role)){
-//			return "普通用户";
-//		}
-//		if(ROLE_MANAGER.equals(role)){
-//			return "管理员";
-//		}
-//		if(ROLE_SYSTEM_ADMIN.equals(role)){
-//			return "超级管理员";
-//		}
-//		return "无效角色";
-//	}
+	public String getStatusText(){
+		if(STATUS_LOCK.equals(status)){
+			return "用户被锁定";
+		}
+		if(STATUS_VALID.equals(status)){
+			return "正常用户";
+		}
+		return "无效用户";
+		
+	}
+	public String getRoleText(){
+		if(ROLE_USER.equals(role)){
+			return "普通用户";
+		}
+		if(ROLE_MANAGER.equals(role)){
+			return "管理员";
+		}
+		if(ROLE_ADMIN.equals(role)){
+			return "超级管理员";
+		}
+		return "无效角色";
+	}
 }

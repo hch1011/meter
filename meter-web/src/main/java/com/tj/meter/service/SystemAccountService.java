@@ -1,6 +1,7 @@
 package com.tj.meter.service;
 
-import static com.tj.meter.exception.MeterExceptionFactory.checkNull;
+import static com.tj.meter.exception.MeterExceptionFactory.exceptionIfBlank;
+import static com.tj.meter.exception.MeterExceptionFactory.exceptionIfTrue;
 
 import java.util.Date;
 import java.util.List;
@@ -19,7 +20,7 @@ import com.tj.meter.util.MD5Utils;
 public class SystemAccountService {
 	public static final int saltLen = 10;
 	
-	//@Autowired
+	@Autowired
 	SystemAccountDao systemAccountDao;
 	
 
@@ -33,9 +34,9 @@ public class SystemAccountService {
 	 * @return
 	 */
 	public SystemAccount createUserByAdmin(SystemAccount accountNew){
-		checkNull(accountNew.getLoginName(), "请输入登录名");
-		checkNull(accountNew.getPassword(), "密码不能空");
-		checkNull(accountNew.getRole() , "请选择角色"); 
+		exceptionIfBlank(accountNew.getLoginName(), "请输入登录名");
+		exceptionIfBlank(accountNew.getPassword(), "密码不能空");
+		exceptionIfBlank(accountNew.getRole() , "请选择角色"); 
 		if(systemAccountDao.findByLoginName(accountNew.getLoginName()) != null){
 			throw MeterExceptionFactory.applicationException("用户名已存在", null);
 		}
@@ -56,13 +57,21 @@ public class SystemAccountService {
 	}
 	
 
+	public void deleteAccount(String loginName){
+		SystemAccount account = systemAccountDao.findByLoginName(loginName);
+		if(account != null){
+			exceptionIfTrue(SystemAccount.ROLE_ADMIN.equals(account.getRole()), "系统管理员不能被删除");
+			systemAccountDao.delete(account.getId());
+		}
+	}
+
 	/**
 	 * 管理员根据登录名更新状态，密码等
 	 * @param accountNew
 	 * @return
 	 */
 	public SystemAccount updateUserByAdmin(SystemAccount accountNew){
-		checkNull(accountNew.getLoginName(), "登录名不能空");
+		exceptionIfBlank(accountNew.getLoginName(), "登录名不能空");
 		SystemAccount accountDb = systemAccountDao.findByLoginName(accountNew.getLoginName());
 		
 		if(accountDb == null){
@@ -107,7 +116,16 @@ public class SystemAccountService {
 			throw MeterExceptionFactory.applicationException("用户名或密码不正确", null);
 		}
 		
+		if(SystemAccount.STATUS_LOCK.equals(account.getStatus())){
+			throw MeterExceptionFactory.applicationException("用户被锁定，请联系相关人员", null);
+		}
+		
+		if(!SystemAccount.STATUS_VALID.equals(account.getStatus())){
+			throw MeterExceptionFactory.applicationException("用户状态不对，请联系相关人员", null);
+		}
+		
 		if(signPassword(account.getSalt(),password).equals(account.getPassword())){
+			//如果是明文密码，需要加密密码
 			if(password.equals(account.getPassword())){
 				changePassword(loginName, null, password, false);
 			}

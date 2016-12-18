@@ -15,8 +15,20 @@ public class MeterExceptionFactory{
 	}
 	
 	
-	public static void checkNull(Object obj, String screenMessage){
+	
+	public static void exceptionIfBlank(Object obj, String screenMessage){
 		if(obj == null || StringUtils.isBlank(obj.toString())){
+			throw new MeterException(screenMessage);
+		}
+	}
+	
+	public static void exceptionIfFalse(boolean value, String screenMessage){
+		if(!value){
+			throw new MeterException(screenMessage);
+		}
+	}
+	public static void exceptionIfTrue(boolean value, String screenMessage){
+		if(value){
 			throw new MeterException(screenMessage);
 		}
 	}
