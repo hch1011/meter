@@ -8,7 +8,7 @@
 	<div class="content-body">
 	<c:forEach items="${list}" var="type">
 		<h2>${type.typeName}:</h2>
-		<c:forEach items="${type.deviceInfoList}" var="info">
+		<c:forEach items="${type.deviceInfoList}" var="info" varStatus="status">
 	 	<div class="block" 
 	 	    data-id="${info.id}" 
 	 	    data-snapstatus="${info.snapStatus}"
@@ -19,8 +19,9 @@
 	 		data-date="<fmt:formatDate value="${info.snapTime}" pattern="yyyy-MM-dd"/>" data-time="<fmt:formatDate value="${info.snapTime}" pattern="hh:mm:ss"/>">
 	 		${info.name}
 	 		<div class="block-image"><img src="/meter/resources/images/light${info.snapStatus}.png"/></div>
-	 	</div>
+	 	</div><c:if test="${status.index%4 == 3}"><br/></c:if>
 		</c:forEach>
+		
 		<div style="clear:both;"></div>		
 	</c:forEach>
 	 

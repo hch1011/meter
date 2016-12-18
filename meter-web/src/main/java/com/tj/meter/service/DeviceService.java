@@ -124,7 +124,7 @@ public class DeviceService {
 			deviceData.setUpdateTime(deviceData.getCreateTime());
 			
 			if(deviceData.getSnapData() == null){
-				deviceData.setSnapData(0f);
+				deviceData.setSnapData(-1f);
 			}
 			
 			// checkData

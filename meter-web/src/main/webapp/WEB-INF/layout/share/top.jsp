@@ -48,44 +48,34 @@
 			</a>
 		</li>
 		
-		<%--<shiro:hasRole name="manager">
+		<%--
+		<shiro:hasRole name="manager">
 		<li>
 			<a href="/meter/camera/list" data-num="6">
 			<img src="/meter/resources/images/icon06.png" title="摄像头管理" />
 			<h2 style="width: 70px;">摄像头管理</h2>
 			</a>
 		</li> 
-		</shiro:hasRole>--%>
-		
+		</shiro:hasRole>
+		--%>	
+			
 		<!-- 这里要做成下拉框包括：清空缓存，仪表管理，摄像头管理，用户管理 -->
 		<li>
-			<%--<a href="/meter/admin/account/list" data-num="6">&lt;%&ndash;href="/meter/admin/account/list"&ndash;%&gt;
-			<img src="/meter/resources/images/icon06.png" title="系统管理" />
-			<h2 style="width: 70px;">系统管理</h2>--%>
-			</a>
 			<ul class="ce">
 				<li>
 					<a href="#">
 						<img style="margin-top: 10px;" src="/meter/resources/images/icon06.png" title="系统管理" />
 						<span><h2>系统管理<img class="more" src="/meter/resources/images/top/more.png"/></h2></span>
-
 					</a>
 					<ul class="er">
 						<li><a  href="/meter/camera/list" data-num="6">摄像头管理</a></li>
-						<li><a  href="##">二级目录B</a></li>
-						<li><a  href="##">二级目录C</a></li>
+						<li><a  href="/meter/admin/account/list">用户管理</a></li>
+						<li><a  id="tbCleanCache" href="#" >清空缓存</a></li>
 					</ul>
 				</li>
 				<div class="clear"></div>
 			</ul>
 		</li> 
-		
-		<li>
-			<a  id="tbCleanCache" href="#" data-num="8">
-			<img src="/meter/resources/images/icon01.png" title="清空缓存" />
-			<h2>清空缓存</h2>
-			</a>
-		</li>
 		
 		<li>
 			<a  id="tbLogout" href="${basePath}/logout">
