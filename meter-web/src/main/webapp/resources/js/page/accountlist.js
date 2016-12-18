@@ -34,14 +34,20 @@
 		},
 		
         createAccount: function ( ) {
+        	var urlPath = window.basePath + '/admin/createAccount'
             $.ajax({
                 url: urlPath,
                 type: 'post',
-                dataType: 'json',
-                contentType: 'application/json',
+                cache:false,
+        	    dataType:'json',
+        	    contentType : 'application/x-www-form-urlencoded; charset=UTF-8',
+                //contentType: 'application/json;charest=utf-8',
+                data:$("#form_create").serializeArray(),
                 success: function(data){
         	    	if(data.result == 'sucess'){
-                        location.reload()
+            	    	//alert("添加成功")
+        	    		location.reload()
+        	    		return;
         	    	}else{
         	    		alert(data.screenMessage)
         	    		return;
@@ -55,18 +61,20 @@
         },
 		
         updateAccount: function (id) {
-        	var urlPath = window.basePath + '/admin/account'
+        	var urlPath = window.basePath + '/admin/updateAccount'
             $.ajax({
                 url: urlPath,
-                type: 'put',
+                type: 'POST',
                 cache:false,
         	    dataType:'json',
-        	    data:$("#form_"+id).serialize(),
-                contentType: 'application/json',
+        	    contentType : 'application/x-www-form-urlencoded; charset=UTF-8',
+                //contentType: 'application/json;charest=utf-8',
+                data:$("#form_"+id).serializeArray(),
                 success: function(data){
-        	    	if(data.result == 'sucess'){
-            	    	alert("修改成功")
+        	    	if(data.result == 'sucess'){        	    		
+        	    		alert("修改成功")
         	    		location.reload()
+        	    		return;
         	    	}else{
         	    		alert(data.screenMessage)
         	    		return;
@@ -80,14 +88,16 @@
 		},
 		
         deleteAccount: function (id) {
+        	var urlPath = window.basePath + '/admin/deleteAccount?id='+id
             $.ajax({
                 url: urlPath,
-                type: 'post',
-                dataType: 'json',
-                contentType: 'application/json',
+                type: 'delete',
+                cache:false,
+        	    dataType:'json',
                 success: function(data){
         	    	if(data.result == 'sucess'){
-        	    		alert("success")
+        	    		location.reload()
+        	    		return;
         	    	}else{
         	    		alert(data.screenMessage)
         	    		return;

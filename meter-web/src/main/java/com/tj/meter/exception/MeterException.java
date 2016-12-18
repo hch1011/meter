@@ -19,6 +19,7 @@ public class MeterException extends RuntimeException{
     }
     public MeterException(String message) {
         super(message);
+        screenMessage = message;
     }
 
     public MeterException(Throwable cause) {
