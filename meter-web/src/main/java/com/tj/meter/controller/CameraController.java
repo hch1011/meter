@@ -226,7 +226,8 @@ public class CameraController extends BaseController{
 		try {
 			FileUtils.copyFile(file, response.getOutputStream());
 		} catch (IOException e) {
-			LOGGER.error(e.getMessage(), e);
+			//LOGGER.error(e.getMessage(), e);
+			LOGGER.error(e.getMessage());
 		}
     }
 } 

@@ -25,13 +25,13 @@
  					<label class="label-a" >接地电流值(mA)：</label>
  				</td>
  				<td>
- 					<input class="i-a" type="text" value="4.2"/>
+ 					<input class="i-a" type="text" value="" readonly/>
  				</td>
  				<td>
  					<label>采集日期：</label>
  				</td>
  				<td>
- 					<input class="i-b" type="text" value=""/>
+ 					<input class="i-b" type="text" value="" readonly/>
  				</td>
  			</tr>
  			<tr>
@@ -39,13 +39,13 @@
  					<label class="label-c" >电流变化率(mA/6h)：</label>
  				</td>
  				<td>
- 					<input class="i-c" type="text" value=""/>
+ 					<input class="i-c" type="text" value="" readonly/>
  				</td>
  				<td>
  					<label>采集时间：</label>
  				</td>
  				<td>
- 					<input class="i-d" type="text" value=""/>
+ 					<input class="i-d" type="text" value="" readonly/>
  				</td>
  			</tr>
  		</table>
