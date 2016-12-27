@@ -73,6 +73,22 @@
     </definition>
     
     
+    <definition name="device/list" extends="template">
+        <put-attribute name="title" value="仪表列表" cascade="true"/>
+        <put-attribute name="nav" value="" cascade="true"/>
+        <put-attribute name="content" value="/WEB-INF/pages/deviceList.jsp"/>
+        <put-attribute name="cssPath" value="devicelist"/>
+        <put-attribute name="jsPath" value="devicelist"/>
+    </definition>
+    <definition name="device/detail" extends="template">
+        <put-attribute name="title" value="仪表详情" cascade="true"/>
+        <put-attribute name="nav" value="" cascade="true"/>
+        <put-attribute name="content" value="/WEB-INF/pages/deviceDetail.jsp"/>
+        <put-attribute name="cssPath" value="devicedetail"/>
+        <put-attribute name="jsPath" value="devicedetail"/>
+    </definition>
+    
+    
     <definition name="camera/list" extends="template">
         <put-attribute name="title" value="摄像头列表" cascade="true"/>
         <put-attribute name="nav" value="" cascade="true"/>

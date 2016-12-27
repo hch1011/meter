@@ -154,16 +154,20 @@ public class YsClientProxy extends YsClientBase{
 	  * @param width		写入文件宽，不合法值将被忽略，取原始值，为了计算中间结果不会溢出，这里使用Long
 	  * @param hight		写入文件高，不合法值将被忽略，根据width计算等比缩放的hight值
 	  * @return
-	 * @throws IOException 
-	 * @throws FileNotFoundException 
+	  * @throws IOException 
+	  * @throws FileNotFoundException 
 	  */
 	 public void writeImageFromUrl(String url, String filePath, Integer width, Integer hight){
-		 BufferedImage sourceImage = null;
-		 BufferedImage newImage;
-		 try {
-			 sourceImage = ImageIO.read(new ByteArrayInputStream(SimpleHttpUtils.getByteByUrl(url)));
+		BufferedImage sourceImage = null;
+		BufferedImage newImage;
+		try {
+			sourceImage = ImageIO.read(new ByteArrayInputStream(SimpleHttpUtils.getByteByUrl(url)));
 		} catch (Exception e) {
-			throw MeterExceptionFactory.applicationException("获取图片失败", e);
+			try {
+				sourceImage = ImageIO.read(new ByteArrayInputStream(SimpleHttpUtils.getByteByUrl(url)));
+			} catch (Exception e2) {
+				throw MeterExceptionFactory.applicationException("获取图片失败", e2);
+			} 
 		}
 		 
 		 try {
@@ -216,25 +220,6 @@ public class YsClientProxy extends YsClientBase{
 		 return list;
 	 }
 	 
-//	 /**
-//	  * 获取单个设备信息,但这里的信息是不全的,从list中获取
-//	  * @param deviceSerial 设备序列号
-//	  * @return
-//	  */
-//	 @Deprecated
-//	 public CameraInfo deviceInfo( String deviceSerial){
-//		 if(deviceSerial.startsWith("virtual_")){
-//			 return moke(deviceSerial.substring(8));
-//		 }
-//		 
-//		 Map<String, String> params = buildParamsWithToken();
-//		 params.put("deviceSerial", deviceSerial); 
-//		 JSONObject data = post(domainUrl+"/api/lapp/device/info", params, "获取设备版本信息");
-//		 data = data.getJSONObject("data");
-//		 return JSON.parseObject(data.toJSONString(), CameraInfo.class);
-//	 }
-	 
-	 
 	 /**
 	  * 获取摄像头列表
 	  * @return
@@ -245,21 +230,8 @@ public class YsClientProxy extends YsClientBase{
 		 params.put("pageSize", String.valueOf(pageable.getPageSize()));
 		 JSONObject body = post(domainUrl+"/api/lapp/camera/list", params, "获取设备列表");
 		 List<CameraInfo> list = JSON.parseArray(body.getJSONArray("data").toJSONString(), CameraInfo.class);
-//		 if(list.size() == 0){//测试数据
-//			 for (int i = 0; i < 20; i++) {
-//				 list.add(moke(String.valueOf(i)));
-//			}
-//		 }
-		 //JSONArray data = body.getJSONArray("data");
 		 JSONObject page = body.getJSONObject("page");  //{"page":0,"size":50,"total":1}
 		 return new PageImpl<CameraInfo>(list, pageable, page.getInteger("total"));
 	 }
-	 
-	 private CameraInfo moke(String i){
-		 CameraInfo came = new CameraInfo();
-		 came.setDeviceSerial("virtual_"+i);
-		 came.setChannelName("模拟摄像头"+i);
-		 came.setDeviceName("模拟摄像头"+i);
-		 return came;
-	 }
+
 }

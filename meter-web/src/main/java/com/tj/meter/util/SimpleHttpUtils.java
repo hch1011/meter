@@ -122,8 +122,8 @@ public class SimpleHttpUtils {
 			HttpResponse response = httpClient.execute(httpGet);
 			return EntityUtils.toByteArray(response.getEntity());
 		} catch (Exception e) {
-			logger.info(e.getMessage(),e);
-			throw MeterExceptionFactory.applicationException("获取内容错误"+e.getMessage(), e);
+			logger.error("获取图片内容出错,url="+picUrl,e);
+			throw MeterExceptionFactory.applicationException("获取图片内容出错", e);
 		} finally {
 			HttpClientUtils.closeQuietly(httpClient);
 		}
@@ -139,11 +139,11 @@ public class SimpleHttpUtils {
 		try { 
 			FileUtils.copyURLToFile(new URL(picUrl) , new File(filePath), 10 * 1000,  30 * 1000);
 		} catch (MalformedURLException e1) {
-			logger.info(e1.getMessage(),e1);
+			logger.error("获取图片内容出错,url="+picUrl,e1);
 			throw MeterExceptionFactory.applicationException("URL格式不对："+e1.getMessage(), e1);
 		} catch (IOException e2) {
-			logger.info(e2.getMessage(),e2);
-			throw MeterExceptionFactory.applicationException("获取内容错误："+e2.getMessage(), e2);
+			logger.error("获取图片内容出错,url="+picUrl,e2);
+			throw MeterExceptionFactory.applicationException("获取图片内容出错："+e2.getMessage(), e2);
 		} 
 		return true;
 	}
@@ -222,7 +222,7 @@ public class SimpleHttpUtils {
 			result.setStatus(-1);
 			result.setBody(e.getMessage());
 			result.setE(e);
-			logger.error("http doGet error, url:"+url, e);
+			logger.error("http doPost error, url:"+url, e);
 		} finally {
 			HttpClientUtils.closeQuietly(httpClient);
 		}

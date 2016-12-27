@@ -32,21 +32,17 @@ public class DeviceInfo implements Serializable{
 	private Integer inputNum;		//进线编号
 	
 	@Column(name = "path")
-	private String path;			//路劲终端位置  	1号主变A相; 1号主变B相; 1号主变C相， 2号主变A相...
+	private String path;			//路劲终端位置:1号主变A相; 1号主变B相; 1号主变C相， 2号主变A相...
 
 	@Column(name = "type")
-	private Long type;				//类别:避雷针,SF6密度计
+	private Long type;				//类别:1避雷针,2SF6密度计
 
 	@Column(name = "name")
 	private String name;			//名称  :避雷针1，避雷针2，SF6密度计1，SF6密度计2
-	
-	@Column(name = "ip")
-	private String ip;				//终端IP
 
 	@Column(name = "snap_data_id")
 	private Long snapDataId;		//最新预读数据ID
 	
-
 	@Column(name = "picture_local_path")
 	private String pictureLocalPath;//本地保存的原始图片相对路径
 	
@@ -55,12 +51,17 @@ public class DeviceInfo implements Serializable{
 	
 	@Column(name = "snap_status")
 	private Integer snapStatus;		//最新预读状态:0失败;1正常,2预警,3报警
-	
+
 	@Column(name = "snap_time")
 	@Temporal(TemporalType.TIMESTAMP)
-    private Date snapTime;			//最新预读时间
+    private Date snapTime;			//最新快照时间
 
-
+	@Column(name = "snap_fail_begin_time")
+	private Date snapFailBeginTime; //最近连续识别失败开始时间
+	
+	@Column(name = "snap_fail_count")
+	private Integer snapFailCount; 	//最近连续识别失败次数
+	
 	@Column(name = "change_rate")
 	private Float changeRate;		//变化率
 	
@@ -78,15 +79,18 @@ public class DeviceInfo implements Serializable{
 	@Temporal(TemporalType.TIMESTAMP)
     private Date updateTime;		//更新时间
 
+
 	@Column(name = "monitor_page_flag")
 	private Integer monitorPageFlag;//1出现在监控首页,其它不出现
+	
+	@Column(name = "monitor_enable")
+	private Integer monitorEnable;	//是否自动监控：1监控,0不监控
 
 	@Column(name = "monitor_page_sort")
 	private Float monitorPageSort;	//出现在监控首页顺序,在同一类别内排序,默认按编号
 	
 	@Column(name = "description")
 	private String description;		//说明
-	
 	
 	// 摄像头信息
 	@Column(name = "camera_serial")
@@ -141,14 +145,6 @@ public class DeviceInfo implements Serializable{
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	public String getIp() {
-		return ip;
-	}
-
-	public void setIp(String ip) {
-		this.ip = ip;
 	}
 
 	public Float getSnapData() {
@@ -333,6 +329,22 @@ public class DeviceInfo implements Serializable{
 
 	public void setPictureLocalPath(String pictureLocalPath) {
 		this.pictureLocalPath = pictureLocalPath;
+	}
+
+	public Date getSnapFailBeginTime() {
+		return snapFailBeginTime;
+	}
+
+	public void setSnapFailBeginTime(Date snapFailBeginTime) {
+		this.snapFailBeginTime = snapFailBeginTime;
+	}
+
+	public Integer getSnapFailCount() {
+		return snapFailCount;
+	}
+
+	public void setSnapFailCount(Integer snapFailCount) {
+		this.snapFailCount = snapFailCount;
 	}
 
 	public String getSnapStatusEn() {

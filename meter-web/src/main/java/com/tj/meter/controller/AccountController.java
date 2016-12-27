@@ -57,12 +57,6 @@ public class AccountController extends BaseController{
 			Model model
 	) {
 		try {
-//			account.setLoginName(RequestHelper.getString("loginName", null, request, false));
-//			account.setNickname(RequestHelper.getString("nickname", null, request, false));
-//			account.setRealName(RequestHelper.getString("realName", null, request, false));
-//			account.setRole(RequestHelper.getString("role", null, request,  false));
-//			account.setStatus(RequestHelper.getInteger("status", null, request, false, false));
-//			
 			account = systemAccountService.updateUserByAdmin(account);
 			account.cleanPassword();
 			return success(account);

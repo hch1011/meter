@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -30,6 +31,7 @@ import com.tj.meter.entity.CameraInfo;
 import com.tj.meter.entity.DeviceData;
 import com.tj.meter.entity.DeviceInfo;
 import com.tj.meter.entity.DeviceType;
+import com.tj.meter.entity.SystemAccount;
 import com.tj.meter.exception.MeterExceptionFactory;
 import com.tj.meter.util.ExcelTemplate;
 import com.tj.meter.util.ImageUtils;
@@ -62,6 +64,83 @@ public class MeterController extends BaseController{
 	YsClientProxy ysClientProxy;
 	@Autowired
 	Cache cache;
+	
+	
+	@RequestMapping(value = "/admin/createDevice", method = RequestMethod.POST)
+	@ResponseBody
+	public Object createDeviceInfo(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			DeviceInfo deviceInfo,
+			Model model
+	) {
+		try {
+			deviceInfo = deviceService.createDeviceInfo(deviceInfo);
+			return success(deviceInfo);
+		} catch (Exception e) {
+			return fail(e);
+		}
+	}
+
+	@RequestMapping(value = "/admin/updateDevice", method = RequestMethod.POST)
+	@ResponseBody
+	public Object updateDeviceInfo(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			DeviceInfo deviceInfo,
+			Model model
+	) {
+		try {
+			deviceInfo = deviceService.updateDeviceInfo(deviceInfo);
+			return success(deviceInfo);
+		} catch (Exception e) {
+			return fail(e);
+		}
+	}
+
+	@RequestMapping(value = "/admin/deleteDevice", method = RequestMethod.DELETE)
+	@ResponseBody
+	public Object updateDeviceInfo(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			Long id,
+			Model model
+	) {
+		try {
+			deviceService.deleteDeviceInfo(id);
+			return success();
+		} catch (Exception e) {
+			return fail(e);
+		}
+	}
+	
+	@RequestMapping(value = "/admin/device/list", method = RequestMethod.GET)
+ 	public Object meterList(
+			HttpServletRequest request,
+	    	HttpServletResponse response,
+	    	@RequestParam(value="deviceType", required = false) Long deviceType,
+	    	Model model
+	    	) {
+		Collection<DeviceType> deviceTypeList = deviceService.queryAllDeviceType(true);
+		if(deviceType == null){
+			deviceType = 1L;
+		}
+		List<DeviceInfo> deviceInfoList = deviceService.queryDeviceInfoByType(deviceType);
+		long maxId = 0;
+		for(DeviceInfo item : deviceInfoList){
+			if(item.getId() > maxId){
+				maxId = item.getId();
+			}
+		}
+		
+		model.addAttribute("deviceTypeList", deviceTypeList);
+		model.addAttribute("deviceInfoList", deviceInfoList);
+		model.addAttribute("currentDeviceType", deviceType);
+		model.addAttribute("maxId", ++maxId);
+		return "device/list";
+    }
+	
+	
 	
 	/**
 	 * 提交数据

@@ -1,5 +1,8 @@
 package com.tj.meter.service;
 
+import static com.tj.meter.exception.MeterExceptionFactory.exceptionIfBlank;
+import static com.tj.meter.exception.MeterExceptionFactory.exceptionIfNotBlank;
+
 import java.util.*;
 
 import org.slf4j.Logger;
@@ -48,8 +51,49 @@ public class DeviceService {
 	@Autowired
 	private YsClientProxy ysClientProxy;
 	
+
+	public DeviceInfo createDeviceInfo(DeviceInfo deviceInfo) {
+		exceptionIfBlank(deviceInfo.getId(), "ID不能为空");
+		exceptionIfBlank(deviceInfo.getInputNum(), "进线不能为空");
+		exceptionIfBlank(deviceInfo.getPath(), "路径不能为空");
+		exceptionIfBlank(deviceInfo.getName(), "名称不能为空");
+		exceptionIfBlank(queryDeviceTypeByType(deviceInfo.getType(), true), "类型不对");
+		exceptionIfNotBlank(deviceInfoDao.findOne(deviceInfo.getId()), "ID已存在");
+		if(deviceInfo.getMonitorPageFlag() == null ){
+			deviceInfo.setMonitorPageFlag(0);
+		}
+		if(deviceInfo.getMonitorPageSort() == null ){
+			deviceInfo.setMonitorPageSort(deviceInfo.getId().floatValue()%100000);
+		}
+		deviceInfo.setCreateTime(new Date());
+		deviceInfo.setUpdateTime(new Date());
+		deviceInfoDao.save(deviceInfo);
+		return deviceInfo;
+	}
 	
-	//CacheBuilder<Object, Object> deviceInfoCache = CacheBuilder.newBuilder().expireAfterWrite(120, TimeUnit.SECONDS);
+
+	public DeviceInfo updateDeviceInfo(DeviceInfo deviceInfo) {
+		exceptionIfBlank(deviceInfo.getId(), "ID不能为空");
+		DeviceInfo deviceInfoDb = deviceInfoDao.findOne(deviceInfo.getId());
+		exceptionIfBlank(deviceInfoDb, "设备不存在");
+		//只能更新的属性
+		//deviceInfoDb.setId(deviceInfo.getId());
+		deviceInfoDb.setCode(deviceInfo.getCode());
+		deviceInfoDb.setInputNum(deviceInfo.getInputNum());
+		deviceInfoDb.setPath(deviceInfo.getPath());
+		deviceInfoDb.setName(deviceInfo.getName());
+		deviceInfoDb.setMonitorPageFlag(deviceInfo.getMonitorPageFlag());
+		deviceInfoDb.setMonitorPageSort(deviceInfo.getMonitorPageSort());
+		deviceInfoDb.setDescription(deviceInfo.getDescription());
+		deviceInfoDb.setUpdateTime(new Date());
+		deviceInfoDao.save(deviceInfoDb);
+		return deviceInfo;
+	}
+	
+
+	public void deleteDeviceInfo(Long id) {
+		deviceInfoDao.delete(id);
+	}
 	
 	public Collection<DeviceType>  queryAllDeviceType(boolean fromCache) {
 		if(fromCache && cache.deviceTypeCache.size() > 0){
@@ -63,6 +107,9 @@ public class DeviceService {
 	}
 
 	public DeviceType  queryDeviceTypeByType(Long type, boolean fromCache) {
+		if(type == null){
+			return null;
+		}
 		DeviceType obj;
 		if(fromCache){
 			obj = cache.deviceTypeCache.get(type);
@@ -123,32 +170,50 @@ public class DeviceService {
 			}
 			deviceData.setUpdateTime(deviceData.getCreateTime());
 			
-			if(deviceData.getSnapData() == null){
-				deviceData.setSnapData(-1f);
-			}
-			
 			// checkData
 			DeviceInfo deviceInfoDb = deviceInfoDao.findOne(deviceData.getDeviceId());
-			// 一直失败状态，只更新时间
-			if(DeviceData.snapStatus_fail.equals(deviceData.getSnapStatus())
-				&& DeviceData.snapStatus_fail.equals(deviceInfoDb.getSnapStatus())){
-				deviceInfoDb.setId(deviceInfoDb.getId());
-				deviceInfoDb.setSnapData(deviceData.getSnapData());
-				deviceInfoDb.setUpdateTime(new Date());
-				deviceInfoDb.setSnapTime(new Date());
-				deviceInfoDb.setPictureLocalPath(deviceData.getPictureLocalPath());
+			if(deviceInfoDb == null){
+				throw MeterExceptionFactory.systemException("仪表数据未找到", null);
+			}
+			deviceInfoDb.setUpdateTime(deviceData.getSnapTime());
+			// 一直失败状态，只更新时间不跟新数据
+			if(DeviceData.snapStatus_fail.equals(deviceData.getSnapStatus())){
+				//第一次出错
+				if(!DeviceData.snapStatus_fail.equals(deviceInfoDb.getSnapStatus())){
+					deviceInfoDb.setSnapFailCount(1);
+ 				}else{
+ 					if(deviceInfoDb.getSnapFailCount() == null){
+ 						deviceInfoDb.setSnapFailCount(1);
+ 					}else{
+ 						deviceInfoDb.setSnapFailCount(deviceInfoDb.getSnapFailCount() + 1);
+ 					}
+ 				}
+
+				if(deviceInfoDb.getSnapFailBeginTime() == null){
+					deviceInfoDb.setSnapFailBeginTime(deviceData.getSnapTime());
+				}
+				deviceInfoDb.setSnapStatus(deviceData.getSnapStatus());
+				if(deviceData.getPictureLocalPath() != null){
+					deviceInfoDb.setPictureLocalPath(deviceData.getPictureLocalPath());	
+				}
 				deviceInfoDb.setWarningReason(deviceData.getWarningReason());
 				deviceInfoDao.save(deviceInfoDb);
 				return;
+			}else{
+				deviceInfoDb.setSnapFailBeginTime(null);
+				deviceInfoDb.setSnapFailCount(0);
+				deviceInfoDb.setWarningReason(null);
 			}
 			
-			ObjectUtil.checkNotNull(deviceInfoDb, true, "仪表不存在，deviceId="+ deviceData.getDeviceId());
-			DeviceType deviceType = deviceTypeDao.findOne(deviceInfoDb.getType());
+			DeviceType deviceType = queryDeviceTypeByType(deviceInfoDb.getType(),true);
 			ObjectUtil.checkNotNull(deviceType, true, "设备类型不存在，type="+deviceInfoDb.getType());
 			
 			//TODO 变化率计算
-			if(deviceInfoDb.getChangeRate() == null){
-				deviceInfoDb.setChangeRate(deviceData.getSnapData() - deviceInfoDb.getSnapData());
+			deviceData.setChangeRate(0f);
+			if(deviceInfoDb.getSnapData() != null  && deviceInfoDb.getSnapTime() != null){
+				float deltaValue = deviceData.getSnapData() - deviceInfoDb.getSnapData();
+				long deltaTime = deviceData.getSnapTime().getTime() - deviceInfoDb.getSnapTime().getTime();
+				deviceInfoDb.setChangeRate(deltaValue * 3600000 / deltaTime);
 			}
 			
 			//设置报警信息
@@ -158,7 +223,6 @@ public class DeviceService {
 			if(deviceData.getId() == null){
 				deviceData.setId(SnowflakeIdGenerator.getInstance().nextId());
 			}
-			deviceData.setDeviceCode(deviceInfoDb.getCode());
 			deviceDataDao.save(deviceData);
 			
 			//update DeviceInfo
@@ -175,31 +239,7 @@ public class DeviceService {
 			LOGGER.error(e.getMessage(),e);
 		}
 	}
-//	/**
-//	 * 接受到同步过来的数据
-//	 * @param deviceData
-//	 */
-//	public void receiveSyncDeviceData(DeviceData deviceData) {
-//		LOGGER.info("receiveSyncDeviceData");
-//		DeviceData deviceDataDB = deviceDataDao.findOne(deviceData.getId());
-//		if(deviceDataDB != null){
-//			return;
-//		}
-//		deviceDataDao.save(deviceData);
-//		
-//		DeviceInfo deviceInfo = deviceInfoDao.findOne(deviceData.getDeviceId());
-//		if(deviceInfo != null && deviceInfo.getSnapTime().before(deviceData.getSnapTime())){
-//	 		deviceInfo.setChangeRate(deviceData.getChangeRate());
-//			deviceInfo.setFrequency(deviceData.getFrequency());
-//			deviceInfo.setSnapData(deviceData.getSnapData());
-//			deviceInfo.setSnapStatus(deviceData.getSnapStatus());
-//			deviceInfo.setSnapTime(deviceData.getSnapTime());
-//			deviceInfo.setWarningReason(deviceData.getWarningReason());
-//			deviceInfo.setSnapDataId(deviceData.getId());
-//			deviceInfoDao.save(deviceInfo);
-//		}
-//	}
- 
+	
 	public List<DeviceInfo> queryDeviceInfoAllOrderByInputNum(){
 		if(System.currentTimeMillis() > cache.queryDeviceInfoAllOrderByInputNumCacheExpireTime){
 			cache.queryDeviceInfoAllOrderByInputNumCache = null;
@@ -428,9 +468,7 @@ public class DeviceService {
 		deviceInfoDao.save(infoDb);
 		cache.cache(infoDb);
 	}
-	 
 
-	
 	public void monitor(JobTaskWrap task) {
 		if(task.getDeviceInfoList() == null){
 			task.setDeviceInfoList(queryDeviceInfoByType(task.getDeviceType())); 
@@ -444,9 +482,7 @@ public class DeviceService {
 		CameraCaptureVo param = new CameraCaptureVo();
 		param.setDeviceInfoId(device.getId());
 		param.setNeedRecognition(true);
-		//param.setNeedSubmitResult(true);
-		
-		 try {
+		try {
 			cameraService.captureHandle(param);
 			DeviceData deviceData = buildDeviceData(param, null);
 			submitData(deviceData);
@@ -478,7 +514,7 @@ public class DeviceService {
 		deviceData.setPictureUrl(param.getYsUrl());
 		deviceData.setPictureLocalPath(param.getWholeFileName());
 		
-		if("200".equals(param.getCode()) || "0".equals(param.getCode())){
+		if("success".equals(param.getResult())){
 			deviceData.setSnapStatus(DeviceData.snapStatus_normal);
 			deviceData.setSnapData(param.getValue());
 		}else{
@@ -488,13 +524,4 @@ public class DeviceService {
 		} 
  		return deviceData;
 	}
-	
-//	int i = 100;
-//	float testDate(){
-//		i++;
-//		if(i>150){
-//			i=100;
-//		}
-//		return (float)i;
-//	}
 }

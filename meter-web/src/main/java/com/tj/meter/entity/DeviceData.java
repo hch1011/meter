@@ -21,9 +21,9 @@ public class DeviceData  implements Serializable{
 	public static final String dataType_manualLaunch = "manual.launch";
 	public static final String dataType_manualEdit = "manual.edit";
 	public static final Integer  snapStatus_fail = 0;//失败
-	public static final Integer  snapStatus_normal = 0;//正常
-	public static final Integer  snapStatus_warning = 0;//预警
-	public static final Integer  snapStatus_alarm = 0;//报警
+	public static final Integer  snapStatus_normal = 1;//正常
+	public static final Integer  snapStatus_warning = 2;//预警
+	public static final Integer  snapStatus_alarm = 3;//报警
 	
 	
 	private static final long serialVersionUID = 1L;

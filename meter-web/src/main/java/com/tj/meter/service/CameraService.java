@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import com.alibaba.fastjson.JSON;
 import com.tj.meter.entity.CameraCaptureVo;
 import com.tj.meter.entity.CameraInfo;
-import com.tj.meter.entity.DeviceData;
 import com.tj.meter.entity.DeviceInfo;
 import com.tj.meter.entity.DeviceType;
 import com.tj.meter.exception.MeterException;
@@ -58,7 +57,7 @@ public class CameraService {
 	 * 
 	 */
 	public CameraCaptureVo captureHandle(CameraCaptureVo param){
-		LOGGER.debug("captureFlow("); 
+		LOGGER.debug("captureHandle() start"); 
 		try {
  			initAndvalidateParam(param);
  			
@@ -85,10 +84,6 @@ public class CameraService {
 			param.setScreenMessage("系统错误");
 			param.setDebugMessage(e2.getMessage());
 			throw e2;
-		}finally {
-//			if(param.isNeedSubmitResult()){
-//				doSubmitDeviceData(param);
-//			}
 		}
 		return param;
 	}
@@ -306,22 +301,24 @@ public class CameraService {
 	
 	//读取结果
 	private static void readFile(CameraCaptureVo param, String resultFileName){
-		File resultFile = new File(resultFileName);
-		for(int i = 0; i < 6; i++){
-			if(!resultFile.exists()){
-				ObjectUtil.sleep(500, true);
-			}
-		}
-		
 		BufferedReader bf = null;
 		try {
+			File resultFile = new File(resultFileName);
+			long timeOut = System.currentTimeMillis() + 6000;	//6秒
+			
+			while(!resultFile.exists() && System.currentTimeMillis() < timeOut){
+				ObjectUtil.sleep(500, true);
+			}
+			
 			bf = new BufferedReader(new InputStreamReader(new FileInputStream(resultFile),"UTF-8"));
+			// 第一行
 			String str = bf.readLine();
-			if(str.startsWith("true")){
+			if(str.indexOf("true") > 0){
 				str = str.replaceAll("true", "");
 				str = str.trim();
 				param.setResult(Constant.result_success);
 				param.setCode(str);
+				// 数值行
 				if(param.getDeviceInfoType().intValue() == 1){
 					bf.readLine();
 					param.setValue(Float.parseFloat(bf.readLine()));
@@ -330,25 +327,21 @@ public class CameraService {
 				}
 				
 			}else{
-				//TODO 模拟结果
-				delta = ++delta % 50;
-				param.setValue(100.1f + delta);
-				param.setResult(Constant.result_success);
-				
-//				str = str.replaceAll("false", "");
+ 				param.setValue(null);
+				param.setResult(Constant.result_fail);
+				str = str.replaceAll("false", "");
 				str = str.trim();
-//				param.setResult(Constant.result_fail);
-				param.setCode(str);
-				param.setScreenMessage("识别程序报错");
+ 				param.setCode(str);
+				param.setScreenMessage("识别结果错误");
 				while((str = bf.readLine()) != null){
 					param.setDebugMessage(param.getDebugMessage() + "\r" + str);
 				}
 			}
 		}catch(Exception e){
 			param.setCode("500");
-			param.setScreenMessage("读取结果错误:");
+			param.setScreenMessage("读取识别结果错误");
 			param.setDebugMessage( e.getMessage());
-			throw MeterExceptionFactory.applicationException("读取结果错误:"+e.getMessage(), e);
+			throw MeterExceptionFactory.applicationException("读取识别结果错误:"+e.getMessage(), e);
 		} finally {
 			ObjectUtil.close(bf, true);
 		}

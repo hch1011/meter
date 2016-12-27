@@ -63,14 +63,15 @@
 		<li>
 			<ul class="ce">
 				<li>
-					<a href="#">
+					<a href="#"  data-num="6">
 						<img style="margin-top: 10px;" src="/meter/resources/images/icon06.png" title="系统管理" />
-						<span><h2>系统管理<img class="more" src="/meter/resources/images/top/more.png"/></h2></span>
+						<span><h2>系统管理<!-- <img class="more" src="/meter/resources/images/top/more.png"/> --></h2></span>
 					</a>
 					<ul class="er">
 						<li><a  href="/meter/camera/list" data-num="6">摄像头管理</a></li>
-						<li><a  href="/meter/admin/account/list">用户管理</a></li>
-						<li><a  id="tbCleanCache" href="#" >清空缓存</a></li>
+						<li><a  href="/meter/admin/device/list" data-num="6">仪表管理</a></li>
+						<li><a  href="/meter/admin/account/list" data-num="6">用户管理</a></li>
+						<li><a  id="tbCleanCache" href="#" data-num="6">清空缓存</a></li>
 					</ul>
 				</li>
 				<div class="clear"></div>
