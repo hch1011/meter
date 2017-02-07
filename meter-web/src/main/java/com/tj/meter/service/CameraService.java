@@ -313,7 +313,7 @@ public class CameraService {
 			bf = new BufferedReader(new InputStreamReader(new FileInputStream(resultFile),"UTF-8"));
 			// 第一行
 			String str = bf.readLine();
-			if(str.indexOf("true") > 0){
+			if(str.indexOf("true") > -1){
 				str = str.replaceAll("true", "");
 				str = str.trim();
 				param.setResult(Constant.result_success);
@@ -347,11 +347,11 @@ public class CameraService {
 		}
 	}
 	
-	public static void main(String[] args) {
-		CameraCaptureVo param = new CameraCaptureVo();
-		readFile(param, "C:\\D\\0_sxj\\halcondot_f\\a.txt");
-		System.out.println(JSON.toJSONString(param, true));
-	}
+//	public static void main(String[] args) {
+//		CameraCaptureVo param = new CameraCaptureVo();
+//		readFile(param, "C:\\D\\0_sxj\\halcondot_f\\a.txt");
+//		System.out.println(JSON.toJSONString(param, true));
+//	}
 	
 	/**
 	 * 生成文件名，如果原始文件有裁剪范围，生成裁剪文件，带相对目录
@@ -363,7 +363,7 @@ public class CameraService {
 		Date currentDate = new Date();
 		String folder = TimeUtils.getDateString(currentDate, "yyyy_MM\\dd\\");
 		if(StringUtils.isBlank(param.getCaptureTime())){
-			param.setCaptureTime(TimeUtils.getDateString(currentDate, "yyyyMMddhhmmss"));
+			param.setCaptureTime(TimeUtils.getDateString(currentDate, "yyyyMMddHHmmss"));
 		}
 		//原始文件
 		String fileName = folder + String.format("%s_%s_%s_%s.jpg",
@@ -387,7 +387,7 @@ public class CameraService {
 			param.setPartialFileName(fileName);
 		}
 	}
-	
+
 	// 解析文件名得到各元数据
 	void parseWholeFileName(CameraCaptureVo param){
 		if(StringUtils.isBlank(param.getWholeFileName())){

@@ -25,23 +25,7 @@ public class JsonController extends BaseController{
     private DeviceService  deviceService;
 	@Autowired
     private DeviceDataDao  deviceDataDao;
-//
-//	/**
-//	 * 提交数据
-//	 * @param request
-//	 * @param response
-//	 * @param deviceData
-//	 * @return
-//	 */
-//	@RequestMapping(value = "/json/deviceData", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
-//	@ResponseBody
-//	public Object postDeviceData(
-//			HttpServletRequest request,
-//	    	HttpServletResponse response,
-//	    	DeviceData deviceData) {
-//		deviceService.submitData(deviceData);
-//		return deviceData;
-//    }
+
 	/**
 	 * 根据id查询deviceData
 	 * @param request

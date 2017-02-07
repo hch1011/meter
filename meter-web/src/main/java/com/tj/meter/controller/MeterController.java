@@ -244,10 +244,15 @@ public class MeterController extends BaseController{
 					.setO3(data.getSnapData() == null? 0 : data.getSnapData())
 					); 
 		}
+ 		DeviceInfo device = deviceService.queryDeviceInfoById(deviceId, true);
+ 		if(device != null){
+ 			DeviceType type = deviceService.queryDeviceTypeByType(device.getType(), true);
+ 			if(type!=null){
+ 				rt.put("deviceType",type);
+ 			}
+ 		}
 		rt.put("list", rtList);
 		rt.put("deviceId", deviceId);
-		rt.put("deviceId", deviceId);
-
 		model.addAttribute("type", 3);//前端数据查询选中
 		return rt;
     }

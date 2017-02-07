@@ -48,6 +48,8 @@
         	    data:$("#deviceDateForm").serialize(),
         	    success:function(data) {
         	    	if(data.result == 'sucess'){
+        	    		var titleTest =  '历史数据曲线图';
+        	    		//titleTest = deviceType.dataName() + titleTest;
         	            var xData = [];
         	            var yData = [];
         	            data.list.forEach(function(e){
@@ -57,10 +59,11 @@
          	    		var myChart = echarts.init(document.getElementById('placeholder'));
          	    		var option = {
          	    			    title: {
-         	    			        text: '历史数据曲线图'
+         	    			        text: titleTest,
+         	    			        show:true
          	    			    },
          	    			    tooltip: {
-         	    			    	 show: true,
+         	    			    	show: true,
          	    			        trigger: 'axis'
          	    			    },
          	    			    xAxis: {
@@ -80,23 +83,11 @@
          	    		                restore: {},
          	    		                saveAsImage: {}
          	    		            }
-         	    		        },
-         	    		       formatter: function (params, ticket, callback) {
-                                   console.log(params)
-                                   var res = "班级" + ' : ' + params[0].name + "班<br/>";
-                                   for (var i = 0, l = params.length; i < l; i++) {
-                                       res += '<br/>' + params[i].seriesName + ' : ' + params[i].value;//鼠标悬浮显示的字符串内容
-                                   }
-                                   setTimeout(function () {
-                                       // 仅为了模拟异步回调
-                                       callback(ticket, res);
-                                   }, 1000)
-                                   return 'loading...';
-                               },
+         	    		        }, 
          	    			    series: [{
-         	    			        name: '成交',
+         	    			        name: '',
          	    			        type: 'line',
-         	    			        smooth: true,
+         	    			        smooth: false,
          	    			        data:yData
          	    			    }]
          	    			};

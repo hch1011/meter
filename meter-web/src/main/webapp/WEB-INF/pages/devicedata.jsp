@@ -48,15 +48,18 @@
 	          <div class="form-group" style="margin-left: -22px;">
 	         	  <label class="col-sm-1 control-label" style="margin-right:-20px;"></label>
 	              <div class="col-sm-6">
-	              	  <span><button type="button" class="btn btn-sm btn-primary" style="width:248px; margin-top:10px;font-size: 16px;">电流值查询 <i class="fa fa-search"></i></button></span>
+	              	  <span><button type="button" class="btn btn-sm btn-primary" style="width:248px; margin-top:10px;font-size: 16px;">查询 <i class="fa fa-search"></i></button></span>
+	                  <!-- 
 	                  <span><button type="button" class="btn btn-sm btn-primary" style="width:248px; margin-top:5px; margin-bottom:10px;font-size: 16px;">动作次数查询 <i class="fa fa-search"></i></button></span>
+                      -->
 	              </div>
 	          </div>
 	          
 	          
 			</form>
 			<div class="placeholder-container">
-				<span>电流历史曲线图</span>			
+				<!-- <span>电流历史曲线图</span>  -->
+				<span id="title"></span>
 				<div id="placeholder" style="width:700px;height:350px;"></div>
 			</div>
 	</div>

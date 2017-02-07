@@ -210,7 +210,7 @@ public class DeviceService {
 			
 			//TODO 变化率计算
 			deviceData.setChangeRate(0f);
-			if(deviceInfoDb.getSnapData() != null  && deviceInfoDb.getSnapTime() != null){
+			if(deviceInfoDb.getSnapData() != null  && deviceInfoDb.getSnapTime() != null && deviceData.getSnapData() != null){
 				float deltaValue = deviceData.getSnapData() - deviceInfoDb.getSnapData();
 				long deltaTime = deviceData.getSnapTime().getTime() - deviceInfoDb.getSnapTime().getTime();
 				deviceInfoDb.setChangeRate(deltaValue * 3600000 / deltaTime);
