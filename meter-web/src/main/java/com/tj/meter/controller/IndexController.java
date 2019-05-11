@@ -53,9 +53,10 @@ public class IndexController {
 	 */
     @RequestMapping(value = "/monitor")
     public String monitorPage(Model model){
+		model.addAttribute("type", 1);//前端主页面选中
+		
     	List<DeviceType> list = deviceService.queryDataForMonitorPage();
         model.addAttribute("list", list);
-		model.addAttribute("type", 1);//前端主页面选中
         return "monitor";
     } 
     

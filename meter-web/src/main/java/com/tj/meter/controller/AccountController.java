@@ -75,6 +75,8 @@ public class AccountController extends BaseController{
 			@PageableDefault(page=0, size=100) Pageable pageable,
 			Model model
 	) {
+		model.addAttribute("type", 6);
+		
 		List<SystemAccount> accountList = systemAccountService.queryAllUser();
 		//accountList.forEach(i -> i.cleanPassword());
 		model.addAttribute("accountList", accountList);

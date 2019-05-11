@@ -2,8 +2,6 @@ package com.tj.meter.controller;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -14,7 +12,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
-import org.joda.time.DateTimeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,8 +28,6 @@ import com.tj.meter.entity.CameraInfo;
 import com.tj.meter.entity.DeviceData;
 import com.tj.meter.entity.DeviceInfo;
 import com.tj.meter.entity.DeviceType;
-import com.tj.meter.entity.SystemAccount;
-import com.tj.meter.exception.MeterExceptionFactory;
 import com.tj.meter.util.ExcelTemplate;
 import com.tj.meter.util.ImageUtils;
 import com.tj.meter.util.MultiValue;
@@ -121,6 +116,8 @@ public class MeterController extends BaseController{
 	    	@RequestParam(value="deviceType", required = false) Long deviceType,
 	    	Model model
 	    	) {
+		model.addAttribute("type", 6);
+		
 		Collection<DeviceType> deviceTypeList = deviceService.queryAllDeviceType(true);
 		if(deviceType == null){
 			deviceType = 1L;
@@ -171,6 +168,8 @@ public class MeterController extends BaseController{
 	    	@RequestParam(value="toTime", required = false) String endTime,
 	    	@RequestParam(value="deviceId", required = false) String deviceId,
 	    	Model model) {
+		model.addAttribute("type", 3);
+
 		Date currentDate = new Date();
 		if(StringUtils.isBlank(endDate)){
 			endDate = TimeUtils.getDateString(currentDate, "yyyy-MM-dd");
@@ -197,7 +196,6 @@ public class MeterController extends BaseController{
 		model.addAttribute("deviceId", deviceId);
 		model.addAttribute("deviceList", deviceList);
 
-		model.addAttribute("type", 3);//前端数据查询选中
 		return "devicedata";
     }
 	
@@ -257,12 +255,21 @@ public class MeterController extends BaseController{
 		return rt;
     }
 	 
+	/**
+	 * 前端图像采集
+	 * @param request
+	 * @param response
+	 * @param model
+	 * @param deviceId
+	 * @return
+	 */
 	@RequestMapping(value = "/device/data/img/info", method = RequestMethod.GET)
 	public String imgInfo(
 			HttpServletRequest request,
 	    	HttpServletResponse response,
 			Model model,
 	    	@RequestParam(value="deviceId", required = false)Long deviceId) {
+		model.addAttribute("type", 2);
 
 		try{
 			if(deviceId != null) {
@@ -271,7 +278,6 @@ public class MeterController extends BaseController{
 			List<Map<Integer,List<DeviceInfo>>> resultList = deviceService.queryDeviceInfoGroupByInputNum();
 			model.addAttribute("deviceInfoList", resultList);
 			model.addAttribute("deviceId", deviceId);
-			model.addAttribute("type", 2);//前端图像采集选中
 		}catch (Exception e) {
 			logger.info("获取图像采集信息出错", e);
 		}
@@ -308,7 +314,10 @@ public class MeterController extends BaseController{
 		return map;
 	}
 
-	//参数设置	
+	/**
+	 * 参数设置
+	 * @return
+	 */
 	@RequestMapping(value = "/device/data/param", method = RequestMethod.GET)
 	public String paramPage(
 			HttpServletRequest request,
@@ -316,6 +325,8 @@ public class MeterController extends BaseController{
 	    	@RequestParam(required=false) Long type,
 	    	Model model
 	    	) {
+		model.addAttribute("type", 4);//前端参数配置选中
+		
 		List<DeviceType> list = deviceTypeDao.findAll();
 		model.addAttribute("deviceTypeList", list);
 
@@ -328,7 +339,6 @@ public class MeterController extends BaseController{
 		}else{
 			model.addAttribute("currentDeviceType", list.get(0));
 		}
-		model.addAttribute("type", 4);//前端参数配置选中
 		return "param";
     }
 	
@@ -375,6 +385,9 @@ public class MeterController extends BaseController{
 		return paramPage( request, response, deviceType.getType(), model );
     }
 	
+	/**
+	 * 错误报告
+	 */
 	
 	@RequestMapping(value = "/device/data/error/report", method = RequestMethod.GET)
 	public String report(
@@ -383,12 +396,13 @@ public class MeterController extends BaseController{
 	    	@RequestParam(required=false)  Integer[] status,
 	    	Model model
 	    	) {
+		model.addAttribute("type", 5);//前端错误报告选中
+		
 		if(status == null || status.length == 0){
 			status = new Integer[]{0,1,2,3};
 		}
 		List<DeviceInfo> list = deviceService.queryDeviceInfoBySnapStatus(status);
 		model.addAttribute("list", list);
-		model.addAttribute("type", 5);//前端错误报告选中
 		return "errorreport";
     }
 	

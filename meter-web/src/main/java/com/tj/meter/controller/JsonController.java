@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.tj.meter.dao.DeviceDataDao;
-import com.tj.meter.entity.DeviceData;
 import com.tj.meter.service.DeviceService;
 
 /**
