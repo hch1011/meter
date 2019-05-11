@@ -5,13 +5,14 @@ import java.util.List;
 import org.junit.Test;
 
 import com.alibaba.fastjson.JSON;
-import com.jd.meter.entity.CameraInfo;
-import com.jd.meter.util.TimeUtils;
+import com.tj.meter.entity.CameraInfo;
+import com.tj.meter.util.TimeUtils;
+import com.tj.meter.ys.sdk.YsClientProxy;
 
 public class YsClientProxyTest {
 	YsClientProxy ysClientProxy = new YsClientProxy();
 
-	public static String testDeviceSerial  = "630782726";
+	public static String testDeviceSerial  = "573604832";
 	@Test
 	public void testDeviceAdd() {
 		ysClientProxy.deviceAdd(testDeviceSerial, "MFDBNC");

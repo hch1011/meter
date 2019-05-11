@@ -1,12 +1,13 @@
 .img-info-body{
 	position: absolute;
-	padding-left: 50px;
-	padding-top: 50px;
+	padding-left: 2px;
+	padding-top: 2px;
 } 
+ 
 .img-info-body .img-op{
 	position: relative;
-	left: 400px;
-	top: -200px;
+	left: 610px;
+	top: -240px;
 }
 .img-info-body .btn-b{
 	position: relative;

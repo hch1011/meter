@@ -1,0 +1,94 @@
+.camera-setting-body{
+    width: 97%;
+    position: absolute;
+    top: 100px;
+    padding-bottom: 10px;
+}
+.camera-setting-body .table td{
+    font-size: 14px;
+}
+.camera-setting-body .table .size{
+    vertical-align: middle;
+    font-weight: 700;
+    color: #bb603c;
+}
+.camera-setting-body .operate{
+
+}
+.camera-setting-body #img_preview{
+    width: 600px;
+    margin-left: 100px;
+}
+.container{
+    margin: 0 auto;
+    width: 100%;
+    overflow: hidden;
+    padding-left: 0px;
+}
+.left{
+    float:left;
+    width: 30%;
+    font-size: 14px;
+    padding-bottom:2000px;
+    margin-bottom:-2000px;
+}
+.right{
+    float: left;
+    width: 60%;
+    padding-bottom: 2000px;
+    margin-bottom: -2000px;
+    margin-left: 5%;
+}
+.camera-setting-body .word{
+    font-size: 16px;
+    color: #bb603c;
+    font-weight: 700;
+}
+.camera-setting-body .word-a{
+    font-size: 16px;
+    color: white;
+    font-weight: 700;
+    width: 370px;
+    display: block;
+    border-style: inset;
+    border-width: 1px;
+    height: 36px;
+    vertical-align: middle;
+    border-radius: 4px;
+    background-color: #337ab7;
+    padding-top: 4px;
+    padding-left: 5px;
+}
+.camera-setting-body .interval{
+    height: 12px;
+}
+.camera-setting-body #deviceInfoId{
+    border-style: ridge;
+    border-width: 1px;
+    height: 32px;
+    width: 168px;
+    padding-left: 8px;
+}
+.camera-setting-body .bu{
+    width: 370px;
+    height: 40px;
+    font-size: 16px;
+    letter-spacing: 30px;
+}
+.camera-setting-body #rang_x,
+.camera-setting-body #rang_y,
+.camera-setting-body #rang_w,
+.camera-setting-body #rang_h
+{
+    margin-left: 0px;
+    border: 0;
+}
+#divResult{
+    color: #ff4500;
+    letter-spacing: 2px;
+    font-size: 16px;
+}
+.camera-setting-body .left input{
+    border-style: inset;
+    border-width: 1px;
+}

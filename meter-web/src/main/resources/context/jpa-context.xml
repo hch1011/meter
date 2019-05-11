@@ -9,7 +9,7 @@
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
-	<jpa:repositories base-package="com.jd.meter.dao" entity-manager-factory-ref="jpaEntityManagerFactory"
+	<jpa:repositories base-package="com.tj.meter.dao" entity-manager-factory-ref="jpaEntityManagerFactory"
 		transaction-manager-ref="jpaTransactionManager" repository-impl-postfix="Impl"/>
 
 	<bean class="org.springframework.context.annotation.CommonAnnotationBeanPostProcessor" />
@@ -59,7 +59,7 @@
 
 	<bean id="jpaEntityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
 		<property name="dataSource" ref="jpaDataSource" />
-		<property name="packagesToScan" value="com.jd.meter.entity" />
+		<property name="packagesToScan" value="com.tj.meter.entity" />
 		<property name="jpaVendorAdapter">
 			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
 				<property name="databasePlatform" value="org.hibernate.dialect.MySQL5InnoDBDialect" />

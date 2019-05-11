@@ -1,10 +1,14 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java"
 	pageEncoding="utf-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>  
 
 <div class="top" id="top" style="background:url(/meter/resources/images/topbg.gif) repeat-x;">
 	<input class="hide-type" type="hidden" value="${type}">
 	<div class="topleft">
-		<a href="main.html" target="_parent"><img src="/meter/resources/images/logo.png"	title="系统首页" /></a>
+		<a href="main.html" target="_parent">
+		 <img src="/meter/resources/images/logo.png"	title="系统首页" />
+		</a>
 	</div>
 
 	<ul class="nav">
@@ -23,42 +27,63 @@
 		</li>
 		<li>
 			<a href="/meter/device/data/info" data-num="3"><img
-				src="/meter/resources/images/icon03.png" title="数据查询" />
+				src="/meter/resources/images/top/icon_sjcx.gif" title="数据查询" />
 			<h2>数据查询</h2>
 			</a>
 		</li>
+		
+		<shiro:hasRole name="manager">
 		<li>
 			<a href="/meter/device/data/param" data-num="4"><img
-				src="/meter/resources/images/icon06.png" title="参数配置" />
+				src="/meter/resources/images/icon03.png" title="参数配置" />
 			<h2>参数配置</h2>
 			</a>
 		</li>
+		</shiro:hasRole>
+		
 		<li>
 			<a href="/meter/device/data/error/report" data-num="5"><img
-				src="/meter/resources/images/icon05.png" title="诊断报告" />
-			<h2>诊断报告</h2>
+				src="/meter/resources/images/icon05.png" title="统计报表" />
+			<h2>数据报表</h2>
 			</a>
 		</li>
+		
+		<%--
+		<shiro:hasRole name="manager">
 		<li>
 			<a href="/meter/camera/list" data-num="6">
 			<img src="/meter/resources/images/icon06.png" title="摄像头管理" />
-			<h2>摄像头管理</h2>
+			<h2 style="width: 70px;">摄像头管理</h2>
 			</a>
-		</li>
+		</li> 
+		</shiro:hasRole>
+		--%>	
+			
+		<!-- 这里要做成下拉框包括：清空缓存，仪表管理，摄像头管理，用户管理 -->
 		<li>
-			<a href="/meter/test/data" data-num="7">
-			<img src="/meter/resources/images/icon01.png" title="测试数据" />
-			<h2>测试数据</h2>
+			<ul class="ce">
+				<li>
+					<a href="#"  data-num="6">
+						<img style="margin-top: 10px;" src="/meter/resources/images/icon06.png" title="系统管理" />
+						<span><h2>系统管理<!-- <img class="more" src="/meter/resources/images/top/more.png"/> --></h2></span>
+					</a>
+					<ul class="er">
+						<li><a  href="/meter/camera/list" data-num="6">摄像头管理</a></li>
+						<li><a  href="/meter/admin/device/list" data-num="6">仪表管理</a></li>
+						<li><a  href="/meter/admin/account/list" data-num="6">用户管理</a></li>
+						<li><a  id="tbCleanCache" href="#" data-num="6">清空缓存</a></li>
+					</ul>
+				</li>
+				<div class="clear"></div>
+			</ul>
+		</li> 
+		
+		<li>
+			<a  id="tbLogout" href="${basePath}/logout">
+			<img src="/meter/resources/images/top/icon_logout.png" title="退出" />
+			<h2>退出</h2>
 			</a>
 		</li>
-		
-		
-		<!-- <li>
-			<a href=""><img
-				src="resources/images/icon06.png" title="系统设置" />
-			<h2>系统设置</h2>
-			</a>
-		</li> -->
 	</ul>
 	<!-- 
 	<div class="topright">

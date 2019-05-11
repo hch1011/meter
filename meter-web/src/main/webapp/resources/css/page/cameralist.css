@@ -1,0 +1,24 @@
+.camera-body{
+    width: 100%;
+    position: absolute;
+    left: 0px;
+    top: 100px;
+}
+.camera-body table th{
+    font-size: 15px;
+}
+.camera-body table td{
+    font-size: 14px;
+}
+.camera-body table thead tr td{
+    font-size: 16px;
+    font-weight: 700;
+    color: rgb(100, 144, 237);
+}
+.camera-body table thead tr .camera-line{
+    display: block;
+    border-style: solid;
+    border-left-width: 2px;
+    border-color: rgb(100, 144, 237);
+    padding: 15px;
+}

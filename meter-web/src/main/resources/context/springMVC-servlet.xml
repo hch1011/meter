@@ -5,7 +5,15 @@
          http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd
          http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd">
     
-    <!-- 添加注解驱动 -->       
+    <!-- 添加注解驱动 -->      
+    <context:annotation-config/>
+	<!-- 扫描包 --> 
+	<context:component-scan base-package="com.tj.meter.controller" />
+	<context:property-placeholder
+		location="classpath:default.properties"
+		ignore-unresolvable="true" ignore-resource-not-found="true" />
+		
+		 
 	<mvc:annotation-driven>  
 	    <mvc:argument-resolvers>  
 	        <!-- Spring Data中用于分页的注解方法参数解析器 -->
@@ -13,8 +21,6 @@
 	    </mvc:argument-resolvers>
 	</mvc:annotation-driven>
 	
-	<!-- 扫描包 --> 
-	<context:component-scan base-package="com.jd.meter.controller,com.jd.meter.service,com.jd.meter.communication" />
 	 
 	<mvc:default-servlet-handler/>
 	<mvc:resources mapping="/resources/**" location="/resources/" />
