@@ -38,7 +38,7 @@
 		<li>
 			<a href="/meter/device/data/img/info" data-num="2">
 				<img src="/meter/resources/images/icon02.png" title="图像采集" />
-				<h2>图像采集1</h2>
+				<h2>图像采集</h2>
 			</a>
 		</li>
 		<li>

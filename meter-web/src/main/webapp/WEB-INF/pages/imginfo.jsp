@@ -11,7 +11,7 @@
 		
 		<input class="has_img" type="hidden" value="false" /><!-- 是否正确加载快照 -->
 	 	<div class="img">
-	 		<img width="600px" src="${basePath}/resources/images/demo/shapshot_loading.jpg" />
+	 		<img width="600px" src="${basePath}/resources/images/demo/shapshot_loading.jpg" alt="图片不存在" />
 	 	</div>
 	 	<div class="img-op">
 	 		<button class="btn btn-info btn-a" type="button">图像重新采集</button> 		
